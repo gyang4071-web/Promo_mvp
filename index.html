@@ -1,261 +1,388 @@
-<!doctype html>
-<html lang="hy">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Կրիպտոյի մասին 5 միֆ, որոնց պատճառով մենք դեռ կողքից ենք հետևում" />
-  <title>Կրիպտոյի մասին 5 միֆ</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+<!doctype html><html lang="hy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Կրիպտոարժույթի 5 միֆ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Եկեք դիտարկենք կրիպտոարժույթի մասին տարածված 5 միֆ և պարզենք, թե իրականում ինչ է պետք իմանալ առաջին քայլն անելուց առաջ։">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column (~66ch), partner-article rhythm; blocks are separated by whitespace only, never by rules. */
+:root {
+  --bg: #fbfbfd;
+  --fg: #16151d;
+  --muted: #5d5b6b;
+  --brand: #8170ff;
+  --brand-ink: #5b48e8;
+  --surface: #f1effe;
+  --on-brand: #ffffff;
+  --font-display: "Noto Sans Armenian", system-ui, sans-serif;
+  --font-body: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --col: 42rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111017; --fg: #ecebf3; --muted: #a3a1b4; --brand: #8f80ff; --brand-ink: #aea3ff; --surface: #1d1a2e; --on-brand: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111017; --fg: #ecebf3; --muted: #a3a1b4; --brand: #8f80ff; --brand-ink: #aea3ff; --surface: #1d1a2e; --on-brand: #ffffff; color-scheme: dark;
+}
 
-  <nav class="story-nav" aria-label="Հոդվածի բաժիններ">
-    <a href="#myth-1" data-section="myth-1">01</a>
-    <a href="#myth-2" data-section="myth-2">02</a>
-    <a href="#myth-3" data-section="myth-3">03</a>
-    <a href="#myth-4" data-section="myth-4">04</a>
-    <a href="#myth-5" data-section="myth-5">05</a>
-  </nav>
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+.page {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2rem 4rem;
+  box-sizing: content-box;
+}
+section { padding-block: 2.25rem; }
+.page > section:not(.video-wrap) { max-width: var(--col); margin-inline: auto; }
+p { margin: 0; }
+section > * + * { margin-top: 1.1em; }
+strong { font-weight: 650; }
 
-  <main>
-    <article class="article-shell">
-      <header class="article-header">
-        <div class="publisher-mark reading-column">
-          <span>Հոդված</span><span class="publisher-dot">·</span><span>գործընկեր նյութ</span>
-        </div>
+/* Hero: brand first, then the headline */
+.brandbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.brandbar img { height: 28px; width: auto; display: block; }
+.tag { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5rem; }
+.meta { font-size: .9rem; color: var(--muted); }
+.hero { padding-top: 0; }
 
-        <img class="cover" src="cover.png" alt="Երկու մարդ մեքենայում դիտում են կրիպտո հավելվածը հեռախոսով" />
+.lead { font-size: 1.25rem; line-height: 1.55; }
+.turn { font-size: 1.25rem; line-height: 1.5; }
 
-        <div class="reading-column title-wrap">
-          <h1>Կրիպտոյի մասին 5 միֆ, որոնց պատճառով մենք դեռ կողքից ենք հետևում</h1>
-          <div class="meta-row">
-            <span>3–4 րոպե ընթերցում</span>
-            <span class="meta-dot">•</span>
-            <span>5 միֆ</span>
-          </div>
+/* Myths */
+.myth-no { font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+.myth h2 { font-size: clamp(1.4rem, 3.6vw, 1.85rem); line-height: 1.2; margin-top: .6rem; }
+.myth .hook { font-size: 1.2rem; line-height: 1.5; color: var(--fg); }
+.takeaway { font-size: 1.2rem; line-height: 1.5; padding-top: .4em; }
+.myth { padding-block: 3rem; }
 
-          <div class="author-row" aria-label="Նյութի գործընկեր՝ Freedx">
-            <div class="author-avatar"><img src="freedx-logo.svg" alt="Freedx" /></div>
-            <div>
-              <div class="author-name">Freedx</div>
-              <div class="author-note">Գործընկեր նյութ</div>
-            </div>
-          </div>
-        </div>
-      </header>
+/* Closing + offer */
+.closing h2 { font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.18; }
+.offer-card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  display: grid; gap: 1.1rem;
+}
+.offer-card > * { margin: 0; }
+.offer-card h3 { font-size: clamp(1.25rem, 3.4vw, 1.6rem); line-height: 1.25; }
+.offer-card h3 em { font-style: normal; color: var(--brand-ink); }
+.cta {
+  justify-self: start;
+  display: inline-block;
+  background: var(--brand);
+  color: var(--on-brand);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  padding: 1rem 1.6rem;
+  border-radius: 999px;
+  transition: transform .15s ease, background-color .15s ease;
+}
+.cta:hover { background: var(--brand-ink); }
+.cta:active { transform: scale(.98); }
+.cta:focus-visible, a:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 3px; }
+.fine { font-size: .85rem; line-height: 1.5; color: var(--muted); }
+@media (max-width: 480px) { .cta { justify-self: stretch; text-align: center; } }
+@media (prefers-reduced-motion: reduce) { .cta { transition: none; } }
 
-      <div class="reading-column article-copy intro-copy">
-        <p class="lead"><strong>Բաց թողած հնարավորության մեջ ամենատհաճը դա հասկանալն է այն ժամանակ, երբ ուրիշներն արդեն օգտվել են դրանից։</strong></p>
+/* Tracking debug panel, visible only with #debug */
+#trk-debug {
+  position: fixed; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: min(340px, calc(100vw - 24px)); max-height: 40vh; overflow: auto;
+  background: var(--fg); color: var(--bg); font: 12px/1.45 ui-monospace, Menlo, monospace;
+  padding: 10px 12px; border-radius: 10px; z-index: 50; opacity: .92;
+}
 
-        <p>Կրիպտոշուկան շարունակ փոխվում է։ Մարդիկ սովորում են գնել, փոխանակել, փոխանցել և տարբեր ձևերով օգտագործել թվային ակտիվները։ Նրանք փորձ են ձեռք բերում և քայլ առ քայլ հասկանում՝ ինչպես է այս ամենն աշխատում։</p>
+/* Top video: wider than the text column, never full screen */
+.video-wrap { padding-block: 0 .5rem; margin: 0 auto; width: 100%; max-width: min(56rem, calc(62vh * 16 / 9)); }
+.video-box { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 16px; overflow: hidden; background: var(--surface); }
+.video-box video { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
+.video-sound {
+  position: absolute; left: 12px; bottom: 12px;
+  font: 600 .85rem/1 var(--font-body); color: #fff; background: rgba(15, 14, 22, .62);
+  border: 0; border-radius: 999px; padding: .6rem .9rem; cursor: pointer;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.video-sound:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.video-sound[hidden] { display: none; }
+</style>
+</head><body>
 
-        <p>Իսկ ոմանք այդ ընթացքում շարունակում են կողքից հետևել։ Ցանկանում են փորձել, բայց ամեն անգամ նոր պատճառ են գտնում մի փոքր էլ սպասելու։</p>
+<main class="page" data-lang="hy">
 
-        <div class="quote-stack" aria-label="Տարածված մտավախություններ">
-          <span>«Սա չափազանց բարդ է»</span>
-          <span>«Ես կկորցնեմ գումարս»</span>
-          <span>«Կրիպտոն կարող է մի օր ոչինչ չարժենալ»</span>
-        </div>
+  <section class="video-wrap" data-block="video" data-block-index="0">
+    <div class="video-box">
+      <video src="https://ads.caramel.am/videos/freedx-1920x1080_oct.mp4" muted loop playsinline autoplay preload="auto" aria-label="Freedx տեսանյութ"></video>
+      <button class="video-sound" type="button" data-on="🔊 Միացնել ձայնը" data-off="🔇 Անջատել ձայնը">🔊 Միացնել ձայնը</button>
+    </div>
+  </section>
 
-        <p>Եկեք քննարկենք 5 տարածված միֆ, որոնց պատճառով առաջին քայլը հաճախ ավելի վախեցնող է թվում, քան իրականում կա։</p>
-      </div>
+  <section class="hero" data-block="hero" data-block-index="1">
+    <div class="brandbar">
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA4OCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpjMnBhPSJodHRwOi8vYzJwYS5vcmcvbWFuaWZlc3QiPjxtZXRhZGF0YT48YzJwYTptYW5pZmVzdD5BQUFXZ21wMWJXSUFBQUFlYW5WdFpHTXljR0VBRVFBUWdBQUFxZ0E0bTNFRFl6SndZUUFBQUJaY2FuVnRZZ0FBQUVkcWRXMWtZekp0WVFBUkFCQ0FBQUNxQURpYmNRTjFjbTQ2WXpKd1lUbzRaamhpTjJGak15MDRNV1l4TFRReU1tUXRPRFl3TnkwMlkyVmpaV1ZqWTJGaE1tVUFBQUFEbDJwMWJXSUFBQUFwYW5WdFpHTXlZWE1BRVFBUWdBQUFxZ0E0bTNFRFl6SndZUzVoYzNObGNuUnBiMjV6QUFBQUFMeHFkVzFpQUFBQVJHcDFiV1JqWW05eUFCRUFFSUFBQUtvQU9KdHhFMk15Y0dFdWFXNW5jbVZrYVdWdWRDNTJNd0FBQUFBWVl6SnphSmw2bktSWFpncGgzbWE1QWxndFdSd0FBQUJ3WTJKdmNxTnBaR002Wm05eWJXRjBiV2x0WVdkbEwzTjJaeXQ0Yld4cWFXNXpkR0Z1WTJWSlJIZ3NlRzF3T21scFpEbzJNamt3WWpnM1pDMHdNalptTFRRMU4ySXRZak5rT1MxaVl6QXpNRFEyTkRVeE0yRnNjbVZzWVhScGIyNXphR2x3YUhCaGNtVnVkRTltQUFBQjRtcDFiV0lBQUFCQmFuVnRaR05pYjNJQUVRQVFnQUFBcWdBNG0zRVRZekp3WVM1aFkzUnBiMjV6TG5ZeUFBQUFBQmhqTW5Ob3U2U1JZV2c2cGdTZTdtSkh1UjFPclFBQUFabGpZbTl5b21kaFkzUnBiMjV6Z3FKbVlXTjBhVzl1YTJNeWNHRXViM0JsYm1Wa2FuQmhjbUZ0WlhSbGNuT2hhMmx1WjNKbFpHbGxiblJ6Z2FKamRYSnNlQzF6Wld4bUkycDFiV0ptUFdNeWNHRXVZWE56WlhKMGFXOXVjeTlqTW5CaExtbHVaM0psWkdsbGJuUXVkak5rYUdGemFGZ2dFZmZKYzgxTzhmcUJNa200RDd3L0o0Q242eU00OUJ2QXZsTk93cFBQSUxLa1ptRmpkR2x2Ym5nZFkyOXRMbUZ1ZEdoeWIzQnBZeTVqYkdGMVpHVXVjSEp2ZG1sa1pXUnFjR0Z5WVcxbGRHVnljNkY0SDJOdmJTNWhiblJvY205d2FXTXViM0pwWjJsdUxXTnZibVpwWkdWdVkyVm5kVzVyYm05M2JtdGtaWE5qY21sd2RHbHZibmhtUTJ4aGRXUmxJSEJ5YjNacFpHVmtJSFJvYVhNZ1ptbHNaU0JoZENCMGFHVWdjbVZ4ZFdWemRDQnZaaUJoSUhWelpYSWdZVzVrSUcxaGVTQm9ZWFpsSUdOeVpXRjBaV1FnYjNJZ2JXOWthV1pwWldRZ2RHaGxJR1pwYkdVZ1kyOXVkR1Z1ZEhNdWJYTnZablIzWVhKbFFXZGxiblNoWkc1aGJXVm1RMnhoZFdSbGNtRnNiRUZqZEdsdmJuTkpibU5zZFdSbFpQVUFBQURJYW5WdFlnQUFBRUJxZFcxa1kySnZjZ0FSQUJDQUFBQ3FBRGliY1JOak1uQmhMbWhoYzJndVpHRjBZUUFBQUFBWVl6SnphT2N1Y1lwUVBZYTZiTXE4RWd5REVxSUFBQUNBWTJKdmNxVmpZV3huWm5Ob1lUSTFObU53WVdSTkFBQUFBQUFBQUFBQUFBQUFBR1JvWVhOb1dDRDIrNnhIS1JIbjd1SFBqbFpNRWM0b1ZBaWg0VlhKWmM1RkFKeWwwdTZBRTJSdVlXMWxibXAxYldKbUlHMWhibWxtWlhOMGFtVjRZMngxYzJsdmJuT0JvbVZ6ZEdGeWRCaWVabXhsYm1kMGFCa2VCQUFBQWo1cWRXMWlBQUFBSjJwMWJXUmpNbU5zQUJFQUVJQUFBS29BT0p0eEEyTXljR0V1WTJ4aGFXMHVkaklBQUFBQ0QyTmliM0tsWTJGc1oyWnphR0V5TlRacGMybG5ibUYwZFhKbGVFMXpaV3htSTJwMWJXSm1QUzlqTW5CaEwzVnlianBqTW5CaE9qaG1PR0kzWVdNekxUZ3haakV0TkRJeVpDMDROakEzTFRaalpXTmxaV05qWVdFeVpTOWpNbkJoTG5OcFoyNWhkSFZ5WldwcGJuTjBZVzVqWlVsRWVDeDRiWEE2YVdsa09qQTNOVEUwTkdZMUxURmtPR0V0TkdZMU5pMWlZVGRsTFRZMVl6STJaRFF5WkRJNU1ISmpjbVZoZEdWa1gyRnpjMlZ5ZEdsdmJuT0RvbU4xY214NExYTmxiR1lqYW5WdFltWTlZekp3WVM1aGMzTmxjblJwYjI1ekwyTXljR0V1YVc1bmNtVmthV1Z1ZEM1Mk0yUm9ZWE5vV0NBUjk4bHp6VTd4K29FeVNiZ1B2RDhuZ0tmckl6ajBHOEMrVTA3Q2s4OGdzcUpqZFhKc2VDcHpaV3htSTJwMWJXSm1QV015Y0dFdVlYTnpaWEowYVc5dWN5OWpNbkJoTG1GamRHbHZibk11ZGpKa2FHRnphRmdnQ09GNzgySTdSUjhHU1lQeFlJSkNzaWRSZ3ViTWFwRWY4MWZHc1pXdTF1dWlZM1Z5YkhncGMyVnNaaU5xZFcxaVpqMWpNbkJoTG1GemMyVnlkR2x2Ym5Ndll6SndZUzVvWVhOb0xtUmhkR0ZrYUdGemFGZ2c5WklNTG96UFJXL1dsZXFvWVNJaFdieXdqT2YyOWxXRXcwcHVJb2tXdmlwMFkyeGhhVzFmWjJWdVpYSmhkRzl5WDJsdVptK2paRzVoYldWdlFXNTBhSEp2Y0dsaklFWnBiR1Z6WjNabGNuTnBiMjVsTVM0d0xqQnJjM0JsWTFabGNuTnBiMjVsTWk0MExqQUFBQkE0YW5WdFlnQUFBQ2hxZFcxa1l6Smpjd0FSQUJDQUFBQ3FBRGliY1FOak1uQmhMbk5wWjI1aGRIVnlaUUFBQUJBSVkySnZjdEtFV1FJU29nRW1HQ0ZaQWdvd2dnSUdNSUlCamFBREFnRUNBaFJBNWFBSzdzSTUwTDY0Zy9vR1FnVTlaMVVUQURBS0JnZ3Foa2pPUFFRREF6QkpNUmN3RlFZRFZRUUtFdzVCYm5Sb2NtOXdhV01zSUZCQ1F6RXVNQ3dHQTFVRUF4TWxRVzUwYUhKdmNHbGpJRU52Ym5SbGJuUWdRM0psWkdWdWRHbGhiSE1nVW05dmRDQkRRVEFlRncweU5qQTRNRGN4T0RRek5UWmFGdzB5T0RBNE1EWXhPVFF6TlRaYU1FUXhGekFWQmdOVkJBb1REa0Z1ZEdoeWIzQnBZeXdnVUVKRE1Ta3dKd1lEVlFRREV5QkJiblJvY205d2FXTWdRMnhoZFdSbElFTnZiblJsYm5RZ1UybG5ibWx1WnpCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkpoNkNtdkxVQmdGRk5VMHZVS2xPVnRFNmRqZDE3TDVTdXdYMExlbUZpc0JNM2RrZC8zY3lqeEZBM1FvNVM0NmZYMC9paFkwVlo3bWZiOUtGNzAzdDVPaldEQldNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVZCZ05WSFNVRURqQU1CZ29yQmdFRUFZUG9YZ0lCTUF3R0ExVWRFd0VCL3dRQ01BQXdId1lEVlIwakJCZ3dGb0FVemxIaUJJRk9aRnNqK09QRXo1bytuTUhYWE1Jd0NnWUlLb1pJemowRUF3TURad0F3WkFJd01YTWRGSjRCZXRMTFZZN09SdUU5bm9xYmJBWk9abi9hQXJYeVR3RkFaZktyUHp4RjJ2UG9KTmYxK1VDZGcxWEdBakJ3WDF6ZDlXR3FZa3FtTDVTRnF3MVF5U2pyMXpKZnBKTTkrMXJkRHdTUExNT1BPakt1aVhqb1UvcFVVZUc5UndtaFkzQmhaRmtObmdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFQWllRTzZYaEpxUFEzdXpLQUg0cG53Tks5N3oyakl0MllzRTAxS2ZQRGdscVIvYW5HQnB0WmtSbHZxMGFjaUM2a0c5M2o5OFVBd0hPeXdZM2FEeXdzNFdqZW89PC9jMnBhOm1hbmlmZXN0PjwvbWV0YWRhdGE+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF84MzUzM18zNTg1KSI+CjxwYXRoIGQ9Ik0xMC45MTU1IDAuMDAxNTIxNDRIOS42MjA5NkM4LjQyNDczIC0wLjAyMjQwMjYgNy4yNDA3OCAwLjIzNjE0NCA2LjE3Mzk2IDAuNzU0MjY5QzUuMjE2MTIgMS4yMjA1OSA0LjQxMzU2IDEuOTMzNiAzLjg1NjgxIDIuODEyODhDMy4yOTQ2NyAzLjcyODM3IDMuMDA5NTggNC43NzUyNSAzLjAzMzM2IDUuODM2NjlWOC45MDA3OUgwLjY1Njg0NUMwLjQ4MzMwMSA4LjkwMDc5IDAuMzE2ODA3IDguOTY2NDcgMC4xOTM3MzQgOS4wODM0OUMwLjA3MDY2MTUgOS4yMDA1MSAwLjAwMTAxMTkyIDkuMzU5MzYgMCA5LjUyNTMzVjExLjQ2NDlDMC4wMDE1MTE0MyAxMS42MzA3IDAuMDcxMzIwNyAxMS43ODkzIDAuMTk0Mjg1IDExLjkwNjJDMC4zMTcyNSAxMi4wMjMxIDAuNDgzNDU0IDEyLjA4OSAwLjY1Njg0NSAxMi4wODk0SDMuMDMzMzZWMjMuMDRDMy4wMzM4NyAyMy4yMDY0IDMuMTAzMjMgMjMuMzY1OSAzLjIyNjMgMjMuNDgzN0MzLjM0OTM4IDIzLjYwMTQgMy41MTYxNSAyMy42Njc3IDMuNjkwMjEgMjMuNjY4Mkg2LjI0MDk5QzYuNDEzMzggMjMuNjY2OCA2LjU3ODMzIDIzLjYwMDggNi43MDA0MSAyMy40ODQzQzYuODIyNSAyMy4zNjc5IDYuODkyIDIzLjIxMDQgNi44OTQgMjMuMDQ1NVYxMi4wODk0SDEwLjkxNTVDMTEuMDAxOSAxMi4wODk0IDExLjA4NzUgMTIuMDczMSAxMS4xNjczIDEyLjA0MTRDMTEuMjQ3MSAxMi4wMDk4IDExLjMxOTYgMTEuOTYzMyAxMS4zODA2IDExLjkwNDhDMTEuNDQxNyAxMS44NDYzIDExLjQ5IDExLjc3NjggMTEuNTIyOSAxMS43MDA0QzExLjU1NTggMTEuNjIzOSAxMS41NzI2IDExLjU0MiAxMS41NzIzIDExLjQ1OTRWOS41MjUzM0MxMS41NzIxIDkuNDQzMDggMTEuNTU0OSA5LjM2MTY3IDExLjUyMTggOS4yODU3N0MxMS40ODg2IDkuMjA5ODYgMTEuNDQwMiA5LjE0MDk1IDExLjM3OTIgOS4wODI5NUMxMS4zMTgyIDkuMDI0OTYgMTEuMjQ1OCA4Ljk3OTAyIDExLjE2NjMgOC45NDc3N0MxMS4wODY3IDguOTE2NTEgMTEuMDAxNSA4LjkwMDU1IDEwLjkxNTUgOC45MDA3OUg2Ljg5NFY1LjgwNzM4QzYuODk0IDUuMDA4ODUgNy4xMjg5MSA0LjM4OTE5IDcuNTk4NzIgMy45NDg0MUM4LjA2ODUzIDMuNTA3NjMgOC43NDI2MSAzLjI5MDkgOS42MjA5NiAzLjI5ODIySDEwLjkxNTVDMTEuMDAxOSAzLjI5ODIzIDExLjA4NzUgMy4yODE5MiAxMS4xNjczIDMuMjUwMjNDMTEuMjQ3MSAzLjIxODU1IDExLjMxOTYgMy4xNzIxMSAxMS4zODA2IDMuMTEzNThDMTEuNDQxNyAzLjA1NTA1IDExLjQ5IDIuOTg1NTggMTEuNTIyOSAyLjkwOTE1QzExLjU1NTggMi44MzI3MyAxMS41NzI2IDIuNzUwODQgMTEuNTcyMyAyLjY2ODE5VjAuNjI5NzI3QzExLjU3MjMgMC40NjMxMTYgMTEuNTAzMSAwLjMwMzMzIDExLjM4IDAuMTg1NTE4QzExLjI1NjggMC4wNjc3MDcyIDExLjA4OTcgMC4wMDE1MjE0NCAxMC45MTU1IDAuMDAxNTIxNDRaIiBmaWxsPSIjODE3MEZGIi8+CjxwYXRoIGQ9Ik0yMi42NDQ4IDEyLjMxODVMMjMuOTE0NCAxMC43MDY3QzIzLjk3OCAxMC42NDUgMjQuMDI3OCAxMC41NzE0IDI0LjA2MDYgMTAuNDkwNkMyNC4wOTM0IDEwLjQwOTggMjQuMTA4NSAxMC4zMjM0IDI0LjEwNTEgMTAuMjM2OEMyNC4xMDE3IDEwLjE1MDEgMjQuMDc5OCAxMC4wNjUxIDI0LjA0MDggOS45ODY4NEMyNC4wMDE3IDkuOTA4NiAyMy45NDYzIDkuODM4ODQgMjMuODc4IDkuNzgxODNDMjMuNDk0OSA5LjQ1ODU3IDIzLjA2MyA5LjE5MjQ1IDIyLjU5NjkgOC45OTI0NUMyMS45MTA4IDguNzE3NzcgMjEuMTcyOCA4LjU4MTgzIDIwLjQyOTEgOC41OTMxOUMxOC42MTM3IDguNTkzMTkgMTcuMjQxMyA5LjE2MTU2IDE2LjMxMTkgMTAuMjk4M0MxNi4yODMxIDEwLjMzMzEgMTYuMjU4MiAxMC4zNzM0IDE2LjIyNzYgMTAuNDExOVY5LjUyNTQyQzE2LjIyNzkgOS40NDI4NiAxNi4yMTEgOS4zNjEwNiAxNi4xNzgxIDkuMjg0NzNDMTYuMTQ1MiA5LjIwODQxIDE2LjA5NjggOS4xMzkwNiAxNi4wMzU4IDkuMDgwNjdDMTUuOTc0NyA5LjAyMjI5IDE1LjkwMjIgOC45NzYwMyAxNS44MjI0IDguOTQ0NTRDMTUuNzQyNiA4LjkxMzA2IDE1LjY1NzEgOC44OTY5NyAxNS41NzA4IDguODk3MjJIMTMuMDIxOUMxMi45MzQ4IDguODk2IDEyLjg0ODQgOC45MTEzNSAxMi43Njc2IDguOTQyMzhDMTIuNjg2OCA4Ljk3MzQxIDEyLjYxMzIgOS4wMTk0OSAxMi41NTEyIDkuMDc3OTRDMTIuNDg5MiA5LjEzNjQgMTIuNDQgOS4yMDYwNiAxMi40MDY0IDkuMjgyODhDMTIuMzcyOCA5LjM1OTcgMTIuMzU1NSA5LjQ0MjE1IDEyLjM1NTUgOS41MjU0MlYyMy4wNDE5QzEyLjM1NTIgMjMuMTI1NCAxMi4zNzIzIDIzLjIwODEgMTIuNDA1OCAyMy4yODUzQzEyLjQzOTMgMjMuMzYyNCAxMi40ODg0IDIzLjQzMjQgMTIuNTUwNCAyMy40OTEyQzEyLjYxMjQgMjMuNTUgMTIuNjg2MSAyMy41OTY0IDEyLjc2NyAyMy42Mjc4QzEyLjg0NzkgMjMuNjU5MSAxMi45MzQ2IDIzLjY3NDcgMTMuMDIxOSAyMy42NzM4SDE1LjU2MzFDMTUuNjQ5NCAyMy42NzM4IDE1LjczNDggMjMuNjU3NSAxNS44MTQ1IDIzLjYyNkMxNS44OTQyIDIzLjU5NDQgMTUuOTY2NiAyMy41NDgxIDE2LjAyNzYgMjMuNDg5OEMxNi4wODg2IDIzLjQzMTQgMTYuMTM2OSAyMy4zNjIyIDE2LjE2OTkgMjMuMjg2QzE2LjIwMyAyMy4yMDk4IDE2LjIxOTkgMjMuMTI4MSAxNi4yMTk5IDIzLjA0NTZWMTUuNDcyM0MxNi4yMTk5IDE0LjIyNDQgMTYuNTQ0OSAxMy4zMTM2IDE3LjE5NDcgMTIuNzM5N0MxNy44NzYyIDEyLjE1NDYgMTguNzY5IDExLjg0NTkgMTkuNjg0MiAxMS44Nzg5QzIwLjEwNjQgMTEuODcxMiAyMC41MjY4IDExLjkzMzIgMjAuOTI3IDEyLjA2MjFDMjEuMjI1IDEyLjE3MjcgMjEuNTExIDEyLjMxMDcgMjEuNzgxMSAxMi40NzQxQzIxLjkxOTMgMTIuNTU2NSAyMi4wODQ3IDEyLjU4NjIgMjIuMjQ0NyAxMi41NTczQzIyLjQwNDYgMTIuNTI4NSAyMi41NDc0IDEyLjQ0MzIgMjIuNjQ0OCAxMi4zMTg1WiIgZmlsbD0iIzgxNzBGRiIvPgo8cGF0aCBkPSJNNzIuNDY1NSAxNC4wMjlWMC45Mzc0MDlDNzIuNDY1NSAwLjc3MTQzMiA3Mi4zOTY4IDAuNjEyMTk4IDcyLjI3NDUgMC40OTQ0OTFDNzIuMTUyMSAwLjM3Njc4NSA3MS45ODYgMC4zMTAxNzIgNzEuODEyNSAwLjMwOTIwNEg2OS4yNTc5QzY5LjA4MzggMC4zMDk2ODcgNjguOTE3IDAuMzc2MDI4IDY4Ljc5NCAwLjQ5MzczNUM2OC42NzA5IDAuNjExNDQyIDY4LjYwMTUgMC43NzA5NDggNjguNjAxIDAuOTM3NDA5VjkuMzg2MTNDNjUuOTMxNSA4LjMwNzM3IDYyLjY4NzUgOC4yNTYwOSA2MC4xMzEgOS42MjIzOUM1OC44ODE4IDEwLjI3NTIgNTcuODMxOCAxMS4yMjc2IDU3LjA4NDIgMTIuMzg2MUM1Ni4zMzMyIDEzLjU2NDYgNTUuOTQ1NiAxNC45MjE5IDU1Ljk2NTggMTYuMzAxOUM1NS45NDkyIDE3LjY3NjggNTYuMzM2NyAxOS4wMjg1IDU3LjA4NDIgMjAuMjAzQzU3LjgyNjMgMjEuMzY1NyA1OC44Nzc3IDIyLjMxOTQgNjAuMTMxIDIyLjk2NjdDNjMuMzQ0MyAyNC42NTkgNjcuNjc0MiAyNC4yODM2IDcwLjMyMDcgMjEuNzg1NEM3MS4yODE3IDIwLjg1MDEgNzEuOTQ1NyAxOS42NzMzIDcyLjIzNTcgMTguMzkxNkM3Mi41NTM2IDE3LjA4NTggNzIuNDg0NiAxNS43ODU0IDcyLjQ2MzYgMTQuNDU5NEM3Mi40Njc0IDE0LjMxNjUgNzIuNDY1NSAxNC4xNzE4IDcyLjQ2NTUgMTQuMDI5Wk02OC42NTQ2IDE3Ljc0MzNDNjguNDYxNiAxOC4yOTIgNjguMTQzIDE4Ljc5MjUgNjcuNzIyIDE5LjIwODVDNjYuMzUwOSAyMC41NjAxIDY0LjA1NDggMjAuODU2OCA2Mi4zMDY0IDIwLjA0NTVDNTkuOTczOSAxOC45NjY3IDU5LjI4MjYgMTYuMDYyIDYwLjUwMjUgMTQuMDAxNUM2Mi4xNzgxIDExLjE2MjcgNjYuNzcyMiAxMS4xOTkzIDY4LjM0NDQgMTQuMDAxNUM2OC45NTggMTUuMTYxMyA2OS4wNjk0IDE2LjUwNTUgNjguNjU0NiAxNy43NDMzWiIgZmlsbD0iIzgxNzBGRiIvPgo8cGF0aCBkPSJNODcuODY5NyAyMi42NzE5TDgyLjc4NzMgMTYuMDYyMUw4Ny41MzI2IDkuOTAwODhDODcuNjA0NCA5LjgwNzM0IDg3LjY0NzcgOS42OTY2IDg3LjY1NzggOS41ODA5NUM4Ny42Njc4IDkuNDY1MyA4Ny42NDQxIDkuMzQ5MjUgODcuNTg5NCA5LjI0NTY4Qzg3LjUzNDYgOS4xNDIxMSA4Ny40NTEgOS4wNTUwNyA4Ny4zNDc3IDguOTk0MjFDODcuMjQ0MyA4LjkzMzM1IDg3LjEyNTQgOC45MDEwNCA4Ny4wMDQxIDguOTAwODhIODQuMjEyQzg0LjEwNiA4LjkwMDg4IDg0LjAwMTUgOC45MjUzNiA4My45MDc1IDguOTcyMjNDODMuODEzNSA5LjAxOTEgODMuNzMyNyA5LjA4Njk5IDgzLjY3MiA5LjE3MDExTDgwLjUyNzYgMTMuNDkyNUw3Ny4zMTAzIDkuMTU5MTJDNzcuMjQ5NSA5LjA3NzQxIDc3LjE2OSA5LjAxMDgyIDc3LjA3NTggOC45NjQ5NEM3Ni45ODI1IDguOTE5MDUgNzYuODc5MSA4Ljg5NTIgNzYuNzc0MiA4Ljg5NTM5SDczLjc1MjNDNzMuNjMwNSA4Ljg5NTM5IDczLjUxMSA4LjkyNzc5IDczLjQwNzQgOC45ODg5N0M3My4zMDM3IDkuMDUwMTUgNzMuMjE5OCA5LjEzNzcgNzMuMTY1MiA5LjI0MTgzQzczLjExMDYgOS4zNDU5NiA3My4wODczIDkuNDYyNTggNzMuMDk4IDkuNTc4NjRDNzMuMTA4NiA5LjY5NDcgNzMuMTUyOCA5LjgwNTY0IDczLjIyNTcgOS44OTkwNUw3OC4wNzgzIDE2LjEyNjJMNzIuOTMyNyAyMi42NjI4QzcyLjg1ODggMjIuNzU2MSA3Mi44MTM3IDIyLjg2NzIgNzIuODAyNCAyMi45ODM3QzcyLjc5MTEgMjMuMTAwMSA3Mi44MTM5IDIzLjIxNzMgNzIuODY4NSAyMy4zMjJDNzIuOTIzIDIzLjQyNjcgNzMuMDA3IDIzLjUxNDggNzMuMTExMSAyMy41NzYzQzczLjIxNTEgMjMuNjM3OCA3My4zMzUxIDIzLjY3MDMgNzMuNDU3NCAyMy42NzAxSDc2LjI3MDVDNzYuMzc1NCAyMy42NzAzIDc2LjQ3ODggMjMuNjQ2NCA3Ni41NzIxIDIzLjYwMDZDNzYuNjY1NCAyMy41NTQ3IDc2Ljc0NTggMjMuNDg4MSA3Ni44MDY3IDIzLjQwNjRMODAuMzM2MSAxOC42ODI5TDgzLjgwNiAyMy40MDQ1QzgzLjg2NjUgMjMuNDg3MyA4My45NDcxIDIzLjU1NDggODQuMDQwOCAyMy42MDE0Qzg0LjEzNDUgMjMuNjQ4IDg0LjIzODYgMjMuNjcyMiA4NC4zNDQxIDIzLjY3MTlIODcuMzQxMUM4Ny40NjI1IDIzLjY3MTggODcuNTgxNCAyMy42Mzk1IDg3LjY4NDcgMjMuNTc4NkM4Ny43ODggMjMuNTE3OCA4Ny44NzE3IDIzLjQzMDcgODcuOTI2NCAyMy4zMjcxQzg3Ljk4MTIgMjMuMjIzNiA4OC4wMDQ4IDIzLjEwNzUgODcuOTk0OCAyMi45OTE5Qzg3Ljk4NDggMjIuODc2MiA4Ny45NDE1IDIyLjc2NTUgODcuODY5NyAyMi42NzE5WiIgZmlsbD0iIzgxNzBGRiIvPgo8cGF0aCBkPSJNNTEuMTk5NCA5LjYwNTk4QzQ5LjkwMjcgOC45MjUzMiA0OC40NDQzIDguNTc2NDUgNDYuOTY1MyA4LjU5MzE2QzQ1LjU1NjggOC41NjU1NyA0NC4xNjU2IDguODk0MSA0Mi45MzIzIDkuNTQ1NTRDNDEuNzg3NiAxMC4xNjAzIDQwLjg0MDYgMTEuMDYyOCA0MC4xOTM5IDEyLjE1NTRDMzkuNTE3NCAxMy4zMTkzIDM5LjE3NTEgMTQuNjMzNiAzOS4yMDE5IDE1Ljk2NUMzOS4yMDM1IDE2LjIwOTkgMzkuMjIwOCAxNi40NTQ2IDM5LjI1MzYgMTYuNjk3NkMzOS4yNjcgMTYuODA1NiAzOS4yODA0IDE2LjkxNzMgMzkuMjk1NyAxNy4wMzI3QzM5LjMxNyAxNy4xODQ1IDM5LjM5NTEgMTcuMzIzOCAzOS41MTU1IDE3LjQyNDlDMzkuNjM1OSAxNy41MjU5IDM5Ljc5MDUgMTcuNTgxOCAzOS45NTA3IDE3LjU4MjJINDAuNDQ4NkM0MC42NTM1IDE3LjU4MTcgNDAuODU2OSAxNy41NDc2IDQxLjA0OTkgMTcuNDgxNEM0Mi4zNDM5IDE2Ljk5NzYgNDMuNzgyMiAxNy4wMDQxIDQ1LjA3MTQgMTcuNDk5OEM0NS42MzE1IDE3LjcwODEgNDYuMjAzOCAxNy44ODU1IDQ2Ljc4NTMgMTguMDMwOUM0Ni45Mzg4IDE4LjA3MjQgNDcuMDg4MSAxOC4xMjcgNDcuMjMxNSAxOC4xOTM5QzQ3LjI3NjEgMTguMjA1NiA0Ny4zMTU5IDE4LjIzMDMgNDcuMzQ1MSAxOC4yNjQ2QzQ3LjM3NDQgMTguMjk4OSA0Ny4zOTE3IDE4LjM0MTEgNDcuMzk0NiAxOC4zODUzQzQ3LjM5NzYgMTguNDI5NSA0Ny4zODYgMTguNDczNCA0Ny4zNjE2IDE4LjUxMUM0Ny4zMzcyIDE4LjU0ODYgNDcuMzAxIDE4LjU3OCA0Ny4yNTgzIDE4LjU5NUM0Ni45MDM2IDE4Ljc5MyA0Ni40ODcyIDE4Ljg2NSA0Ni4wODI1IDE4Ljc5ODNDNDUuODQ1NCAxOC43NjcgNDUuNjExNSAxOC43MTYxIDQ1LjM4MzUgMTguNjQ2M0M0NS4yNzI0IDE4LjYxMzMgNDUuMTYxNCAxOC41NzY3IDQ1LjA1MDMgMTguNTM4MkM0NC45Nzc1IDE4LjUxMjYgNDQuNzg2IDE4LjQzMiA0NC42MjkgMTguMzc3QzQ0LjgyMTggMTguNTUxOSA0NS4wMzE1IDE4LjcwODkgNDUuMjU1MiAxOC44NDU5QzQ1LjQ0MzkgMTguOTY1NyA0NS42NDc5IDE5LjA2MTggNDUuODYyMyAxOS4xMzE2QzQ2LjQyOTYgMTkuMzAwNiA0Ny4wMzU2IDE5LjMxMDcgNDcuNjA4NyAxOS4xNjA5QzQ4LjIwMSAxOS4wMDU0IDQ4Ljc3NzggMTguODAwMSA0OS4zMzIyIDE4LjU0NzRDNDkuNTQyOSAxOC40NTk1IDQ5Ljc1MTYgMTguMzY0MiA0OS45NjA0IDE4LjI3ODFDNTAuMTY5NiAxOC4xNzU4IDUwLjM4NTkgMTguMDg3MSA1MC42MDc2IDE4LjAxMjZDNTAuNzk5MSAxNy45NTU4IDUxLjQwNDMgMTcuODk5IDUxLjIwNTEgMTguMjY3MkM1MS4wNzQ3IDE4LjQ2NzcgNTAuOTE5MSAxOC42NTIzIDUwLjc0MTcgMTguODE2NkM1MC41NjQ4IDE5LjAwMzUgNTAuMzY5MiAxOS4xNzM1IDUwLjE1NzYgMTkuMzIzOUM0OS4yMDAxIDE5Ljk5NDMgNDguMzIzIDIwLjU0MzcgNDYuOTE3NCAyMC43MTU5QzQ2LjU1NCAyMC43NjM1IDQ2LjE4NTUgMjAuNzYzNSA0NS44MjIxIDIwLjcxNTlDNDUuMjM3OCAyMC42MTY1IDQ0LjY3MzIgMjAuNDMxMSA0NC4xNDgzIDIwLjE2NjRDNDMuNjM4OSAxOS45MzAyIDQzLjgwNzUgMTkuOTgzMyA0Mi45MjA4IDE5LjQ3NDFDNDIuODY5NCAxOS40NDY0IDQyLjgxMjggMTkuNDI4MyA0Mi43NTQyIDE5LjQyMUM0Mi42NTU5IDE5LjQwOTMgNDIuNTU2MSAxOS40MTg3IDQyLjQ2MiAxOS40NDg1QzQyLjM2OCAxOS40NzgzIDQyLjI4MiAxOS41Mjc3IDQyLjIxMDQgMTkuNTkzMkw0MC43NDU0IDIwLjk3MDRDNDAuNjgyOSAyMS4wMzE1IDQwLjYzMzkgMjEuMTAzOCA0MC42MDExIDIxLjE4MzNDNDAuNTY4NCAyMS4yNjI3IDQwLjU1MjcgMjEuMzQ3NiA0MC41NTQ4IDIxLjQzM0M0MC41NTY5IDIxLjUxODMgNDAuNTc2OSAyMS42MDI0IDQwLjYxMzYgMjEuNjgwM0M0MC42NTAzIDIxLjc1ODEgNDAuNzAyOSAyMS44MjgxIDQwLjc2ODQgMjEuODg2MkM0MS40NjIzIDIyLjQ5ODUgNDIuMjY5NiAyMi45ODE3IDQzLjE0ODcgMjMuMzExMUM0NC4yODg3IDIzLjc0MTcgNDUuNTA0MSAyMy45NjA1IDQ2LjcyOTggMjMuOTU1OEM0OC4yNTQ4IDIzLjk3NTYgNDkuNzYxMSAyMy42MzI2IDUxLjExMzIgMjIuOTU3NkM1Mi4wMzQyIDIyLjQ5NTcgNTIuODUyNCAyMS44NjY4IDUzLjUyMjMgMjEuMTA2QzUzLjc3MDIgMjAuODI1NiA1My45OTYxIDIwLjUyODEgNTQuMTk4MyAyMC4yMTU5QzU0Ljk1NjcgMTkuMDQgNTUuMzUzNSAxNy42ODM1IDU1LjM0MzQgMTYuMzAxOUM1NS4zNjM1IDE0LjkxODcgNTQuOTc5NSAxMy41NTc1IDU0LjIzNDYgMTIuMzcxNUM1My40OTg1IDExLjIwNzYgNTIuNDUwNiAxMC4yNTI5IDUxLjE5OTQgOS42MDU5OFpNNDIuOTY0OSAxNC43MzQyQzQzLjA0OSAxNC4zNTE5IDQzLjE4NjggMTMuOTgyMiA0My4zNzQ3IDEzLjYzNTNDNDMuNjkyOSAxMy4wNDc2IDQ0LjE4MzQgMTIuNTYxMyA0NC43ODYgMTIuMjM2QzQ1LjQ3OTEgMTEuODg5MiA0Ni4yNTQ0IDExLjcyMDEgNDcuMDM2MiAxMS43NDUyQzQ3Ljg2ODMgMTEuNzIzOSA0OC42OTE0IDExLjkxMzUgNDkuNDIyMiAxMi4yOTQ2QzUwLjA4ODMgMTIuNjU3MyA1MC42MzA4IDEzLjE5NTkgNTAuOTg0OSAxMy44NDU5QzUxLjE0MDMgMTQuMTMyOSA1MS4yNjExIDE0LjQzNTggNTEuMzQ0OSAxNC43NDg4TDQyLjk2NDkgMTQuNzM0MloiIGZpbGw9IiM4MTcwRkYiLz4KPHBhdGggZD0iTTIzLjU1NDQgMTIuMzcxNkMyMi44MDc2IDEzLjU1NjkgMjIuNDIxNiAxNC45MTgyIDIyLjQzOTkgMTYuMzAyQzIyLjQyMDQgMTcuNjg4IDIyLjgxMDggMTkuMDUxMSAyMy41NjU5IDIwLjIzNDJDMjMuNzY4MSAyMC41NDY0IDIzLjk5NCAyMC44NDM5IDI0LjI0MTkgMjEuMTI0M0MyNC45MTExIDIxLjg4NTEgMjUuNzI4NiAyMi41MTQgMjYuNjQ5MSAyMi45NzZDMjguMDAxOSAyMy42NTA3IDI5LjUwODggMjMuOTkzNyAzMS4wMzQ0IDIzLjk3NDFDMzIuMjU5NSAyMy45Nzg4IDMzLjQ3NDIgMjMuNzYgMzQuNjEzNiAyMy4zMjk1QzM1LjQ5MjkgMjMuMDAwNSAzNi4zMDAyIDIyLjUxNzIgMzYuOTkzOSAyMS45MDQ1QzM3LjA1OTggMjEuODQ2NyAzNy4xMTI5IDIxLjc3NjggMzcuMTQ5OCAyMS42OTg5QzM3LjE4NjggMjEuNjIxMSAzNy4yMDcgMjEuNTM2OSAzNy4yMDkyIDIxLjQ1MTNDMzcuMjExMyAyMS4zNjU4IDM3LjE5NTQgMjEuMjgwOCAzNy4xNjIzIDIxLjIwMTNDMzcuMTI5MyAyMS4xMjE4IDM3LjA3OTggMjEuMDQ5NSAzNy4wMTY5IDIwLjk4ODhMMzUuNTUxOSAxOS42MTE1QzM1LjQ4MDcgMTkuNTQ2IDM1LjM5NTEgMTkuNDk2NSAzNS4zMDEzIDE5LjQ2NjdDMzUuMjA3NiAxOS40MzY5IDM1LjEwOCAxOS40Mjc2IDM1LjAxIDE5LjQzOTNDMzQuOTUxNCAxOS40NDY3IDM0Ljg5NDggMTkuNDY0NyAzNC44NDM0IDE5LjQ5MjVDMzMuOTU2NyAyMC4wMDg5IDM0LjEyNTIgMTkuOTQ4NSAzMy42MTU4IDIwLjE4NDhDMzMuMDkxIDIwLjQ0OTUgMzIuNTI2NCAyMC42MzQ4IDMxLjk0MjEgMjAuNzM0MkMzMS41Nzg3IDIwLjc4MTggMzEuMjEwMiAyMC43ODE4IDMwLjg0NjggMjAuNzM0MkMyOS40NDExIDIwLjU2MjEgMjguNTY5OCAyMC4wMTI2IDI3LjYwNjYgMTkuMzQyM0MyNy4zOTg0IDE5LjE5MTMgMjcuMjA2IDE5LjAyMTQgMjcuMDMyMSAxOC44MzQ5QzI2Ljg1NDcgMTguNjcwNiAyNi42OTkgMTguNDg2MSAyNi41Njg2IDE4LjI4NTVDMjYuMzc3MSAxNy45MTkyIDI2Ljk3MjcgMTcuOTc0MSAyNy4xNjYxIDE4LjAzMDlDMjcuMzg3NyAxOC4xMDU4IDI3LjYwNCAxOC4xOTQ1IDI3LjgxMzQgMTguMjk2NUMyOC4wMjIxIDE4LjM4OTkgMjguMjMwOSAxOC40Nzk2IDI4LjQ0MTUgMTguNTY1N0MyOC45OTYgMTguODE4NCAyOS41NzI3IDE5LjAyMzggMzAuMTY1IDE5LjE3OTNDMzAuNzM4MiAxOS4zMjkxIDMxLjM0NDIgMTkuMzE4OSAzMS45MTE1IDE5LjE1QzMyLjEyNTQgMTkuMDgwNSAzMi4zMjg5IDE4Ljk4NDQgMzIuNTE2NiAxOC44NjQyQzMyLjc0MTMgMTguNzI3NyAzMi45NTE3IDE4LjU3MDcgMzMuMTQ0OCAxOC4zOTU0QzMyLjk4NzcgMTguNDUwMyAzMi43OTYyIDE4LjUzMDkgMzIuNzIzNSAxOC41NTY2QzMyLjYxMjQgMTguNTk1IDMyLjUwMTMgMTguNjMxNiAzMi4zOTAyIDE4LjY2NDZDMzIuMTYyMyAxOC43MzQ1IDMxLjkyODQgMTguNzg1MyAzMS42OTEzIDE4LjgxNjZDMzEuMjg2NSAxOC44ODMzIDMwLjg3MDIgMTguODExNCAzMC41MTU1IDE4LjYxMzNDMzAuMzI0IDE4LjQ4NyAzMC4zMzU0IDE4LjMxMyAzMC41NDIzIDE4LjIxMjJDMzAuNjg1NSAxOC4xNDUgMzAuODM0OCAxOC4wOTA0IDMwLjk4ODUgMTguMDQ5MkMzMS41Njk0IDE3LjkwNCAzMi4xNDEgMTcuNzI2NyAzMi43MDA1IDE3LjUxODFDMzMuOTkyNiAxNy4wMjA2IDM1LjQzNDYgMTcuMDE0MSAzNi43MzE1IDE3LjQ5OThDMzYuOTI0NSAxNy41NjYgMzcuMTI3OSAxNy42IDM3LjMzMjkgMTcuNjAwNUgzNy44MzA4QzM3Ljk5MDggMTcuNjAwNCAzOC4xNDU0IDE3LjU0NDYgMzguMjY1NiAxNy40NDM1QzM4LjM4NTcgMTcuMzQyNCAzOC40NjMzIDE3LjIwMjkgMzguNDgzOCAxNy4wNTExQzM4LjQ5OTEgMTYuOTM1NyAzOC41MTQ0IDE2LjgyNCAzOC41Mjc4IDE2LjcxNTlDMzguNTU5MSAxNi40NzI4IDM4LjU3NTggMTYuMjI4MiAzOC41Nzc2IDE1Ljk4MzNDMzguNjA0IDE0LjY1MjIgMzguMjYyNSAxMy4zMzgxIDM3LjU4NzYgMTIuMTczOEMzNi45NDAxIDExLjA4MSAzNS45OTI1IDEwLjE3ODUgMzQuODQ3MiA5LjU2Mzg4QzMzLjYxNDcgOC45MTIxOCAzMi4yMjQxIDguNTgzNjMgMzAuODE2MSA4LjYxMTVDMjkuMzM2NSA4LjU5NDk3IDI3Ljg3NzUgOC45NDM4MiAyNi41ODAxIDkuNjI0MzJDMjUuMzM1MSAxMC4yNjc4IDI0LjI5MDkgMTEuMjE1OCAyMy41NTQ0IDEyLjM3MTZaTTI2LjQyNjkgMTQuNzYzNUMyNi41MTA4IDE0LjQ1MDUgMjYuNjMxNiAxNC4xNDc1IDI2Ljc4NyAxMy44NjA2QzI3LjE0MDUgMTMuMjEwMiAyNy42ODMyIDEyLjY3MTQgMjguMzQ5NiAxMi4zMDkzQzI5LjA3OTggMTEuOTI4MyAyOS45MDIzIDExLjczODcgMzAuNzMzOCAxMS43NTk5QzMxLjUxNjIgMTEuNzM0OCAzMi4yOTIgMTEuOTAzOSAzMi45ODU4IDEyLjI1MDdDMzMuNTg4NSAxMi41NzYgMzQuMDc4OSAxMy4wNjIzIDM0LjM5NzIgMTMuNjVDMzQuNTg1IDEzLjk5NjkgMzQuNzIyOSAxNC4zNjY2IDM0LjgwNyAxNC43NDg5TDI2LjQyNjkgMTQuNzYzNVoiIGZpbGw9IiM4MTcwRkYiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF84MzUzM18zNTg1Ij4KPHJlY3Qgd2lkdGg9Ijg3Ljk5NzIiIGhlaWdodD0iMjQuMDAxOCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K" alt="Freedx" width="88" height="24">
+      <span class="tag">Գործընկեր նյութ</span>
+    </div>
+    <h1>Կրիպտոարժույթի մասին 5 միֆ, որոնք խանգարում են անել առաջին քայլը</h1>
+    <p class="meta">4 րոպե ընթերցում</p>
+  </section>
 
-      <section class="myth-stage reveal" id="myth-1">
-        <div class="reading-column article-copy myth">
-          <div class="myth-head">
-            <div class="myth-number" aria-hidden="true">01</div>
-            <div>
-              <div class="eyebrow">ՄԻՖ 01 / 05</div>
-              <h2>«Կրիպտոարժույթը կարող է մի օր պարզապես արժեզրկվել»</h2>
-            </div>
-          </div>
+  <section class="intro" data-block="intro" data-block-index="2">
+    <p class="lead">Կրիպտոարժույթի մասին վաղուց արդեն բոլորը լսել են։ Դրա մասին խոսում են ծանոթները, գրում են լրատվամիջոցները, քննարկում են սոցիալական ցանցերում։ Բայց երբ հերթը հասնում է անձամբ կրիպտոարժույթի աշխարհին ծանոթանալուն, բազմաթիվ հարցեր են առաջանում։</p>
+    <p>Պե՞տք է արդյոք գլուխ հանել բարդ տեխնոլոգիաներից։ Պարտադի՞ր է մեծ գումար ունենալ։ Իսկ ի՞նչ կլինի, եթե ինչ-որ բան սխալ գնա։</p>
+    <p>Նման կասկածների պատճառով շատերն այդպես էլ չեն համարձակվում անել առաջին քայլը։</p>
+    <p class="turn"><strong>Իսկ ի՞նչ, եթե այս վախերից մի քանիսը պարզապես տարածված թյուր պատկերացումների արդյունք են։</strong></p>
+    <p>Եկեք դիտարկենք կրիպտոարժույթի մասին տարածված 5 միֆ և պարզենք, թե իրականում ինչ է պետք իմանալ առաջին քայլն անելուց առաջ։</p>
+  </section>
 
-          <p>Առանձին մետաղադրամ իսկապես կարող է կտրուկ էժանանալ կամ նույնիսկ գրեթե ամբողջությամբ կորցնել իր արժեքը։ Բայց սխալ է մտածել, որ ամբողջ կրիպտոշուկան մեկ նախագիծ է։</p>
-          <p>Bitcoin-ը, Ethereum-ը, USDT-ն, USDC-ն և հազարավոր այլ ակտիվներ միմյանցից անկախ են և տարբեր նպատակներ ունեն։ Եթե մեկ նախագիծ ձախողվում է, դա չի նշանակում, որ դրա հետ միասին վերանում է ամբողջ կրիպտոշուկան։</p>
-          <p>Կան նաև <a class="inline-link" href="stablecoins.html">սթեյբլքոյններ</a>՝ օրինակ USDT և USDC։ Դրանք ստեղծված են այնպես, որ դրանց արժեքը սովորաբար պահպանվի մոտ <strong>$1-ի սահմանում</strong>։ Այդ պատճառով դրանք հաճախ օգտագործում են միջոցներ պահելու, փոխանցելու և փոխանակելու համար՝ առանց գնի անընդհատ կտրուկ տատանումների։</p>
+  <section class="myth" id="myth-1" data-block="myth_1" data-block-index="3">
+    <div class="myth-no">Միֆ №1</div>
+    <h2>«Կրիպտոարժույթից օգտվելու համար պետք է մասնագետ լինել»</h2>
+    <p class="hook"><strong>Չէ՞ որ առաջին անգամ բանկային հավելվածով գումար փոխանցելուց առաջ դուք չեք ուսումնասիրել, թե ինչպես է աշխատում ամբողջ բանկային համակարգը։</strong></p>
+    <p>Կրիպտոարժույթի դեպքում էլ իրավիճակը նման է։ Բլոկչեյն, առևտրային զույգեր, օրդերներ, կրիպտոդրամապանակներ․ այս ամենը սկզբում կարող է բարդ ու անհասկանալի թվալ։ Բայց կրիպտոարժույթին ծանոթանալու համար պարտադիր չէ հասկանալ բոլոր տեխնիկական մանրամասները։</p>
+    <p>Սկզբում կարելի է պարզապես պարզել, թե ինչ է կրիպտոարժույթը, ինչպես է աշխատում կրիպտոդրամապանակը, և ինչով են տարբերվում թվային ակտիվների գնումը, պահպանումն ու փոխանցումը։</p>
+    <p>Հետո արդեն կարելի է սովորել, թե ինչպես ստուգել ստացողի հասցեն, ընտրել ճիշտ ցանցը և հաշվի առնել միջնորդավճարները։ Այս գիտելիքներն արդեն օգնում են հասկանալ, թե ինչ գործողություն եք կատարում և ինչ է պետք ստուգել դրանից առաջ։</p>
+    <p>Կրիպտոարժույթը միայն առևտրի համար չէ։ Այն օգտագործվում է նաև փոխանցումներ կատարելու և ապրանքների ու ծառայությունների դիմաց վճարելու համար՝ այնտեղ, որտեղ վճարման այդ տարբերակը հասանելի է։</p>
+    <p>Իհարկե, ցանկացած գործարքից առաջ կարևոր է հասկանալ դրա պայմաններն ու հնարավոր ռիսկերը։</p>
+    <p class="takeaway"><strong>Կրիպտոարժույթի աշխարհին ծանոթանալու համար պարտադիր չէ մասնագետ լինել։ Կարևորն այն է, որ քայլ առ քայլ սովորեք այն, ինչն իսկապես պետք կգա գործնականում։</strong></p>
+  </section>
 
-          <aside class="fact-card">
-            <div class="fact-label">Կարճ ասած</div>
-            <div class="fact-value">≈ $1</div>
-            <p>USDT և USDC սթեյբլքոյնները ստեղծված են այնպես, որ դրանց արժեքը սովորաբար մնա մեկ դոլարի մոտ։</p>
-          </aside>
+  <section class="myth" id="myth-2" data-block="myth_2" data-block-index="4">
+    <div class="myth-no">Միֆ №2</div>
+    <h2>«Ստիպված կլինեմ ամբողջ օրը հետևել գրաֆիկներին»</h2>
+    <p class="hook"><strong>Կարծում եք՝ կրիպտոարժույթով զբաղվելը նշանակում է հինգ մոնիտոր, երեք բաժակ սուրճ և ոչ մի րոպե ազատ ժամանա՞կ։</strong></p>
+    <p>Շատերն այսպես են պատկերացնում կրիպտոարժույթով զբաղվող մարդուն․ անընդհատ փոփոխվող գրաֆիկներ, տասնյակ գործարքներ և գների շարժին հետևելու անհրաժեշտություն՝ նույնիսկ ընթրիքի ժամանակ։</p>
+    <p>Բայց սա ընդամենը մեկ տարբերակ է՝ ակտիվ թրեյդինգը։</p>
+    <p>Իրականում պարտադիր չէ ամեն օր կրիպտոարժույթ գնել ու վաճառել։ Օրինակ՝ սպոտ շուկայում կարելի է գնել որևէ ակտիվ և երկար ժամանակ պահել այն՝ առանց մշտապես գործարքներ կատարելու։</p>
+    <p>Այս մոտեցումը չի պահանջում անընդհատ հետևել գրաֆիկներին, թեև ակտիվի արժեքը շարունակում է փոփոխվել, և ժամանակ առ ժամանակ արժե վերանայել դրա հետ կապված որոշումը։</p>
+    <p>Ամեն ինչ կախված է նրանից, թե ինչ նպատակ ունեք։ Մեկին հետաքրքրում է ակտիվ առևտուրը, մյուսին՝ թվային ակտիվների երկարաժամկետ պահպանումը, իսկ երրորդին բավական է պարզապես հասկանալ, թե ինչպես են աշխատում կրիպտոարժութային գործարքները։</p>
+    <p class="takeaway"><strong>Պարտադիր չէ ձեր կյանքը հարմարեցնել կրիպտոարժույթին։ Կարող եք ընտրել դրա հետ գործ ունենալու այն տարբերակը, որը համապատասխանում է ձեր նպատակներին ու հնարավորություններին։</strong></p>
+  </section>
 
-          <p>Այսինքն՝ պետք չէ վախենալ «կրիպտոարժույթից ընդհանրապես»։ Ավելի կարևոր է հասկանալ՝ <strong>ինչ ակտիվ եք ընտրում և ինչ նպատակով</strong>։</p>
-        </div>
-      </section>
+  <section class="myth" id="myth-3" data-block="myth_3" data-block-index="5">
+    <div class="myth-no">Միֆ №3</div>
+    <h2>«Սկսելու համար մեծ գումար է պետք»</h2>
+    <p class="hook"><strong>Պատկերացրեք՝ բիթքոյն գնելու համար նախ պետք է այնքան գումար հավաքեիք, որ կարողանայիք մի ամբողջ բիթքոյն գնել։ Բարեբախտաբար, դա այդպես չէ։</strong></p>
+    <p>Շատ սկսնակներ տեսնում են բիթքոյնի գինը և մտածում, որ կրիպտոարժույթը հասանելի է միայն մեծ կապիտալ ունեցող մարդկանց։</p>
+    <p>Բայց պարտադիր չէ ամբողջական բիթքոյն գնել։ Բիթքոյնը, ինչպես նաև շատ այլ կրիպտոարժույթներ, կարելի է գնել փոքր մասերով։</p>
+    <p>Օրինակ՝ շուկային առաջին անգամ ծանոթանալու համար կարելի է հատկացնել ընդամենը <strong>10–20 դոլար</strong>, եթե հարթակի սահմանած նվազագույն գումարն ու միջնորդավճարները դա թույլ են տալիս։</p>
+    <p>Իհարկե, դժվար թե նման գումարից լուրջ եկամուտ ակնկալեք։ Փոխարենը կարող եք գործնական փորձ ձեռք բերել՝ հասկանալ, թե ինչպես է կատարվում գնումը, որտեղ է երևում ձեռք բերված ակտիվը և ինչպես է աշխատում վաճառքը։</p>
+    <p>Իսկ մինչ իրական գումար օգտագործելը կարող եք պարզապես ուսումնասիրել կրիպտոարժութային հարթակի ինտերֆեյսը, հասանելի գործիքներն ու գործարքների պայմանները։</p>
+    <p>Նույնիսկ փոքր գումարով գնումը կապված է կորուստների ռիսկի հետ, ուստի արժե օգտագործել միայն այնպիսի գումար, որի հնարավոր կորուստը կարող եք ձեզ թույլ տալ։</p>
+    <p class="takeaway"><strong>Կրիպտոարժույթին ծանոթանալու համար հազարավոր դոլարներ պետք չեն։ Կարելի է սկսել փոքրից։ Կարևորը հասկանալն է, թե ինչ եք անում և ինչու։</strong></p>
+  </section>
 
-      <section class="myth-stage myth-stage--tint reveal" id="myth-2">
-        <div class="reading-column article-copy myth">
-          <div class="myth-head">
-            <div class="myth-number" aria-hidden="true">02</div>
-            <div>
-              <div class="eyebrow">ՄԻՖ 02 / 05</div>
-              <h2>«Կրիպտոարժույթ պահելը անվտանգ չէ»</h2>
-            </div>
-          </div>
+  <section class="myth" id="myth-4" data-block="myth_4" data-block-index="6">
+    <div class="myth-no">Միֆ №4</div>
+    <h2>«Կրիպտոարժույթ պահելը անվտանգ չէ»</h2>
+    <p class="hook"><strong>Չէ՞ որ տնից դուրս գալիս դուռը բաց չեք թողնում։ Թվային ակտիվների դեպքում էլ նման սկզբունք է գործում։</strong></p>
+    <p>Սկսնակների հիմնական վախերից մեկն այն է, որ կարող են կորցնել կրիպտոարժույթը՝ հաշիվը կոտրելու կամ խարդախների գործողությունների հետևանքով։ Եվ այս մտահոգություններն անհիմն չեն։</p>
+    <p>Սակայն կան գործիքներ, որոնք օգնում են նվազեցնել հաշիվ չարտոնված մուտք գործելու հավանականությունը։</p>
+    <p>Օրինակ՝ <strong>Freedx</strong> հարթակում կարելի է միացնել երկգործոն նույնականացումը (2FA)։ Հաշիվ մուտք գործելիս և միջոցներ դուրս բերելիս անհրաժեշտ կլինի լրացուցիչ կոդ՝ նույնականացման հավելվածից։</p>
+    <p>Սա նշանակում է, որ միայն գաղտնաբառն իմանալը բավարար չէ նման ստուգումն անցնելու համար։</p>
+    <p>Կա նաև պաշտպանության լրացուցիչ միջոց․ գաղտնաբառը փոխելուց հետո Freedx-ը 24 ժամով ժամանակավորապես սահմանափակում է միջոցների դուրսբերումն ու փոխանցումը։</p>
+    <p>Այս մեխանիզմներն օգնում են պաշտպանել հաշիվը, սակայն չեն վերացնում թվային ակտիվների պահպանման հետ կապված բոլոր ռիսկերը և չեն պաշտպանում դրանց շուկայական արժեքի փոփոխությունից։</p>
+    <p class="takeaway"><strong>Անվտանգությունը սկսվում է պարզ քայլերից՝ հուսալի գաղտնաբառ, երկգործոն նույնականացում և անձնական տվյալների նկատմամբ ուշադիր վերաբերմունք։ Եվ այս ամենը կարելի է կարգավորել դեռ առաջին գնումից առաջ։</strong></p>
+  </section>
 
-          <p>Կարևոր է հասկանալ՝ <strong>որտեղ եք պահում ձեր կրիպտոն և ինչպես է պաշտպանված ձեր հաշիվը</strong>։</p>
-          <p>Անվտանգությունը կախված է ոչ միայն ակտիվից, այլև այն հարթակից, որից օգտվում եք։ Օրինակ՝ Freedx-ում կարելի է ակտիվացնել երկփուլ նույնականացումը (2FA)։ Այդ դեպքում հաշիվ մուտք գործելիս և միջոցներ դուրս բերելիս անհրաժեշտ է լրացուցիչ հաստատման կոդ։</p>
-          <p>Գաղտնաբառը փոխելուց հետո միջոցների դուրսբերումը նաև ժամանակավորապես սահմանափակվում է։ Սա լրացուցիչ պաշտպանություն է այն դեպքում, եթե որևէ մեկը փորձի մուտք գործել ձեր հաշիվ։</p>
+  <section class="myth" id="myth-5" data-block="myth_5" data-block-index="7">
+    <div class="myth-no">Միֆ №5</div>
+    <h2>«Գրանցվել պետք է միայն այն ժամանակ, երբ արդեն պատրաստ ես գումար ներդնել»</h2>
+    <p class="hook"><strong>Չէ՞ որ կարող եք մտնել խանութ, նայել ապրանքները և դուրս գալ՝ ոչինչ չգնելով։ Կրիպտոբորսայի դեպքում էլ նման է։</strong></p>
+    <p>Շատերին թվում է, թե կրիպտոարժութային հարթակում գրանցվելն ինքնաբերաբար նշանակում է, որ արդեն պատրաստ են գումար ներդնել և սկսել առևտուր անել։</p>
+    <p>Բայց հաշիվ ստեղծելն ու առաջին գնումը երկու տարբեր քայլեր են։</p>
+    <p>Օրինակ՝ Freedx-ում գրանցումն անվճար է և չի պահանջում անմիջապես գումար մուտքագրել։</p>
+    <p>Սկզբում կարող եք պարզապես ծանոթանալ հարթակի ինտերֆեյսին, տեսնել հասանելի կրիպտոարժույթները, ուսումնասիրել հիմնական գործառույթները և կարգավորել հաշվի պաշտպանությունը։</p>
+    <p>Միաժամանակ օգտակար կլինի պարզել, թե ինչ գործարքներ են հասանելի, ինչ միջնորդավճարներ են նախատեսված և ինչ է անհրաժեշտ ինքնության հաստատման գործընթացն անցնելու համար։</p>
+    <p>Այսպես կարող եք գնահատել հարթակի հնարավորությունները՝ մինչև որևէ ֆինանսական որոշում կայացնելը։</p>
+    <p class="takeaway"><strong>Գրանցվելը չի նշանակում, որ պարտավոր եք կրիպտոարժույթ գնել։ Երբեմն առաջին քայլն ընդամենը հասկանալն է, թե ինչպես է ամեն ինչ աշխատում։</strong></p>
+  </section>
 
-          <aside class="note-card">
-            <div class="note-icon">!</div>
-            <div>
-              <strong>Կարևոր է</strong>
-              <p>Հարթակի ընտրությունը և հաշվի պաշտպանությունը նույնքան կարևոր են, որքան հենց ակտիվի ընտրությունը։</p>
-            </div>
-          </aside>
+  <section class="closing" data-block="conclusion" data-block-index="8">
+    <h2>Հիմա առաջին քայլն այդքան բարդ չի՞ թվում</h2>
+    <p>Կրիպտոարժույթին ծանոթանալու համար պարտադիր չէ միանգամից մասնագետ դառնալ, մեծ գումարներ ներդնել կամ օրերով հետևել գրաֆիկներին։</p>
+    <p>Կարելի է սկսել պարզ քայլերից՝ ծանոթանալ հարթակին, ուսումնասիրել դրա հնարավորությունները և աստիճանաբար անցնել գործնական քայլերի։</p>
+    <p>Իսկ նրանց համար, ովքեր կորոշեն փորձել կրիպտոարժույթով առևտուր անել, Freedx-ն ունի հատուկ առաջարկ։</p>
+  </section>
 
-          <p>Այսինքն՝ հարցը ոչ թե այն է, որ «կրիպտոարժույթը անվտանգ չէ», այլ այն, թե <strong>ինչ հարթակ եք ընտրում և ինչպես եք պաշտպանում ձեր հաշիվը</strong>։</p>
-        </div>
+  <section class="offer" data-block="offer" data-block-index="9">
+    <div class="offer-card">
+      <h3>Ձեր առաջին գործարքները՝ <em>մինչև 100&nbsp;USDT</em> կորուստների փոխհատուցման հնարավորությամբ</h3>
+      <p>Գրանցվեք Freedx-ում, անցեք ինքնության հաստատման գործընթացը, համալրեք ձեր հաշիվը և սկսեք առևտուր անել։</p>
+      <p>Եթե ձեր գործարքները վնասով ավարտվեն, <strong>Freedx-ը կարող է փոխհատուցել մինչև 100&nbsp;USDT</strong>՝ ակցիայի պայմաններին համապատասխան։</p>
+      <a class="cta" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=5_mif" target="_blank" rel="noopener" data-track="cta_main">Ծանոթանալ Freedx-ին և իմանալ ակցիայի պայմանները</a>
+      <p class="fine">Առաջարկը գործում է ակցիայի պայմանները պահպանելու դեպքում։ Փոխհատուցումը չի երաշխավորում կորուստների բացակայություն կամ շահույթի ստացում։ Կրիպտոարժույթով առևտուրը կապված է ֆինանսական ռիսկերի հետ։</p>
+    </div>
+  </section>
 
-        <figure class="media-block portrait-media">
-          <img src="security.png" loading="lazy" alt="Freedx՝ ինչպես ապահով պահել կրիպտոն" />
-        </figure>
-      </section>
+</main>
 
-      <section class="myth-stage reveal" id="myth-3">
-        <div class="reading-column article-copy myth">
-          <div class="myth-head">
-            <div class="myth-number" aria-hidden="true">03</div>
-            <div>
-              <div class="eyebrow">ՄԻՖ 03 / 05</div>
-              <h2>«Կրիպտոարժույթը չափազանց բարդ է»</h2>
-            </div>
-          </div>
+<script>
+/*
+  Block tracking.
+  Every <section data-block="..."> is a block. Events:
+    block_view   — block reached (its top entered the upper 60% of the screen), once per block
+    landing_exit — visitor left the page: last_block = deepest block reached, current_block = block on screen
+    cta_click    — click on an element with data-track
+  Sent to GA4 (gtag), GTM (dataLayer) and Yandex Metrica (ym + YM_COUNTER_ID), whichever is installed.
+*/
+(function () {
+  var YM_COUNTER_ID = null; // set the Metrica counter number here if Metrica is used
 
-          <p>Կրիպտոյի հիմքում իսկապես բարդ տեխնոլոգիա կա։ Բայց <strong>բարդ կառուցվածքը դեռ չի նշանակում, որ դրանից օգտվելն էլ է բարդ</strong>։</p>
-          <p>Բանկային փոխանցում անելու համար մենք պարտադիր չենք հասկանում՝ ինչպես է ներսից աշխատում ամբողջ բանկային համակարգը։ Կրիպտոյի դեպքում այսօր իրավիճակը շատ նման է։</p>
-          <p>Ժամանակակից հարթակում կարելի է գրանցվել, անցնել նույնականացում և հաշիվը համալրել ձեզ ծանոթ եղանակով՝ բանկային քարտով, Google Pay-ով կամ մեկ այլ կրիպտոդրամապանակից փոխանցմամբ։ Դրանից հետո արդեն կարելի է մի քանի պարզ գործողությամբ գնել, փոխանակել կամ փոխանցել կրիպտոարժույթ։</p>
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+  var total = blocks.length;
+  var seen = {};
+  var deepest = null;
+  var current = null;
+  var exitSent = false;
+  var t0 = Date.now();
+  var debug = location.hash === '#debug';
+  var panel = null;
 
-          <div class="step-flow" aria-label="Առաջին քայլերի պարզ սխեմա">
-            <div><span>1</span><strong>Գրանցում</strong></div>
-            <i>→</i>
-            <div><span>2</span><strong>Նույնականացում</strong></div>
-            <i>→</i>
-            <div><span>3</span><strong>Համալրում</strong></div>
-            <i>→</i>
-            <div><span>4</span><strong>Գնել / փոխանակել</strong></div>
-          </div>
+  function info(el) {
+    return { block_id: el.dataset.block, block_index: Number(el.dataset.blockIndex), blocks_total: total };
+  }
 
-          <p>Այդ պատճառով պարտադիր չէ առաջին քայլից առաջ հասկանալ բլոկչեյնի, ցանցերի և տասնյակ նոր տերմինների բոլոր մանրամասները։ Դրանք կարելի է սովորել աստիճանաբար՝ հենց այն ժամանակ, երբ իրականում պետք գան։</p>
-        </div>
+  function send(name, params, beacon) {
+    params = Object.assign({ page_lang: (document.querySelector('main[data-lang]') || {}).dataset ? document.querySelector('main[data-lang]').dataset.lang : null }, params || {});
+    try {
+      if (typeof window.gtag === 'function') {
+        var p = Object.assign({}, params);
+        if (beacon) p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign({ event: name }, params));
+      }
+      if (YM_COUNTER_ID && typeof window.ym === 'function') {
+        window.ym(YM_COUNTER_ID, 'reachGoal', name === 'block_view' ? 'block_' + params.block_id : name, params);
+      }
+    } catch (e) {}
+    if (debug) log(name, params);
+  }
 
-        <figure class="media-block phone-editorial reveal" aria-label="Freedx հավելվածի ինտերֆեյս">
-          <img src="phone-visual.webp" loading="lazy" alt="Freedx հավելվածի ինտերֆեյս և թվային ակտիվներ" />
-          <figcaption>Ծանոթ ինտերֆեյս, պարզ գործողություններ՝ առանց ավելորդ տեխնիկական բարդության։</figcaption>
-        </figure>
-      </section>
+  window.__trackEvent = function (n, p) { send(n, p); };
 
-      <section class="myth-stage reveal" id="myth-4">
-        <div class="reading-column article-copy myth">
-          <div class="myth-head">
-            <div class="myth-number" aria-hidden="true">04</div>
-            <div>
-              <div class="eyebrow">ՄԻՖ 04 / 05</div>
-              <h2>«Կրիպտոյով առևտուր անելու համար պետք է պրոֆեսիոնալ թրեյդեր լինել»</h2>
-            </div>
-          </div>
+  function log(name, params) {
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'trk-debug';
+      document.body.appendChild(panel);
+    }
+    var line = document.createElement('div');
+    line.textContent = name + ' ' + JSON.stringify(params);
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+  }
 
-          <p>Առևտուրը պահանջում է շուկայի որոշակի հասկանալ, բայց առաջին քայլի համար պարտադիր չէ պրոֆեսիոնալ լինել։</p>
-          <p>Օրինակ՝ <a class="inline-link" href="spot.html">Spot</a> շուկայում կարելի է պարզապես գնել ակտիվը և ավելի ուշ վաճառել, եթե դրա գինը բարձրացել է։</p>
+  // "Reached": the block's top crossed into the upper 60% of the viewport.
+  var reachObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var el = en.target, d = info(el);
+      if (seen[d.block_id]) return;
+      seen[d.block_id] = true;
+      if (!deepest || d.block_index > deepest.block_index) deepest = d;
+      send('block_view', Object.assign({ seconds_on_page: Math.round((Date.now() - t0) / 1000) }, d));
+    });
+  }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
 
-          <figure class="ethereum-card reveal">
-            <div class="ethereum-card__media">
-              <img src="ethereum-visual.webp" loading="lazy" alt="Ethereum տեսողական պատկեր" />
-            </div>
-            <figcaption>
-              <span>Օրինակ</span>
-              <h3>Ethereum (ETH)</h3>
-              <p>Շուկան հասկանալու համար կարելի է սկսել հայտնի ակտիվներից՝ հետևել գնի շարժին, ուսումնասիրել Spot-ի տրամաբանությունը և քայլ առ քայլ փորձ ձեռք բերել։</p>
-              <a class="inline-link" href="spot.html">Ինչ է Spot-ը</a>
-            </figcaption>
-          </figure>
+  // "Current": the block that crosses the middle line of the screen.
+  var currentObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) current = info(en.target); });
+  }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
 
-          <p>Լավ օրինակ է Solana-ն։ 2023 թվականի սկզբին SOL-ի գինը մոտ <strong>$10</strong> էր, իսկ տարվա վերջում արդեն գերազանցում էր <strong>$100-ը</strong>։ Այսինքն՝ մարդը, ով այդ ժամանակ գնել էր ակտիվը և պարզապես պահել, կարող էր իր ներդրման արժեքը մոտ 10 անգամ մեծացնել։</p>
-          <p>Իհարկե, նման աճ միշտ չէ, որ տեղի է ունենում, և գինը կարող է նաև նվազել։ Բայց այս օրինակը ցույց է տալիս գլխավորը՝ <strong>թրեյդինգը պարտադիր չէ նշանակում օրական տասնյակ գործարքներ և ամբողջ օրը գրաֆիկներին հետևել</strong>։</p>
-        </div>
+  blocks.forEach(function (el) { reachObs.observe(el); currentObs.observe(el); });
 
-        <figure class="media-block chart-block reveal" aria-label="Solana-ի պատմական օրինակի պարզ գրաֆիկ">
-          <div class="chart-topline">
-            <div>
-              <span class="chart-symbol">SOL</span>
-              <small>2023 · պատմական օրինակ</small>
-            </div>
-            <strong>≈ $10 → $100+</strong>
-          </div>
-          <svg viewBox="0 0 900 300" role="img" aria-label="Solana-ի գնի աճի պարզացված գրաֆիկ">
-            <defs>
-              <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9279ff"/><stop offset="1" stop-color="#6d43ff"/></linearGradient>
-              <linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d43ff" stop-opacity=".26"/><stop offset="1" stop-color="#6d43ff" stop-opacity="0"/></linearGradient>
-            </defs>
-            <path class="grid-line" d="M30 55H870M30 120H870M30 185H870M30 250H870" />
-            <path class="area" d="M30 242 C130 240,170 226,240 220 S345 194,400 199 S500 157,555 169 S650 124,710 132 S800 83,870 52 L870 268 L30 268 Z" />
-            <path class="trend" d="M30 242 C130 240,170 226,240 220 S345 194,400 199 S500 157,555 169 S650 124,710 132 S800 83,870 52" />
-            <circle cx="870" cy="52" r="7" />
-          </svg>
-          <div class="disclaimer">Նախորդ դինամիկան չի երաշխավորում ապագա արդյունք։</div>
-        </figure>
-      </section>
+  function sendExit() {
+    if (exitSent || !deepest) return;
+    exitSent = true;
+    send('landing_exit', {
+      last_block: deepest.block_id,
+      last_block_index: deepest.block_index,
+      current_block: current ? current.block_id : deepest.block_id,
+      blocks_total: total,
+      read_to_end: deepest.block_index === total - 1,
+      seconds_on_page: Math.round((Date.now() - t0) / 1000)
+    }, true);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') sendExit();
+    else exitSent = false; // came back to the tab: allow a new exit later
+  });
+  window.addEventListener('pagehide', sendExit);
 
-      <section class="myth-stage myth-stage--tint reveal" id="myth-5">
-        <div class="reading-column article-copy myth">
-          <div class="myth-head">
-            <div class="myth-number" aria-hidden="true">05</div>
-            <div>
-              <div class="eyebrow">ՄԻՖ 05 / 05</div>
-              <h2>«Եթե սկսեմ թրեյդինգով զբաղվել, կկորցնեմ գումարս»</h2>
-            </div>
-          </div>
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-track]');
+    if (!a) return;
+    var block = a.closest('[data-block]');
+    send('cta_click', {
+      cta_id: a.dataset.track,
+      block_id: block ? block.dataset.block : null,
+      link_url: a.href || null
+    }, true);
+  });
+})();
+</script>
 
-          <p>Այդ ռիսկը իսկապես կա։ Ցանկացած գործարք կարող է լինել թե՛ շահութաբեր, թե՛ վնասաբեր, և դա պետք է հասկանալ դեռ սկզբից։</p>
-          <p>Բայց սխալ է մտածել, որ առաջին անհաջող գործարքը նշանակում է՝ ամեն ինչ ավարտված է։</p>
-          <p>Հենց այստեղ Freedx-ը նոր օգտատերերի համար ունի առաջարկ․ եթե առաջին Spot կամ Futures գործարքը վնասով փակվի, հնարավոր է ստանալ մինչև <strong>100 USDT փոխհատուցում</strong>։</p>
-          <p><strong>Այս առաջարկը հնարավորություն է տալիս առաջին գործարքը սկսել ավելի վստահ և կենտրոնանալ փորձ ձեռք բերելու վրա։</strong></p>
-        </div>
+<script>
+/* Top video: muted autoplay (browsers only allow autoplay without sound), sound toggle,
+   pause when off screen, and tracking of video_start / video_progress / video_unmute. */
+(function () {
+  var box = document.querySelector('.video-box');
+  if (!box) return;
+  var v = box.querySelector('video');
+  var btn = box.querySelector('.video-sound');
+  var L = btn.dataset;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var userPaused = false, started = false, marks = {};
+  function track(name, p) { if (window.__trackEvent) window.__trackEvent(name, p || {}); }
 
-        <figure class="media-block portrait-media offer-visual reveal" aria-label="Freedx առաջարկ՝ մինչև 100 USDT փոխհատուցում">
-          <img src="offer.png" loading="lazy" alt="Freedx առաջարկ՝ մինչև 100 USDT փոխհատուցում" />
-        </figure>
-      </section>
+  function tryPlay() { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  if (!reduce) tryPlay();
 
-      <div class="reading-column article-copy conclusion">
-        <div class="conclusion-rule"></div>
-        <h2>Վերջաբան</h2>
-        <p>Կրիպտոարժույթը ավելի հասկանալի չի դառնում միայն այն պատճառով, որ մենք հետաձգում ենք դրա հետ ծանոթությունը։</p>
-        <p>Ռիսկեր կան, շուկան փոխվում է, իսկ մեկ օրում ամեն ինչ հասկանալ հնարավոր չէ։ Բայց առաջին քայլն անելու համար պարտադիր չէ նաև ամեն ինչ նախապես իմանալ։</p>
-        <p>Մինչ ոմանք շարունակում են կողքից հետևել, մյուսները աստիճանաբար փորձ են ձեռք բերում, սովորում են օգտվել նոր գործիքներից և ավելի լավ հասկանում շուկայի հնարավորությունները։</p>
-        <p><strong>Կարևորը չշտապելն է, հասկանալը՝ ինչ եք անում, և ընտրել այն հարթակը, որին պատրաստ եք վստահել։</strong></p>
-        <p>Եթե վաղուց եք ցանկանում փորձել, գուցե պետք չէ սպասել այն օրվան, երբ բոլոր կասկածները կվերանան։</p>
-        <p class="final-line"><strong>Երբեմն բավական է պարզապես անել առաջին՝ հասկանալի քայլը։</strong></p>
-      </div>
-    </article>
+  v.addEventListener('playing', function () {
+    if (!started) { started = true; track('video_start', { video_autoplay: !reduce }); }
+  });
+  v.addEventListener('timeupdate', function () {
+    if (!v.duration) return;
+    var pct = Math.floor(v.currentTime / v.duration * 100);
+    [25, 50, 75, 95].forEach(function (m) {
+      if (pct >= m && !marks[m]) { marks[m] = true; track('video_progress', { video_percent: m }); }
+    });
+  });
+  v.addEventListener('error', function () { box.hidden = true; });
 
-    <section class="handoff reveal" aria-label="Անցում Freedx կայք">
-      <div class="handoff-copy reading-column">
-        <span>Շարունակել</span>
-        <h2>Հոդվածից՝ անմիջապես Freedx</h2>
-        <p>Շարունակեք ներքև․ կայքի նախադիտումը աստիճանաբար կբացվի, իսկ էջի վերջում դուք կանցնեք Freedx։</p>
-        <button class="cancel-redirect" id="cancelRedirect" type="button">Չանցնել ավտոմատ</button>
-        <div class="scroll-cue" aria-hidden="true">↓</div>
-      </div>
-    </section>
+  v.addEventListener('click', function () {
+    if (v.paused) { userPaused = false; tryPlay(); } else { userPaused = true; v.pause(); }
+  });
+  btn.addEventListener('click', function () {
+    v.muted = !v.muted;
+    if (!v.muted) { userPaused = false; tryPlay(); track('video_unmute', { video_time: Math.round(v.currentTime) }); }
+    btn.textContent = v.muted ? L.on : L.off;
+  });
 
-    <section class="destination-section" id="destination" aria-label="Արտաքին հղման՝ Freedx կայքի նախադիտում">
-      <div class="destination-shell">
-        <a class="destination-link" href="https://freedx.com/hy" aria-label="Բացել Freedx-ը">
-          <img src="destination.png" loading="lazy" alt="Freedx գլխավոր էջի նախադիտում" />
-        </a>
-        <div class="redirect-note" id="redirectNote">Էջի ավարտին կբացվի Freedx-ի կայքը…</div>
-      </div>
-      <div id="redirectSentinel" aria-hidden="true"></div>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
-</body>
-</html>
+  // Pause when the video scrolls away, resume when it comes back (unless the visitor paused it).
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) { if (!v.paused) v.pause(); }
+      else if (!userPaused && !(reduce && !started)) tryPlay();
+    });
+  }, { threshold: 0.25 }).observe(box);
+})();
+</script>
+</body></html>
