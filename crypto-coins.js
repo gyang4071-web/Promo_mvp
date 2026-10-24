@@ -1,7 +1,8 @@
 /* Bitcoin and Ethereum coins that turn into app QR codes (Armenian page).
    The coins are rendered images (img/coins) drawn on a canvas each: they turn slowly
    back and forth, float, and catch a moving highlight.
-   Tap or click: the coin lights up, bursts into square particles taken from its own pixels,
+   Once the coins are on screen they spin two full turns on their own and burst (tap does the same):
+   the coin lights up, bursts into square particles taken from its own pixels,
    and the particles gather into a bare violet QR code, with no card or frame
    (Bitcoin → App Store, Ethereum → Google Play). A small store logo appears under the code.
    Tap the code to play it back into the coin.
@@ -19,10 +20,12 @@
     appstore: { n: 37, bits: '1111111001101100001001011011001111111100000101101110001100111110110100000110111010001100101001000010101010111011011101001010001101000000010101011101101110101101010000110011001100101110110000010001100011101111111110010000011111111010101010101010101010101111111000000000110101001111101010100000000010101010000100001010011001101000100101010100101110101111100100010111000101101011101110101110000100100000101011100110101001010101101011101001000010101000101100011111010011011101011000011101111010010010010101100110010100001110011111111101100100100001000101001110000010111010001100001101101001010010101111111111101100001011011010110101001110101001011010001110001100110001011000011011100110001110101000101011111011010000010010101001110011101010001001001110110001101111010011101110000000001100101000110010010100100101101011111011100111000000101100010011010011111010100010000010110100111101000100000011001010110001101000010111011101011011011001110100110110100001011100101110011110101110111000001011001011110110110100100001000111101010101010110000101110101100010101001100110011111101100000000111000001000111011011000110111111111000010010010000100001101011011100000100001110110001110110110001100110111010111011000001101101101111110011011101001011111010111100110100111010101110101001010001111010011011001001110000010000100110100110011101101100101111111010011010010111101101111001011' },
     googleplay: { n: 37, bits: '1111111010101011000110010011101111111100000100100001011110100100010100000110111010011111010110010010101010111011011101011100010000010011111101011101101110101000111011100111011110101110110000010100101000101100001001010000011111111010101010101010101010101111111000000001101111110000110101000000000010001011101001011001111110010111110011001110010101100011100011101110011010011011110101110100110101111111001110000110100100001111111111110100101011101010001010011110110001101001011001111001101011101011110100101101110001100001010111001001111100010110010101111000100110001010111011001111000011110100000000111110001100110101100001110110000101101110111101001111100110000111101011001111101110111010010011101010100110101011000000001000101100111011011010111010011011110101011110010111001001001000111111001111001110011100110000111100110000101100101101101110011110000000101110010111000010010100001101011101101011101011100111111001111101110111110001111000000110001011110011000000011011110111010111001110111101000000000000010101001111111110011000110110111111110001000001001111101011111010000000000111101011000000100101000100101111111010110111010011011110101010010100000100100001111111100001110001110110111010110001100010111010001111111011011101000111110100110010011011101101101110100000000011100101011100100000010000010001100100101110000010000101101111111010101101010011001001011100111' }
   };
+  // monochrome store marks in the QR colour (fill: currentColor)
   var LOGO = {
-    appstore: '<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="cc-as" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fc8ff"/><stop offset="1" stop-color="#0a64f0"/></linearGradient></defs><rect width="24" height="24" rx="5.6" fill="url(#cc-as)"/><g stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M8.3 16.8l5-8.9"/><path d="M10.7 7.9l5 8.9"/><path d="M6.6 14.3h10.8"/></g></svg>',
-    googleplay: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.3 13.4 12l-9.8 9.7c-.3-.3-.4-.7-.4-1.2V3.5c0-.5.1-.9.4-1.2z" fill="#2196f3"/><path d="M3.6 2.3 13.4 12l3.1-3.1L5.2 2.4c-.6-.3-1.2-.3-1.6-.1z" fill="#00c853"/><path d="M3.6 21.7 13.4 12l3.1 3.1-11.3 6.5c-.6.3-1.2.3-1.6.1z" fill="#ff3d00"/><path d="m16.5 8.9-3.1 3.1 3.1 3.1 3.5-2c.9-.5.9-1.7 0-2.2z" fill="#ffc400"/></svg>'
+    appstore: '<svg viewBox="0 0 256 315" aria-hidden="true"><path fill="currentColor" d="M213.803 167.03c.442 47.58 41.74 63.413 42.197 63.615c-.35 1.116-6.599 22.563-21.757 44.716c-13.104 19.153-26.705 38.235-48.13 38.63c-21.05.388-27.82-12.483-51.888-12.483c-24.061 0-31.582 12.088-51.51 12.871c-20.68.783-36.428-20.71-49.64-39.793c-27-39.033-47.633-110.3-19.928-158.406c13.763-23.89 38.36-39.017 65.056-39.405c20.307-.387 39.475 13.662 51.889 13.662c12.406 0 35.699-16.895 60.186-14.414c10.25.427 39.026 4.14 57.503 31.186c-1.49.923-34.335 20.044-33.978 59.822M174.24 50.199c10.98-13.29 18.369-31.79 16.353-50.199c-15.826.636-34.962 10.546-46.314 23.828c-10.173 11.763-19.082 30.589-16.678 48.633c17.64 1.365 35.66-8.964 46.64-22.262"/></svg>',
+    googleplay: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg>'
   };
+
   var COINS = [
     { id: 'btc', name: 'Bitcoin', img: 'img/coins/btc.webp', store: 'appstore', storeName: 'App Store',
       url: 'https://apps.apple.com/am/app/freedx-buy-sell-crypto-app/id6747028945' },
@@ -30,7 +33,7 @@
       url: 'https://play.google.com/store/apps/details?id=com.freedx.cexmobile&hl=en' }
   ];
   var QUIET = 2;
-  var DUR_IN = 1800, DUR_OUT = 1300;
+  var DUR_IN = 1800, DUR_OUT = 1300, SPIN = 2600, AUTO_DELAY = 600, AUTO_GAP = 700;
   var GLOW = 'rgba(168, 85, 247, .7)';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -46,7 +49,7 @@
   }
 
   /* ---------- markup ---------- */
-  var html = '<p class="cc-hint">Սեղմեք մետաղադրամին</p><div class="cc-row">';
+  var html = '<div class="cc-row">';
   COINS.forEach(function (c) {
     html += '<figure class="cc-item" data-coin="' + c.id + '">' +
       '<button class="cc-stage" type="button" aria-label="' + c.name + '. Սեղմեք՝ ' + c.storeName + '-ի QR կոդը տեսնելու համար"><canvas></canvas></button>' +
@@ -55,11 +58,6 @@
       '</figure>';
   });
   root.innerHTML = html + '</div>';
-  // the inline SVG gradient id must be unique per copy
-  root.querySelectorAll('svg').forEach(function (s, i) {
-    var g = s.querySelector('linearGradient'); if (!g) return;
-    g.id = 'cc-as-' + i; s.querySelector('rect').setAttribute('fill', 'url(#cc-as-' + i + ')');
-  });
 
   /* ---------- one coin ---------- */
   function Coin(fig, c, idx) {
@@ -67,7 +65,8 @@
     this.canvas = fig.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.q = QR[c.store];
-    this.state = 'coin';   // coin | toQR | qr | toCoin
+    this.state = 'coin';   // coin | spin | toQR | qr | toCoin
+    this.sp = 0;           // progress of the two-turn spin
     this.p = 0;            // 0 = coin, 1 = QR
     this.t0 = idx * 2600;  // phase offset so the coins never move in sync
     this.particles = null;
@@ -85,7 +84,7 @@
     this.W = Math.max(40, Math.round(css * dpr)); this.H = this.W;
     this.canvas.width = this.W; this.canvas.height = this.H;
     this.cx = this.W / 2; this.cy = this.H * 0.47;
-    this.ch = this.H * 0.7;                 // coin height
+    this.ch = this.H * 0.64;                // coin height (leaves room for the glow)
     var cells = this.q.n + QUIET * 2;
     this.mod = Math.max(2, Math.floor(this.W * 0.9 / cells));
     this.plate = this.mod * cells;
@@ -116,7 +115,7 @@
 
     ctx.save();
     ctx.translate(cx, cy); ctx.rotate(tilt || 0); ctx.scale(sx, 1);
-    if (glow > 0) { ctx.shadowColor = GLOW; ctx.shadowBlur = this.ch * 0.35 * glow; }
+    if (glow > 0) { ctx.shadowColor = GLOW; ctx.shadowBlur = this.ch * 0.16 * glow; }
     ctx.drawImage(o, -o.width / 2, -o.height / 2);
     ctx.restore();
   };
@@ -168,6 +167,23 @@
     if (!this.ready) return;
     var pose = this.pose(t);
     var cyFloat = this.cy + pose.lift * this.H * 0.022;
+
+    if (this.state === 'spin') {
+      // two full turns, speeding up and settling front-on; the edge shows while the coin is side-on
+      var k = easeInOut(this.sp), th = k * Math.PI * 4, c = Math.cos(th), sn = Math.sin(th);
+      var arc = Math.sin(Math.PI * this.sp);
+      var cyS = cyFloat + (this.cy - cyFloat) * this.sp - arc * this.H * 0.03;
+      this.shadow(ctx, arc, 1 - arc * 0.4);
+      var ew = this.ch * 0.075 * Math.abs(sn);
+      if (ew > 0.5) {
+        var eh = this.ch * 0.94, eg = ctx.createLinearGradient(0, cyS - eh / 2, 0, cyS + eh / 2);
+        eg.addColorStop(0, '#d9a6f5'); eg.addColorStop(.5, '#6d1f8f'); eg.addColorStop(1, '#3b0a55');
+        ctx.fillStyle = eg;
+        ctx.beginPath(); ctx.ellipse(this.cx, cyS, ew / 2 + this.ch * 0.36 * Math.abs(c) * 0.15, eh / 2, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      this.paint(ctx, this.cx + sn * ew / 2, cyS, Math.max(Math.abs(c), 0.02), 1 + 0.06 * arc, (th / (Math.PI * 2)) % 1, 0.5 * arc, 0);
+      return;
+    }
 
     if (p <= 0.15) {
       var e = easeOut(p / 0.15);
@@ -223,18 +239,18 @@
     var c = COINS.filter(function (x) { return x.id === fig.dataset.coin; })[0];
     var coin = new Coin(fig, c, i);
     coins.push(coin);
-    fig.querySelector('.cc-stage').addEventListener('click', function () { toggle(coin); });
+    fig.querySelector('.cc-stage').addEventListener('click', function () { toggle(coin, 'tap'); });
   });
 
-  function toggle(coin) {
+  function toggle(coin, how) {
     var now = performance.now();
     var stage = coin.fig.querySelector('.cc-stage');
+    if (coin.state === 'spin' || coin.state === 'toQR') return;
     if (coin.state === 'coin' || coin.state === 'toCoin') {
-      if (coin.state === 'coin') coin.turnHold = coin.pose(now).turn;
-      coin.state = 'toQR';
-      coin.fig.classList.add('is-qr');
+      if (coin.state === 'coin' && !reduce) { coin.state = 'spin'; coin.sp = 0; }
+      else coin.state = 'toQR';
       stage.setAttribute('aria-label', coin.c.storeName + '-ի QR կոդ։ Սեղմեք՝ մետաղադրամը վերադարձնելու համար');
-      track('coin_to_qr', { coin: coin.c.id, store: coin.c.store });
+      track('coin_to_qr', { coin: coin.c.id, store: coin.c.store, trigger: how || 'tap' });
     } else {
       coin.state = 'toCoin';
       coin.fig.classList.remove('is-qr');
@@ -247,7 +263,7 @@
   }
 
   function settle(coin, now) {
-    if (coin.state === 'toQR' && coin.p >= 1) { coin.p = 1; coin.state = 'qr'; }
+    if (coin.state === 'toQR' && coin.p >= 1) { coin.p = 1; coin.state = 'qr'; coin.fig.classList.add('is-qr'); }
     if (coin.state === 'toCoin' && coin.p <= 0) {
       coin.p = 0; coin.state = 'coin';
       coin.t0 = -now;   // resume the slow turn from front-on
@@ -260,6 +276,10 @@
     var dt = last ? Math.min(now - last, 50) : 16; last = now;
     var busy = false;
     coins.forEach(function (coin) {
+      if (coin.state === 'spin') {
+        coin.sp = Math.min(1, coin.sp + dt / SPIN);
+        if (coin.sp >= 1) { coin.state = 'toQR'; coin.p = 0; coin.turnHold = 1; }
+      }
       if (coin.state === 'toQR') coin.p = Math.min(1, coin.p + dt / DUR_IN);
       else if (coin.state === 'toCoin') coin.p = Math.max(0, coin.p - dt / DUR_OUT);
       settle(coin, now);
@@ -299,11 +319,24 @@
     var was = root.classList.contains('is-visible');
     root.classList.toggle('is-visible', vis);
     if (vis && !was) kick();
+    if (vis) maybeAuto();
     if (vis && !seen && inView) { seen = true; track('coins_view', { layout: root.classList.contains('is-side') ? 'side' : 'inline' }); }
   }
 
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { inView = es[0].isIntersecting; if (inView) { kick(); update(); } }).observe(root);
+    new IntersectionObserver(function (es) { inView = es[0].isIntersecting; if (inView) { kick(); update(); maybeAuto(); } }).observe(root);
+  }
+
+  // first time the coins are on screen: let them turn for a moment, then spin and burst on their own
+  var autoDone = false;
+  function maybeAuto() {
+    if (autoDone || !inView || !isShown()) return;
+    var r = root.getBoundingClientRect();
+    if (r.top > window.innerHeight * 0.75 || r.bottom < window.innerHeight * 0.2) return;
+    autoDone = true;
+    coins.forEach(function (coin, i) {
+      setTimeout(function () { if (coin.state === 'coin') toggle(coin, 'auto'); }, AUTO_DELAY + i * AUTO_GAP);
+    });
   }
   root.addEventListener('click', function (e) {
     var a = e.target.closest('[data-store]');
