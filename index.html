@@ -43,6 +43,8 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 0 4rem;
+}
+.page:has(> .handoff) { padding-bottom: 0;
   box-sizing: content-box;
 }
 section { padding-block: 2.25rem; }
@@ -119,8 +121,8 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 }
 
 /* Scroll reveal: blocks rise in as they enter the screen (only when JS runs and motion is allowed) */
-.reveal-on .page > section:not(.video-wrap) { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
-.reveal-on .page > section.is-in { opacity: 1; transform: none; }
+.reveal-on .page > section:not(.video-wrap):not(.handoff) { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal-on .page > section.is-in:not(.video-wrap):not(.handoff) { opacity: 1; transform: none; }
 .reveal-on .myth-num { display: inline-block; transform: scale(.6); opacity: 0; transition: transform .6s cubic-bezier(.3,1.5,.5,1) .15s, opacity .4s ease .15s; }
 .reveal-on .myth-label { opacity: 0; transform: translateX(-12px); transition: opacity .5s ease .3s, transform .5s ease .3s; }
 .reveal-on .is-in .myth-num, .reveal-on .is-in .myth-label { transform: none; opacity: 1; }
@@ -150,17 +152,14 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 .offer-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,255,255,.16); padding: .4rem .8rem; border-radius: 999px; }
 .offer-amount { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: -.02em; }
 .offer-sub { font-size: 1.15rem; line-height: 1.4; opacity: .92; margin-top: -.3rem; }
-.offer-steps { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; counter-reset: st; }
-.offer-steps li { counter-increment: st; display: flex; align-items: center; gap: .5rem; font-size: .95rem; font-weight: 600; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); padding: .45rem .85rem .45rem .45rem; border-radius: 999px; }
-.offer-steps li::before { content: counter(st); display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #fff; color: #5b48e8; font-size: .85rem; font-weight: 800; }
 .offer-card .cta { background: #fff; color: #2b1d8f; font-size: 1.1rem; padding: 1.05rem 1.8rem; margin-top: .4rem; box-shadow: 0 10px 30px rgba(20, 10, 80, .35); }
 .offer-card .cta::after { content: " →"; }
 .offer-card .cta:hover { background: #f1effe; }
 .offer-card .fine { color: rgba(255,255,255,.72); font-size: .8rem; }
-@media (max-width: 480px) { .offer-card { justify-items: stretch; } .offer-card .cta { justify-self: stretch; } .offer-kicker, .offer-steps { justify-self: start; } }
-
+@media (max-width: 480px) { .offer-card { justify-items: stretch; } .offer-card .cta { justify-self: stretch; } .offer-kicker, 
 </style>
-<link rel="stylesheet" href="brands-widget.css">
+<link rel="stylesheet" href="app-coins.css">
+<link rel="stylesheet" href="handoff.css">
 </head><body>
 
 <main class="page" data-lang="hy">
@@ -203,7 +202,7 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
   <section class="myth" id="myth-2" data-block="myth_2" data-block-index="4">
     <div class="myth-no"><span class="myth-num">02</span><span class="myth-label">Միֆ</span></div>
     <h2>«Ստիպված կլինեմ ամբողջ օրը հետևել գրաֆիկներին»</h2>
-    <aside class="brand-widget" id="brand-widget" data-img-base="img/brands/" aria-label="Ի՞նչ կարելի է գնել կրիպտոյով"></aside>
+    <aside class="app-coins" id="app-coins" data-img-base="img/qr/" aria-label="Ներբեռնել Freedx հավելվածը"></aside>
     <p class="hook"><strong>Կարծում եք՝ կրիպտոարժույթով զբաղվելը նշանակում է հինգ մոնիտոր, երեք բաժակ սուրճ և ոչ մի րոպե ազատ ժամանա՞կ։</strong></p>
     <p>Շատերն այսպես են պատկերացնում կրիպտոարժույթով զբաղվող մարդուն․ անընդհատ փոփոխվող գրաֆիկներ, տասնյակ գործարքներ և գների շարժին հետևելու անհրաժեշտություն՝ նույնիսկ ընթրիքի ժամանակ։</p>
     <p>Բայց սա ընդամենը մեկ տարբերակ է՝ ակտիվ թրեյդինգը։</p>
@@ -264,9 +263,22 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
       <span class="offer-kicker">Հատուկ առաջարկ</span>
       <p class="offer-amount">մինչև 100&nbsp;USDT</p>
       <p class="offer-sub">առաջին գործարքների կորուստների փոխհատուցում</p>
-      <ol class="offer-steps"><li>Գրանցում</li><li>Ինքնության հաստատում</li><li>Առաջին գործարք</li></ol>
       <a class="cta" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=5_mif" target="_blank" rel="noopener" data-track="cta_main">Անցնել Freedx-ի կայք</a>
       <p class="fine">Գործում է ակցիայի պայմաններով։ Փոխհատուցումը չի երաշխավորում շահույթ, կրիպտոարժույթով առևտուրը կապված է ռիսկերի հետ։</p>
+    </div>
+  </section>
+
+  <section class="handoff" id="handoff" data-block="handoff" data-block-index="10" data-href="https://freedx.com/hy?utm_source=google&utm_medium=promo_page&utm_campaign=new_users&utm_content=5_mif">
+    <div class="handoff-stick">
+      <p class="handoff-kicker">Հոդվածից՝ Freedx</p>
+      <p class="handoff-text">Շարունակելով ոլորել ներքև՝ դուք կանցնեք Freedx-ի էջ</p>
+      <div class="handoff-shot"><img src="img/freedx-home.webp" alt="Freedx-ի գլխավոր էջը" width="1903" height="908" loading="lazy" decoding="async"></div>
+      <div class="handoff-cue" aria-hidden="true">
+        <svg class="handoff-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <span class="handoff-bar"><i></i></span>
+      </div>
+      <button class="handoff-stay" type="button">Չանցնել ավտոմատ</button>
+      <a class="cta handoff-go" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=5_mif" target="_blank" rel="noopener" data-track="cta_handoff">Անցնել Freedx</a>
     </div>
   </section>
 
@@ -437,8 +449,9 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
   var obs = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); obs.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -12% 0px' });
-  document.querySelectorAll('.page > section:not(.video-wrap)').forEach(function (s) { obs.observe(s); });
+  document.querySelectorAll('.page > section:not(.video-wrap):not(.handoff)').forEach(function (s) { obs.observe(s); });
 })();
 </script>
-<script src="brands-widget.js" defer></script>
+<script src="app-coins.js" defer></script>
+<script src="handoff.js" defer></script>
 </body></html>
