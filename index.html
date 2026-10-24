@@ -81,15 +81,6 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 
 /* Closing + offer */
 .closing h2 { font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.18; }
-.offer-card {
-  background: var(--surface);
-  border-radius: 20px;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
-  display: grid; gap: 1.1rem;
-}
-.offer-card > * { margin: 0; }
-.offer-card h3 { font-size: clamp(1.25rem, 3.4vw, 1.6rem); line-height: 1.25; }
-.offer-card h3 em { font-style: normal; color: var(--brand-ink); }
 .cta {
   justify-self: start;
   display: inline-block;
@@ -142,6 +133,60 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 }
 .video-sound:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .video-sound[hidden] { display: none; }
+
+/* Offer: short, bold card with one action */
+.offer-card {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(140deg, #2b1d8f 0%, #5b48e8 55%, #8170ff 100%);
+  color: #fff; border-radius: 24px;
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  display: grid; gap: 1.1rem; justify-items: start;
+}
+.offer-card::before {
+  content: ""; position: absolute; z-index: -1; right: -18%; top: -30%; width: 70%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(255,255,255,.28), transparent 65%); border-radius: 50%;
+}
+.offer-card > * { margin: 0; }
+.offer-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,255,255,.16); padding: .4rem .8rem; border-radius: 999px; }
+.offer-amount { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: -.02em; }
+.offer-sub { font-size: 1.15rem; line-height: 1.4; opacity: .92; margin-top: -.3rem; }
+.offer-steps { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; counter-reset: st; }
+.offer-steps li { counter-increment: st; display: flex; align-items: center; gap: .5rem; font-size: .95rem; font-weight: 600; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); padding: .45rem .85rem .45rem .45rem; border-radius: 999px; }
+.offer-steps li::before { content: counter(st); display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #fff; color: #5b48e8; font-size: .85rem; font-weight: 800; }
+.offer-card .cta { background: #fff; color: #2b1d8f; font-size: 1.1rem; padding: 1.05rem 1.8rem; margin-top: .4rem; box-shadow: 0 10px 30px rgba(20, 10, 80, .35); }
+.offer-card .cta::after { content: " →"; }
+.offer-card .cta:hover { background: #f1effe; }
+.offer-card .fine { color: rgba(255,255,255,.72); font-size: .8rem; }
+@media (max-width: 480px) { .offer-card { justify-items: stretch; } .offer-card .cta { justify-self: stretch; } .offer-kicker, .offer-steps { justify-self: start; } }
+
+/* Robot hand that pops in at myth 3 and tosses a bitcoin; the whole thing links to the site */
+.robot {
+  position: fixed; right: 0; bottom: calc(18vh + env(safe-area-inset-bottom, 0px)); z-index: 40;
+  width: clamp(190px, 52vw, 260px); display: block; text-decoration: none;
+  transform: translateX(115%); transition: transform .8s cubic-bezier(.2,.9,.25,1.15);
+  filter: drop-shadow(0 12px 22px rgba(30, 20, 90, .28));
+}
+.robot.show { transform: none; }
+.robot img { display: block; height: auto; pointer-events: none; }
+.robot .robot-hand { width: 100%; margin-right: -12%; }
+.robot .robot-coin { position: absolute; left: 17%; top: 10%; width: 30%; transform-origin: 50% 50%; }
+.robot.show .robot-coin { animation: coin-toss 1.4s cubic-bezier(.3,.6,.4,1) .8s, coin-bob 2.4s ease-in-out 2.4s infinite; }
+@keyframes coin-toss {
+  0% { transform: translateY(0) rotateY(0); }
+  45% { transform: translateY(-95%) rotateY(540deg); }
+  70% { transform: translateY(6%) rotateY(720deg); }
+  85% { transform: translateY(-10%) rotateY(720deg); }
+  100% { transform: translateY(0) rotateY(720deg); }
+}
+@keyframes coin-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14%); } }
+.robot-tip {
+  position: absolute; right: 8%; top: -20%; white-space: nowrap;
+  font: 700 .8rem/1 var(--font-body); color: #fff; background: var(--brand-ink);
+  padding: .5rem .75rem; border-radius: 999px; opacity: 0; transform: translateY(6px); transition: opacity .4s ease 2.2s, transform .4s ease 2.2s;
+}
+.robot.show .robot-tip { opacity: 1; transform: none; }
+.robot:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .robot { transition: none; } .robot.show .robot-coin { animation: none; } }
 </style>
 </head><body>
 
@@ -242,15 +287,23 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 
   <section class="offer" data-block="offer" data-block-index="9">
     <div class="offer-card">
-      <h3>Ձեր առաջին գործարքները՝ <em>մինչև 100&nbsp;USDT</em> կորուստների փոխհատուցման հնարավորությամբ</h3>
-      <p>Գրանցվեք Freedx-ում, անցեք ինքնության հաստատման գործընթացը, համալրեք ձեր հաշիվը և սկսեք առևտուր անել։</p>
-      <p>Եթե ձեր գործարքները վնասով ավարտվեն, <strong>Freedx-ը կարող է փոխհատուցել մինչև 100&nbsp;USDT</strong>՝ ակցիայի պայմաններին համապատասխան։</p>
-      <a class="cta" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=5_mif" target="_blank" rel="noopener" data-track="cta_main">Ծանոթանալ Freedx-ին և իմանալ ակցիայի պայմանները</a>
-      <p class="fine">Առաջարկը գործում է ակցիայի պայմանները պահպանելու դեպքում։ Փոխհատուցումը չի երաշխավորում կորուստների բացակայություն կամ շահույթի ստացում։ Կրիպտոարժույթով առևտուրը կապված է ֆինանսական ռիսկերի հետ։</p>
+      <span class="offer-kicker">Հատուկ առաջարկ</span>
+      <p class="offer-amount">մինչև 100&nbsp;USDT</p>
+      <p class="offer-sub">առաջին գործարքների կորուստների փոխհատուցում</p>
+      <ol class="offer-steps"><li>Գրանցում</li><li>Ինքնության հաստատում</li><li>Առաջին գործարք</li></ol>
+      <a class="cta" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=5_mif" target="_blank" rel="noopener" data-track="cta_main">Անցնել Freedx-ի կայք</a>
+      <p class="fine">Գործում է ակցիայի պայմաններով։ Փոխհատուցումը չի երաշխավորում շահույթ, կրիպտոարժույթով առևտուրը կապված է ռիսկերի հետ։</p>
     </div>
   </section>
 
 </main>
+
+<a class="robot" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=robot_btc" target="_blank" rel="noopener" data-track="robot_coin" aria-label="Անցնել Freedx-ի կայք">
+  <span class="robot-tip">Սեղմիր բիթքոինին</span>
+  <img class="robot-hand" src="img/robot-hand.png" alt="" width="200" height="200">
+  <img class="robot-coin" src="img/bitcoin.png" alt="" width="200" height="200">
+</a>
+
 
 <script>
 /*
@@ -416,6 +469,20 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); obs.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('.page > section:not(.video-wrap)').forEach(function (s) { obs.observe(s); });
+})();
+</script>
+<script>
+/* Robot hand: slides in while myth 3 is on screen, tosses a bitcoin; the hand links to the site. */
+(function () {
+  var r = document.querySelector('.robot'), target = document.getElementById('myth-3');
+  if (!r || !target || !('IntersectionObserver' in window)) return;
+  var shown = false;
+  new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      r.classList.toggle('show', e.isIntersecting);
+      if (e.isIntersecting && !shown) { shown = true; if (window.__trackEvent) window.__trackEvent('robot_show', { block_id: 'myth_3' }); }
+    });
+  }, { threshold: 0.3 }).observe(target);
 })();
 </script>
 </body></html>
