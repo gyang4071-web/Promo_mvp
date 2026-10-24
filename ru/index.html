@@ -162,13 +162,14 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 /* Robot hand that pops in at myth 3 and tosses a bitcoin; the whole thing links to the site */
 .robot {
   position: fixed; right: 0; bottom: calc(18vh + env(safe-area-inset-bottom, 0px)); z-index: 40;
-  width: clamp(130px, 34vw, 210px); display: block; text-decoration: none;
+  width: clamp(190px, 52vw, 260px); display: block; text-decoration: none;
   transform: translateX(115%); transition: transform .8s cubic-bezier(.2,.9,.25,1.15);
   filter: drop-shadow(0 12px 22px rgba(30, 20, 90, .28));
 }
 .robot.show { transform: none; }
-.robot svg { display: block; width: 100%; height: auto; }
-.robot .robot-coin { position: absolute; left: 4%; top: -8%; width: 34%; transform-origin: 50% 50%; }
+.robot img { display: block; height: auto; pointer-events: none; }
+.robot .robot-hand { width: 100%; margin-right: -12%; }
+.robot .robot-coin { position: absolute; left: 17%; top: 10%; width: 30%; transform-origin: 50% 50%; }
 .robot.show .robot-coin { animation: coin-toss 1.4s cubic-bezier(.3,.6,.4,1) .8s, coin-bob 2.4s ease-in-out 2.4s infinite; }
 @keyframes coin-toss {
   0% { transform: translateY(0) rotateY(0); }
@@ -179,7 +180,7 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 }
 @keyframes coin-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14%); } }
 .robot-tip {
-  position: absolute; right: 6%; top: -62%; white-space: nowrap;
+  position: absolute; right: 8%; top: -20%; white-space: nowrap;
   font: 700 .8rem/1 var(--font-body); color: #fff; background: var(--brand-ink);
   padding: .5rem .75rem; border-radius: 999px; opacity: 0; transform: translateY(6px); transition: opacity .4s ease 2.2s, transform .4s ease 2.2s;
 }
@@ -297,20 +298,8 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 
 <a class="robot" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=robot_btc" target="_blank" rel="noopener" data-track="robot_coin" aria-label="Перейти на Freedx">
   <span class="robot-tip">Нажми на биткоин</span>
-  <svg class="robot-coin" viewBox="0 0 64 64" aria-hidden="true">
-    <circle cx="32" cy="32" r="30" fill="#f7931a"/><circle cx="32" cy="32" r="24" fill="none" stroke="#ffd08a" stroke-width="2.5"/>
-    <text x="32" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="32" fill="#fff">&#8383;</text>
-  </svg>
-  <svg class="robot-arm" viewBox="0 0 220 120" aria-hidden="true">
-    <defs><linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9e8f2"/><stop offset=".55" stop-color="#b9b7cc"/><stop offset="1" stop-color="#8d8aa6"/></linearGradient></defs>
-    <rect x="128" y="62" width="110" height="30" rx="15" fill="url(#metal)"/>
-    <rect x="58" y="66" width="80" height="22" rx="11" fill="url(#metal)"/>
-    <circle cx="134" cy="77" r="17" fill="#5b48e8"/><circle cx="134" cy="77" r="7" fill="#c9c2ff"/>
-    <circle cx="58" cy="77" r="12" fill="#5b48e8"/><circle cx="58" cy="77" r="4.5" fill="#c9c2ff"/>
-    <rect x="8" y="58" width="58" height="12" rx="6" fill="url(#metal)"/>
-    <rect x="8" y="36" width="10" height="30" rx="5" fill="#8d8aa6"/>
-    <rect x="56" y="36" width="10" height="30" rx="5" fill="#8d8aa6"/>
-  </svg>
+  <img class="robot-hand" src="../img/robot-hand.png" alt="" width="200" height="200">
+  <img class="robot-coin" src="../img/bitcoin.png" alt="" width="200" height="200">
 </a>
 
 
