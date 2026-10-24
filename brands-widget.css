@@ -1,85 +1,89 @@
-/* "What can you buy with crypto" widget (myth 2). Uses the page's colour tokens. */
+/* "What can you buy with crypto" widget (myth 2), in Freedx purple. */
 .brand-widget {
-  --bw-line: color-mix(in srgb, var(--fg) 10%, transparent);
+  --bw-bg: linear-gradient(160deg, #2b1d8f 0%, #4a37d6 60%, #6c5bf5 100%);
+  --bw-ink: #ffffff;
+  --bw-soft: rgba(255, 255, 255, .72);
+  --bw-line: rgba(255, 255, 255, .18);
   box-sizing: border-box;
-  background: var(--bg);
-  border: 1px solid var(--bw-line);
-  border-radius: 20px;
-  padding: 1.1rem 1.1rem 1rem;
+  background: var(--bw-bg);
+  color: var(--bw-ink);
+  border-radius: 18px;
+  padding: 1rem;
   font-family: var(--font-body);
-  color: var(--fg);
-  line-height: 1.4;
+  line-height: 1.35;
 }
 .brand-widget p { margin: 0; }
 .brand-widget button { font: inherit; color: inherit; }
 
 /* Narrow screens: in the article flow after the myth 2 heading, rises in once */
-.brand-widget:not(.is-side) { margin-top: 1.4rem; max-width: 26rem; opacity: 0; transform: translateY(20px); transition: opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
+.brand-widget:not(.is-side) { margin-top: 1.4rem; max-width: 24rem; opacity: 0; transform: translateY(20px); transition: opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
 .brand-widget:not(.is-side).is-visible { opacity: 1; transform: none; }
+.brand-widget:not(.is-side) .bw-tab { display: none; }
 
-/* Wide screens: fixed panel to the right of the text column, never over it */
+/* Wide screens: slim panel docked to the right edge of the window, with a tab to tuck it away */
 .brand-widget.is-side {
-  position: fixed; z-index: 30; top: 50%;
-  left: calc(50% + 21rem + 24px);
-  width: clamp(272px, calc(50vw - 21rem - 40px), 360px);
+  position: fixed; z-index: 30; top: 50%; right: 0;
+  width: 208px; border-radius: 18px 0 0 18px; padding: 1rem .9rem;
   opacity: 0; transform: translate(24px, -50%); pointer-events: none;
   transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
-  box-shadow: 0 8px 28px rgba(22, 21, 29, .06);
+  box-shadow: -6px 10px 30px rgba(43, 29, 143, .22);
 }
 .brand-widget.is-side.is-visible { opacity: 1; transform: translate(0, -50%); pointer-events: auto; }
-
-.bw-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; line-height: 1.25; }
-.bw-sub { font-size: .85rem; color: var(--muted); margin-top: .2rem !important; }
-
-.bw-stage { position: relative; margin-top: .9rem; touch-action: pan-y; }
-.bw-cat { display: flex; align-items: flex-start; gap: .65rem; height: 3.3rem; }
-.bw-icon { flex: none; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 10px; background: var(--surface); color: var(--brand-ink); }
-.bw-icon svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.bw-cat-title { font-weight: 700; font-size: .95rem; line-height: 1.25; }
-.bw-cat-note { font-size: .78rem; color: var(--muted); line-height: 1.3; }
-
-.bw-logos { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .8rem; }
-.bw-logo {
-  display: grid; place-items: center; aspect-ratio: 1 / .8; padding: .7rem;
-  background: #fff; border: 1px solid var(--bw-line); border-radius: 14px; cursor: pointer;
-  transition: border-color .2s ease, transform .2s ease;
+.brand-widget.is-side.is-visible.is-collapsed { transform: translate(100%, -50%); }
+.bw-tab {
+  position: absolute; left: -30px; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 72px; border: 0; border-radius: 12px 0 0 12px; cursor: pointer;
+  background: #2b1d8f; display: grid; place-items: center; padding: 0;
 }
-.bw-logo:hover { border-color: var(--brand); transform: translateY(-2px); }
-.bw-logo:focus-visible, .bw-arrow:focus-visible, .bw-card button:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 2px; }
-.bw-logo img { display: block; max-width: 100%; max-height: 2.1rem; width: auto; height: auto; object-fit: contain; }
+.bw-tab svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s ease; }
+.is-collapsed .bw-tab svg { transform: rotate(180deg); }
+
+.bw-title { font-family: var(--font-display); font-weight: 700; font-size: .95rem; line-height: 1.25; }
+
+.bw-stage { position: relative; margin-top: .8rem; touch-action: pan-y; }
+.bw-cat { display: flex; align-items: center; gap: .55rem; height: 2.4rem; }
+.bw-icon { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 9px; background: rgba(255, 255, 255, .16); }
+.bw-icon svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bw-cat-title { font-weight: 700; font-size: .85rem; line-height: 1.2; }
+
+.bw-logos { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; margin-top: .7rem; }
+.is-side .bw-logos { grid-template-columns: 1fr; }
+.bw-logo {
+  display: grid; place-items: center; height: 3.4rem; padding: .55rem .8rem;
+  background: #fff; border: 2px solid transparent; border-radius: 12px; cursor: pointer;
+}
+.bw-logo:hover { border-color: #c9c2ff; }
+.bw-logo:focus-visible, .bw-arrow:focus-visible, .brand-widget .bw-card button:focus-visible, .bw-tab:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.bw-logo img { display: block; max-width: 100%; max-height: 1.9rem; width: auto; height: auto; object-fit: contain; }
 .bw-logo-name { display: none; }
-.bw-logo.is-text .bw-logo-name { display: block; font-weight: 700; font-size: .8rem; color: #16151d; text-align: center; line-height: 1.15; }
+.bw-logo.is-text .bw-logo-name { display: block; font-weight: 800; font-size: .85rem; color: #16151d; text-align: center; line-height: 1.1; }
 
 /* Category change: old content slides out and fades, new logos come in one after another (~300ms) */
 .bw-cat, .bw-logo { transition: opacity .15s ease, transform .15s ease, border-color .2s ease; }
 .bw-stage.is-leaving .bw-cat, .bw-stage.is-leaving .bw-logo { opacity: 0; transform: translateX(var(--bw-shift)); }
 .bw-stage.is-entering .bw-cat, .bw-stage.is-entering .bw-logo { opacity: 0; transform: translateX(var(--bw-shift)); transition: none; }
-.bw-stage:not(.is-leaving):not(.is-entering) .bw-cat { transition-duration: .2s; }
-.bw-stage:not(.is-leaving):not(.is-entering) .bw-logo { transition-duration: .2s; }
+.bw-stage:not(.is-leaving):not(.is-entering) .bw-cat, .bw-stage:not(.is-leaving):not(.is-entering) .bw-logo { transition-duration: .2s; }
 .bw-stage:not(.is-leaving):not(.is-entering) .bw-logo:nth-child(2) { transition-delay: .05s; }
 .bw-stage:not(.is-leaving):not(.is-entering) .bw-logo:nth-child(3) { transition-delay: .1s; }
-.bw-logo:hover { transition-delay: 0s !important; }
 
 /* Brand info card: takes the place of the logos and arrows while open */
 .brand-widget.has-card .bw-cat, .brand-widget.has-card .bw-logos, .brand-widget.has-card .bw-nav { display: none; }
-.bw-card {
-  position: relative; box-sizing: border-box; padding: .1rem 0 .2rem;
-  opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .2s ease;
-}
+.brand-widget.has-card .bw-foot { opacity: 0; }
+.bw-card { position: relative; opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .2s ease; }
 .bw-card.is-open { opacity: 1; transform: none; }
 .bw-card[hidden] { display: none; }
-.bw-card-close { position: absolute; top: 0; right: 0; width: 1.8rem; height: 1.8rem; border: 0; border-radius: 50%; background: var(--surface); cursor: pointer; font-size: 1.1rem; line-height: 1; }
-.bw-card-name { font-weight: 700; font-size: 1rem; padding-right: 2.2rem; }
-.bw-card-type { font-size: .78rem; color: var(--brand-ink); font-weight: 600; margin-top: .1rem !important; }
-.bw-card-how, .bw-card-gift, .bw-card-region { font-size: .8rem; line-height: 1.4; margin-top: .45rem !important; }
-.bw-card-gift, .bw-card-region { color: var(--muted); }
-.bw-card-back { margin-top: .55rem; border: 0; background: none; padding: 0; color: var(--brand-ink) !important; font-weight: 600 !important; font-size: .8rem !important; cursor: pointer; }
+.bw-card-close { position: absolute; top: -.1rem; right: 0; width: 1.6rem; height: 1.6rem; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .18); cursor: pointer; font-size: 1rem; line-height: 1; }
+.bw-card-name { font-weight: 700; font-size: .95rem; padding-right: 2rem; }
+.bw-card-type { font-size: .72rem; color: var(--bw-soft); margin-top: .1rem !important; }
+.bw-card-how { font-size: .8rem; line-height: 1.4; margin-top: .5rem !important; }
+.bw-card-gift, .bw-card-region { font-size: .72rem; line-height: 1.35; color: var(--bw-soft); margin-top: .35rem !important; }
+.bw-card-back { display: block; text-align: left; margin-top: .6rem; border: 0; background: none; padding: 0; font-weight: 700 !important; font-size: .78rem !important; cursor: pointer; }
 
-.bw-nav { display: flex; align-items: center; justify-content: space-between; margin-top: .8rem; }
-.bw-arrow { width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 1px solid var(--bw-line); background: var(--bg); cursor: pointer; font-size: 1.35rem; line-height: 1; display: grid; place-items: center; padding-bottom: .15rem; transition: border-color .2s ease, color .2s ease; }
-.bw-arrow:hover { border-color: var(--brand); color: var(--brand-ink); }
-.bw-count { font-size: .82rem; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
-.bw-foot { margin-top: .8rem !important; padding-top: .7rem; border-top: 1px solid var(--bw-line); font-size: .72rem; line-height: 1.45; color: var(--muted); }
+.bw-nav { display: flex; align-items: center; justify-content: space-between; margin-top: .7rem; }
+.bw-arrow { width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--bw-line); background: rgba(255, 255, 255, .1); cursor: pointer; font-size: 1.25rem; line-height: 1; display: grid; place-items: center; padding-bottom: .15rem; transition: background-color .2s ease; }
+.bw-arrow:hover { background: rgba(255, 255, 255, .22); }
+.bw-count { font-size: .8rem; font-weight: 700; color: var(--bw-soft); font-variant-numeric: tabular-nums; }
+.bw-foot { margin-top: .7rem !important; font-size: .68rem; line-height: 1.35; color: var(--bw-soft); }
 
 @media (prefers-reduced-motion: reduce) {
   .brand-widget, .brand-widget * { transition: none !important; }

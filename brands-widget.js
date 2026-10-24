@@ -9,10 +9,10 @@
   if (!root || !myth2 || !myth3) return;
   var heading = myth2.querySelector('h2');
 
-  var GIFT = 'Վճարումը նվեր քարտով է (օր.՝ Bitrefill-ի միջոցով), ոչ թե ուղղակիորեն կրիպտոարժույթով։';
+  var GIFT = 'Վճարումը՝ նվեր քարտով (օր.՝ Bitrefill), ոչ թե ուղղակի կրիպտոյով։';
   var REGION = 'Հասանելիությունը կախված է երկրից։';
   function how(name, use) {
-    return 'Կրիպտոարժույթով կարելի է ձեռք բերել ' + name + '-ի նվեր քարտ և օգտագործել այն ' + use + '՝ համապատասխան տարածաշրջանային պայմանների դեպքում։';
+    return name + '-ի նվեր քարտը կարելի է գնել կրիպտոյով և օգտագործել ' + use + '։';
   }
 
   var CATEGORIES = [
@@ -20,7 +20,7 @@
       brands: [
         { id: 'apple', name: 'Apple', type: 'Տեխնիկա, հավելվածներ և ծառայություններ', how: how('Apple', 'App Store-ում և Apple-ի ծառայություններում') },
         { id: 'amazon', name: 'Amazon', type: 'Առցանց խանութ', how: how('Amazon', 'ապրանքներ գնելու համար') },
-        { id: 'bestbuy', name: 'Best Buy', type: 'Էլեկտրոնիկայի խանութ', how: how('Best Buy', 'էլեկտրոնիկա գնելու համար'), region: 'Best Buy-ի նվեր քարտերը հիմնականում ԱՄՆ-ի համար են։', logo: false }
+        { id: 'bestbuy', name: 'Best Buy', type: 'Էլեկտրոնիկայի խանութ', how: how('Best Buy', 'էլեկտրոնիկա գնելու համար'), region: 'Հիմնականում ԱՄՆ-ում։', logo: false }
       ] },
     { id: 'travel', title: 'Ճամփորդություններ', note: 'Կացարան, հյուրանոց և երթևեկություն', icon: 'plane',
       brands: [
@@ -56,9 +56,10 @@
   function track(name, p) { if (window.__trackEvent) window.__trackEvent(name, p || {}); }
 
   root.innerHTML =
-    '<div class="bw-head"><p class="bw-title">Ի՞նչ կարելի է գնել կրիպտոյով</p><p class="bw-sub">Բացահայտեք ծանոթ բրենդները</p></div>' +
+    '<button class="bw-tab" type="button" aria-expanded="true" aria-label="Թաքցնել"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>' +
+    '<div class="bw-head"><p class="bw-title">Ի՞նչ կարելի է գնել կրիպտոյով</p></div>' +
     '<div class="bw-stage" aria-live="polite">' +
-      '<div class="bw-cat"><span class="bw-icon"></span><div><p class="bw-cat-title"></p><p class="bw-cat-note"></p></div></div>' +
+      '<div class="bw-cat"><span class="bw-icon"></span><p class="bw-cat-title"></p></div>' +
       '<div class="bw-logos" role="list"></div>' +
       '<div class="bw-card" role="dialog" aria-modal="false" hidden>' +
         '<button class="bw-card-close" type="button" aria-label="Փակել">×</button>' +
@@ -72,7 +73,7 @@
       '<span class="bw-count" aria-live="polite"></span>' +
       '<button class="bw-arrow" type="button" data-dir="1" aria-label="Հաջորդ կատեգորիա">›</button>' +
     '</div>' +
-    '<p class="bw-foot">Կրիպտոարժույթով կարելի է ձեռք բերել նվեր քարտեր և օգտագործել դրանք տարբեր ծառայություններում։ Հասանելիությունը կախված է երկրից և տվյալ ծառայության պայմաններից։</p>';
+    '<p class="bw-foot">Նվեր քարտերի միջոցով։ Հասանելիությունը կախված է երկրից։</p>';
 
   var $ = function (s) { return root.querySelector(s); };
   var stage = $('.bw-stage'), catBox = $('.bw-cat'), logos = $('.bw-logos'), card = $('.bw-card'), count = $('.bw-count');
@@ -87,7 +88,6 @@
     var c = CATEGORIES[index];
     $('.bw-icon').innerHTML = icon(c.icon);
     $('.bw-cat-title').textContent = c.title;
-    $('.bw-cat-note').textContent = c.note;
     logos.innerHTML = c.brands.map(logoHTML).join('');
     // Missing or broken logo file: show the brand name instead of a broken image.
     logos.querySelectorAll('img').forEach(function (img) {
@@ -140,7 +140,14 @@
     if (refocus && lastLogo && document.contains(lastLogo)) lastLogo.focus({ preventScroll: true });
   }
 
+  var tab = $('.bw-tab');
+  function setCollapsed(v) {
+    root.classList.toggle('is-collapsed', v);
+    tab.setAttribute('aria-expanded', String(!v));
+    tab.setAttribute('aria-label', v ? 'Ցույց տալ' : 'Թաքցնել');
+  }
   root.addEventListener('click', function (e) {
+    if (e.target.closest('.bw-tab')) { setCollapsed(!root.classList.contains('is-collapsed')); track('brands_widget_toggle', { collapsed: root.classList.contains('is-collapsed') }); return; }
     var a = e.target.closest('.bw-arrow');
     if (a) return go(+a.dataset.dir);
     var l = e.target.closest('.bw-logo');
@@ -168,7 +175,7 @@
 
   // Placement: wide screens get a fixed side panel (moved to <body> so the article's
   // reveal transforms can't affect fixed positioning); narrow screens keep it in the flow.
-  var wide = window.matchMedia('(min-width: 1240px)');
+  var wide = window.matchMedia('(min-width: 1180px)');
   var shown = false, seen = false;
   function place() {
     if (wide.matches) { if (root.parentNode !== document.body) document.body.appendChild(root); root.classList.add('is-side'); }
