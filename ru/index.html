@@ -159,34 +159,6 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 .offer-card .fine { color: rgba(255,255,255,.72); font-size: .8rem; }
 @media (max-width: 480px) { .offer-card { justify-items: stretch; } .offer-card .cta { justify-self: stretch; } .offer-kicker, .offer-steps { justify-self: start; } }
 
-/* Robot hand that pops in at myth 3 and tosses a bitcoin; the whole thing links to the site */
-.robot {
-  position: fixed; right: 0; bottom: calc(18vh + env(safe-area-inset-bottom, 0px)); z-index: 40;
-  width: clamp(190px, 52vw, 260px); display: block; text-decoration: none;
-  transform: translateX(115%); transition: transform .8s cubic-bezier(.2,.9,.25,1.15);
-  filter: drop-shadow(0 12px 22px rgba(30, 20, 90, .28));
-}
-.robot.show { transform: none; }
-.robot img { display: block; height: auto; pointer-events: none; }
-.robot .robot-hand { width: 100%; margin-right: -12%; }
-.robot .robot-coin { position: absolute; left: 17%; top: 10%; width: 30%; transform-origin: 50% 50%; }
-.robot.show .robot-coin { animation: coin-toss 1.4s cubic-bezier(.3,.6,.4,1) .8s, coin-bob 2.4s ease-in-out 2.4s infinite; }
-@keyframes coin-toss {
-  0% { transform: translateY(0) rotateY(0); }
-  45% { transform: translateY(-95%) rotateY(540deg); }
-  70% { transform: translateY(6%) rotateY(720deg); }
-  85% { transform: translateY(-10%) rotateY(720deg); }
-  100% { transform: translateY(0) rotateY(720deg); }
-}
-@keyframes coin-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14%); } }
-.robot-tip {
-  position: absolute; right: 8%; top: -20%; white-space: nowrap;
-  font: 700 .8rem/1 var(--font-body); color: #fff; background: var(--brand-ink);
-  padding: .5rem .75rem; border-radius: 999px; opacity: 0; transform: translateY(6px); transition: opacity .4s ease 2.2s, transform .4s ease 2.2s;
-}
-.robot.show .robot-tip { opacity: 1; transform: none; }
-.robot:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .robot { transition: none; } .robot.show .robot-coin { animation: none; } }
 </style>
 </head><body>
 
@@ -296,11 +268,6 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 
 </main>
 
-<a class="robot" href="https://freedx.com/hy?utm_source=google&amp;utm_medium=promo_page&amp;utm_campaign=new_users&amp;utm_content=robot_btc" target="_blank" rel="noopener" data-track="robot_coin" aria-label="Перейти на Freedx">
-  <span class="robot-tip">Нажми на биткоин</span>
-  <img class="robot-hand" src="../img/robot-hand.png" alt="" width="200" height="200">
-  <img class="robot-coin" src="../img/bitcoin.png" alt="" width="200" height="200">
-</a>
 
 
 <script>
@@ -467,20 +434,6 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); obs.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('.page > section:not(.video-wrap)').forEach(function (s) { obs.observe(s); });
-})();
-</script>
-<script>
-/* Robot hand: slides in while myth 3 is on screen, tosses a bitcoin; the hand links to the site. */
-(function () {
-  var r = document.querySelector('.robot'), target = document.getElementById('myth-3');
-  if (!r || !target || !('IntersectionObserver' in window)) return;
-  var shown = false;
-  new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      r.classList.toggle('show', e.isIntersecting);
-      if (e.isIntersecting && !shown) { shown = true; if (window.__trackEvent) window.__trackEvent('robot_show', { block_id: 'myth_3' }); }
-    });
-  }, { threshold: 0.3 }).observe(target);
 })();
 </script>
 </body></html>
