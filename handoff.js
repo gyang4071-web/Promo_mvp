@@ -2,9 +2,8 @@
    The last section is tall with a sticky stage inside. The Freedx preview is laid out at the
    full stage size and only scaled (transform), so growing it never re-crops or reflows. Its
    size follows the scroll through a damped value, which keeps the motion smooth even with
-   stepped mouse wheels. Once the preview covers the screen it holds; scrolling on to the end
-   of the section opens Freedx in this tab. A scroll that slams straight into the end does not
-   redirect by itself: the reader has to scroll down once more.
+   stepped mouse wheels. Once the preview covers the screen, a short scroll on to the end of the
+   section opens Freedx in this tab. The site is prefetched while the preview grows.
    "Չանցնել ավտոմատ" turns the automatic step off and shows a regular button instead. */
 (function () {
   var sec = document.getElementById('handoff');
@@ -15,8 +14,7 @@
   var foot = sec.querySelector('.handoff-foot');
   var bar = sec.querySelector('.handoff-bar');
   var URL = sec.dataset.href;
-  var GROW = 0.72;          // share of the section's scroll spent growing; the rest holds full screen
-  var SETTLE_MS = 400;      // the preview must cover the screen this long before the end can redirect
+  var GROW = 0.85;          // share of the section's scroll spent growing; the rest holds full screen
   var RADIUS = 28;
 
   function track(name, p) { if (window.__trackEvent) window.__trackEvent(name, p || {}); }
@@ -25,7 +23,6 @@
   var armed = false;        // set only by a real downward scroll, so a restored position never redirects
   var lastY = window.scrollY;
   var target = 0, cur = 0, lastT = 0, raf = 0;
-  var fullAt = 0;
   var W = 0, H = 0, s0 = 0.5, top0 = 0;
 
   function measure() {
@@ -63,6 +60,13 @@
     bar.style.setProperty('--p', cur.toFixed(3));
   }
 
+  // Warm up the Freedx page while the preview grows, so the redirect lands quickly.
+  function prefetch() {
+    var l = document.createElement('link');
+    l.rel = 'prefetch'; l.href = URL;
+    document.head.appendChild(l);
+  }
+
   function go(how) {
     if (leaving || manual) return;
     leaving = true;
@@ -71,7 +75,7 @@
   }
 
   function maybeGo(how) {
-    if (armed && progress() >= 0.995 && fullAt && Date.now() - fullAt >= SETTLE_MS) go(how);
+    if (armed && progress() >= 0.99 && cur >= 1) go(how);
   }
 
   function tick(t) {
@@ -79,10 +83,10 @@
     if (manual) return;
     var dt = lastT ? Math.min(64, t - lastT) : 16;
     lastT = t;
-    cur += (target - cur) * (1 - Math.exp(-dt / 110));
+    cur += (target - cur) * (1 - Math.exp(-dt / 80));
     if (Math.abs(target - cur) < 0.0008) cur = target;
     paint();
-    if (cur >= 1) { if (!fullAt) fullAt = Date.now(); } else fullAt = 0;
+    if (cur >= 1) maybeGo('scroll');
     if (cur !== target) raf = requestAnimationFrame(tick); else lastT = 0;
   }
 
@@ -90,7 +94,7 @@
     if (manual) return;
     var p = progress();
     target = Math.min(1, p / GROW);
-    if (!viewed && p > 0) { viewed = true; track('handoff_view'); }
+    if (!viewed && p > 0) { viewed = true; track('handoff_view'); prefetch(); }
     if (!raf && cur !== target) raf = requestAnimationFrame(tick);
   }
 
@@ -103,7 +107,7 @@
   }, { passive: true });
 
   // At the very end the page cannot scroll further, so a downward wheel, swipe or key is the signal.
-  function nudge() { if (progress() >= 0.995) { armed = true; maybeGo('gesture'); } }
+  function nudge() { if (progress() >= 0.99) { armed = true; maybeGo('gesture'); } }
   window.addEventListener('wheel', function (e) { if (e.deltaY > 0) nudge(); }, { passive: true });
   var ty0 = null;
   window.addEventListener('touchstart', function (e) { ty0 = e.touches[0].clientY; }, { passive: true });
@@ -122,7 +126,7 @@
   // Back button from Freedx: the page may come back from cache scrolled to the end.
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
-    leaving = false; armed = false; fullAt = 0;
+    leaving = false; armed = false;
     window.scrollTo(0, sec.offsetTop - window.innerHeight * 0.6);
   });
 
