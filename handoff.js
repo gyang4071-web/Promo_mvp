@@ -2,8 +2,8 @@
    The last section is tall with a sticky stage inside. The Freedx preview is laid out at the
    full stage size and only scaled (transform), so growing it never re-crops or reflows. Its
    size follows the scroll through a damped value, which keeps the motion smooth even with
-   stepped mouse wheels. Once the reader has scrolled a little way into it, the rest of the
-   growth plays by itself and Freedx opens in this tab, with no need to scroll to the very end.
+   stepped mouse wheels. As soon as the reader scrolls the preview into view, the growth plays
+   by itself to full screen and Freedx opens in this tab, with no further scrolling needed.
    The site is prefetched while the preview grows.
    "Չանցնել ավտոմատ" turns the automatic step off and shows a regular button instead. */
 (function () {
@@ -15,7 +15,7 @@
   var foot = sec.querySelector('.handoff-foot');
   var bar = sec.querySelector('.handoff-bar');
   var URL = sec.dataset.href;
-  var TRIGGER = 0.3;        // share of the section's scroll after which the growth finishes by itself
+  var VISIBLE = 0.55;       // share of the preview on screen that starts the automatic growth
   var AUTO_MS = 900;        // duration of that automatic growth to full screen
   var RADIUS = 28;
 
@@ -83,14 +83,18 @@
     if (raf) { cancelAnimationFrame(raf); raf = 0; }
     var from = cur, dur = AUTO_MS * (1 - from), t0 = 0;
     track('handoff_auto');
-    // Pin the stage to the window, so scrolling on cannot carry it away mid-animation.
+    // Pin the stage to the window where it is now, then slide it to the top while the preview
+    // grows, so scrolling on cannot carry it away mid-animation.
+    var top0px = Math.max(0, stick.getBoundingClientRect().top);
     stick.style.marginLeft = '0';
+    stick.style.top = top0px + 'px';
     sec.classList.add('is-auto');
     function step(t) {
       if (manual || !auto) return;
       if (!t0) t0 = t;
       var k = dur > 0 ? Math.min(1, (t - t0) / dur) : 1;
       cur = from + (1 - from) * k;
+      stick.style.top = (top0px * (1 - easeInOut(k))).toFixed(1) + 'px';
       paint();
       if (k < 1) requestAnimationFrame(step);
       else setTimeout(function () { go('auto'); }, 120);
@@ -113,8 +117,10 @@
     if (manual || auto) return;
     var p = progress();
     target = Math.min(1, p);
-    if (!viewed && p > 0) { viewed = true; track('handoff_view'); prefetch(); }
-    if (armed && p >= TRIGGER) { autoplay(); return; }
+    var r = shot.getBoundingClientRect(), vh = window.innerHeight;
+    var seen = r.height ? (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / r.height : 0;
+    if (!viewed && seen > 0) { viewed = true; track('handoff_view'); prefetch(); }
+    if (armed && seen >= VISIBLE) { autoplay(); return; }
     if (!raf && cur !== target) raf = requestAnimationFrame(tick);
   }
 
@@ -145,6 +151,7 @@
     if (!e.persisted) return;
     leaving = false; armed = false; auto = false;
     sec.classList.remove('is-auto');
+    stick.style.top = '';
     measure();
     window.scrollTo(0, sec.offsetTop - window.innerHeight * 0.6);
     cur = target = 0;
