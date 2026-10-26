@@ -144,6 +144,14 @@
     track('handoff_stay');
   });
 
+  // The cue in the offer card glides down to the preview, which then plays on its own.
+  var cue = document.querySelector('.offer-cue');
+  if (cue) cue.addEventListener('click', function (e) {
+    e.preventDefault();
+    inputAt = Date.now();
+    window.scrollTo({ top: sec.offsetTop - window.innerHeight * 0.2, behavior: 'smooth' });
+  });
+
   window.addEventListener('resize', function () { if (manual) return; measure(); paint(); update(); });
 
   // Back button from Freedx: the page may come back from cache scrolled to the end.
