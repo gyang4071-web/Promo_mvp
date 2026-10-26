@@ -1,47 +1,46 @@
-/* Final handoff: the article ends on a preview of Freedx. Scrolling grows it to the full
-   screen width; one more scroll down carries the reader there. */
-.page > section.handoff { max-width: 56rem; padding-block: 0; height: 320vh; height: 320svh; position: relative; }
+/* Final handoff: the article ends on a preview of Freedx. Scrolling grows it smoothly until it
+   covers the whole screen, exactly as the site's first screen looks; scrolling on opens Freedx. */
+.page > section.handoff { max-width: 56rem; padding-block: 0; height: 220vh; height: 220svh; position: relative; }
 .handoff-stick {
-  position: sticky; top: 0; height: 100vh; height: 100svh;
   /* handoff.js stretches the stage to the window width (margin-left / width in px) */
-  display: grid; align-content: center; justify-items: center; gap: 1.4rem; text-align: center;
-  overflow: hidden;
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
 }
-.handoff-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-ink); padding-inline: 16px; }
-.handoff-text { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 3.6vw, 1.9rem); line-height: 1.25; max-width: 30ch; text-wrap: balance; margin: 0; padding-inline: 16px; }
+.handoff-head {
+  position: absolute; left: 0; right: 0; top: 0; padding: max(9vh, 3.5rem) 16px 0;
+  display: grid; justify-items: center; gap: .9rem; text-align: center;
+}
+.handoff-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-ink); margin: 0; }
+.handoff-text { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 3.6vw, 1.9rem); line-height: 1.25; max-width: 30ch; text-wrap: balance; margin: 0; }
+.handoff-foot {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 0 16px max(4vh, 1.2rem);
+  display: grid; justify-items: center; gap: .7rem; text-align: center;
+}
+/* The preview is laid out at the full stage size and only scaled, so its crop never changes. */
 .handoff-shot {
-  --g: 0;
-  /* width, height and radius are set from the scroll position by handoff.js */
-  width: min(640px, 70vw); aspect-ratio: 1903 / 908; overflow: hidden;
-  border-radius: 22px;
-  box-shadow: 0 30px 60px -20px rgba(43, 29, 143, calc(.45 * (1 - var(--g)))), 0 0 0 1px rgba(129, 112, 255, calc(.25 * (1 - var(--g))));
-  background: var(--surface);
+  position: absolute; inset: 0; overflow: hidden; z-index: 1;
+  transform-origin: 50% 0; will-change: transform, border-radius;
+  border-radius: 40px;
+  box-shadow: 0 40px 80px -24px rgba(43, 29, 143, .45), 0 0 0 1px rgba(129, 112, 255, .25);
+  background: #f4f1ff;
 }
-.handoff-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
-.handoff-cue { display: grid; justify-items: center; gap: .6rem; width: min(18rem, 80%); }
+.handoff-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; display: block; }
+.handoff-cue { display: grid; justify-items: center; gap: .6rem; width: min(18rem, 80vw); }
 .handoff-arrow { width: 28px; height: 28px; color: var(--brand); animation: handoff-bob 1.4s ease-in-out infinite; }
 .handoff-bar { width: 100%; height: 4px; border-radius: 4px; background: var(--surface); overflow: hidden; }
 .handoff-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-ink)); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
 .handoff-stay { border: 0; background: none; color: var(--muted); font: 500 .85rem/1.3 var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: .3rem; }
 .handoff-go { display: none; }
-.handoff.is-manual .handoff-go { display: inline-block; }
-.handoff.is-manual .handoff-cue, .handoff.is-manual .handoff-stay { display: none; }
-.handoff.is-manual { height: auto; }
-.handoff.is-manual .handoff-stick { position: static; height: auto; padding-block: 3rem; }
-.handoff.is-manual .handoff-shot { width: 100%; border-radius: 6px; }
 @keyframes handoff-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
-/* Phones: the desktop screenshot is cropped to its headline and button */
+/* "Չանցնել ավտոմատ": a plain block with a regular button */
+.handoff.is-manual { height: auto; }
+.handoff.is-manual .handoff-stick { position: static; height: auto; overflow: visible; display: grid; gap: 1.4rem; padding-block: 3rem; }
+.handoff.is-manual .handoff-head, .handoff.is-manual .handoff-foot, .handoff.is-manual .handoff-shot { position: static; padding: 0; }
+.handoff.is-manual .handoff-shot { aspect-ratio: 1903 / 908; border-radius: 12px; }
+.handoff.is-manual .handoff-go { display: inline-block; }
+.handoff.is-manual .handoff-cue, .handoff.is-manual .handoff-stay { display: none; }
+
 @media (max-width: 640px) {
-  .handoff-stick { gap: 1.1rem; }
-  .handoff-shot { width: 78vw; aspect-ratio: 4 / 5; }
   .handoff-shot img { object-position: 15% 0; }
 }
-
-/* Leaving: the preview fills the screen, then the browser goes to Freedx */
-.handoff-curtain {
-  position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0;
-  background: #f4f1ff center top / cover no-repeat; transition: opacity .35s ease;
-}
-.handoff-curtain.is-on { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .handoff-arrow { animation: none; } .handoff-curtain { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .handoff-arrow { animation: none; } }
