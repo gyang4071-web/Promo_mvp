@@ -2,8 +2,9 @@
    The last section is tall with a sticky stage inside. The Freedx preview is laid out at the
    full stage size and only scaled (transform), so growing it never re-crops or reflows. Its
    size follows the scroll through a damped value, which keeps the motion smooth even with
-   stepped mouse wheels. Once the preview covers the screen, a short scroll on to the end of the
-   section opens Freedx in this tab. The site is prefetched while the preview grows.
+   stepped mouse wheels. Once the reader has scrolled a little way into it, the rest of the
+   growth plays by itself and Freedx opens in this tab, with no need to scroll to the very end.
+   The site is prefetched while the preview grows.
    "Չանցնել ավտոմատ" turns the automatic step off and shows a regular button instead. */
 (function () {
   var sec = document.getElementById('handoff');
@@ -14,7 +15,8 @@
   var foot = sec.querySelector('.handoff-foot');
   var bar = sec.querySelector('.handoff-bar');
   var URL = sec.dataset.href;
-  var GROW = 0.85;          // share of the section's scroll spent growing; the rest holds full screen
+  var TRIGGER = 0.3;        // share of the section's scroll after which the growth finishes by itself
+  var AUTO_MS = 900;        // duration of that automatic growth to full screen
   var RADIUS = 28;
 
   function track(name, p) { if (window.__trackEvent) window.__trackEvent(name, p || {}); }
@@ -22,7 +24,7 @@
   var manual = false, leaving = false, viewed = false;
   var armed = false;        // set only by a real downward scroll, so a restored position never redirects
   var lastY = window.scrollY;
-  var target = 0, cur = 0, lastT = 0, raf = 0;
+  var target = 0, cur = 0, lastT = 0, raf = 0, auto = false;
   var W = 0, H = 0, s0 = 0.5, top0 = 0;
 
   function measure() {
@@ -74,48 +76,63 @@
     window.location.href = URL;
   }
 
-  function maybeGo(how) {
-    if (armed && progress() >= 0.99 && cur >= 1) go(how);
+  // Finish the growth on its own, then open Freedx.
+  function autoplay() {
+    if (auto || leaving || manual) return;
+    auto = true;
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    var from = cur, dur = AUTO_MS * (1 - from), t0 = 0;
+    track('handoff_auto');
+    // Pin the stage to the window, so scrolling on cannot carry it away mid-animation.
+    stick.style.marginLeft = '0';
+    sec.classList.add('is-auto');
+    function step(t) {
+      if (manual || !auto) return;
+      if (!t0) t0 = t;
+      var k = dur > 0 ? Math.min(1, (t - t0) / dur) : 1;
+      cur = from + (1 - from) * k;
+      paint();
+      if (k < 1) requestAnimationFrame(step);
+      else setTimeout(function () { go('auto'); }, 120);
+    }
+    requestAnimationFrame(step);
   }
 
   function tick(t) {
     raf = 0;
-    if (manual) return;
+    if (manual || auto) return;
     var dt = lastT ? Math.min(64, t - lastT) : 16;
     lastT = t;
     cur += (target - cur) * (1 - Math.exp(-dt / 80));
     if (Math.abs(target - cur) < 0.0008) cur = target;
     paint();
-    if (cur >= 1) maybeGo('scroll');
     if (cur !== target) raf = requestAnimationFrame(tick); else lastT = 0;
   }
 
   function update() {
-    if (manual) return;
+    if (manual || auto) return;
     var p = progress();
-    target = Math.min(1, p / GROW);
+    target = Math.min(1, p);
     if (!viewed && p > 0) { viewed = true; track('handoff_view'); prefetch(); }
+    if (armed && p >= TRIGGER) { autoplay(); return; }
     if (!raf && cur !== target) raf = requestAnimationFrame(tick);
   }
 
   window.addEventListener('scroll', function () {
     var y = window.scrollY;
-    if (y > lastY + 1) armed = true; else if (y < lastY - 1) armed = false;
+    // Only a scroll the reader is making counts, not a restored position or a jump link.
+    if (y > lastY + 1) armed = Date.now() - inputAt < 2500; else if (y < lastY - 1) armed = false;
     lastY = y;
     update();
-    maybeGo('scroll');
   }, { passive: true });
 
-  // At the very end the page cannot scroll further, so a downward wheel, swipe or key is the signal.
-  function nudge() { if (progress() >= 0.99) { armed = true; maybeGo('gesture'); } }
-  window.addEventListener('wheel', function (e) { if (e.deltaY > 0) nudge(); }, { passive: true });
-  var ty0 = null;
-  window.addEventListener('touchstart', function (e) { ty0 = e.touches[0].clientY; }, { passive: true });
-  window.addEventListener('touchmove', function (e) { if (ty0 !== null && ty0 - e.touches[0].clientY > 30) nudge(); }, { passive: true });
-  window.addEventListener('keydown', function (e) { if (['ArrowDown', 'PageDown', 'End', ' '].indexOf(e.key) > -1) nudge(); });
+  var inputAt = 0;
+  ['wheel', 'touchstart', 'touchmove', 'keydown', 'pointerdown'].forEach(function (type) {
+    window.addEventListener(type, function () { inputAt = Date.now(); }, { passive: true });
+  });
 
   sec.querySelector('.handoff-stay').addEventListener('click', function () {
-    manual = true;
+    manual = true; auto = false;
     sec.classList.add('is-manual');
     [stick, shot, head, foot].forEach(function (el) { el.removeAttribute('style'); });
     track('handoff_stay');
@@ -126,11 +143,15 @@
   // Back button from Freedx: the page may come back from cache scrolled to the end.
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
-    leaving = false; armed = false;
+    leaving = false; armed = false; auto = false;
+    sec.classList.remove('is-auto');
+    measure();
     window.scrollTo(0, sec.offsetTop - window.innerHeight * 0.6);
+    cur = target = 0;
+    paint();
   });
 
   measure();
-  cur = target = Math.min(1, progress() / GROW);
+  cur = target = Math.min(1, progress());
   paint();
 })();
