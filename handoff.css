@@ -1,6 +1,6 @@
-/* Final handoff: the article ends on a preview of Freedx. Scrolling starts it growing; it then
-   finishes on its own until it covers the whole screen, and Freedx opens. */
-.page > section.handoff { max-width: 56rem; padding-block: 0; height: 200vh; height: 200svh; position: relative; }
+/* Final handoff: the article ends on a preview of Freedx. As soon as it comes into view it grows
+   on its own until it covers the whole screen, and Freedx opens. */
+.page > section.handoff { max-width: 56rem; padding-block: 0; height: 130vh; height: 130svh; position: relative; }
 .handoff-stick {
   /* handoff.js stretches the stage to the window width (margin-left / width in px) */
   position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
