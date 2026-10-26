@@ -82,7 +82,7 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 .takeaway { font-size: 1.2rem; line-height: 1.5; padding-top: .4em; }
 .myth { padding-block: 3rem; }
 
-/* Closing + offer */
+/* Closing */
 .closing h2 { font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.18; }
 .cta {
   justify-self: start;
@@ -137,44 +137,9 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 .video-sound:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .video-sound[hidden] { display: none; }
 
-/* Offer: short, bold card with one action */
-.offer-card {
-  position: relative; overflow: hidden; isolation: isolate;
-  background: linear-gradient(140deg, #2b1d8f 0%, #5b48e8 55%, #8170ff 100%);
-  color: #fff; border-radius: 24px;
-  padding: clamp(1.75rem, 5vw, 2.75rem);
-  display: grid; gap: 1.1rem; justify-items: start;
-}
-.offer-card::before {
-  content: ""; position: absolute; z-index: -1; right: -18%; top: -30%; width: 70%; aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(255,255,255,.28), transparent 65%); border-radius: 50%;
-}
-.offer-card > * { margin: 0; }
-.offer-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,255,255,.16); padding: .4rem .8rem; border-radius: 999px; }
-.offer-amount { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: -.02em; }
-.offer-sub { font-size: 1.15rem; line-height: 1.4; opacity: .92; margin-top: -.3rem; }
-.offer-card .cta { background: #fff; color: #2b1d8f; font-size: 1.1rem; padding: 1.05rem 1.8rem; margin-top: .4rem; box-shadow: 0 10px 30px rgba(20, 10, 80, .35); }
-.offer-card .cta::after { content: " →"; }
-.offer-card .cta:hover { background: #f1effe; }
-.offer-card .fine { color: rgba(255,255,255,.72); font-size: .8rem; }
-/* Instead of a button: a pulsing cue that the page goes on, tapping it scrolls on to the handoff */
-.offer-cue {
-  position: relative; display: grid; place-items: center; width: 56px; height: 56px; margin-top: .2rem;
-  border-radius: 50%; color: #fff; background: rgba(255,255,255,.14); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
-}
-.offer-cue::before {
-  content: ""; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 0 rgba(255,255,255,.45);
-  animation: offer-ring 2s ease-out infinite;
-}
-.offer-cue svg { width: 24px; height: 26px; overflow: visible; }
-.offer-cue path { opacity: .15; animation: offer-chevron 1.5s ease-in-out infinite; }
-.offer-cue path:nth-child(2) { animation-delay: .18s; }
-.offer-cue path:nth-child(3) { animation-delay: .36s; }
-@keyframes offer-chevron { 0%, 100% { opacity: .15; transform: translateY(-3px); } 40% { opacity: 1; transform: translateY(0); } }
-@keyframes offer-ring { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.45); } 80%, 100% { box-shadow: 0 0 0 18px rgba(255,255,255,0); } }
-@media (prefers-reduced-motion: reduce) { .offer-cue path, .offer-cue::before { animation: none; opacity: 1; } }
-@media (max-width: 480px) { .offer-card .offer-cue { justify-self: center; } }
-@media (max-width: 480px) { .offer-card { justify-items: stretch; } .offer-card .cta { justify-self: stretch; } .offer-kicker, 
+/* The offer, told inside the closing text */
+.closing .offer-hl { color: var(--brand-ink); font-weight: 700; }
+.closing .fine { margin-top: .3rem; font-size: .8rem; }
 </style>
 <link rel="stylesheet" href="handoff.css">
 </head><body>
@@ -271,22 +236,11 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     <h2>Հիմա առաջին քայլն այդքան բարդ չի՞ թվում</h2>
     <p>Կրիպտոարժույթին ծանոթանալու համար պարտադիր չէ միանգամից մասնագետ դառնալ, մեծ գումարներ ներդնել կամ օրերով հետևել գրաֆիկներին։</p>
     <p>Կարելի է սկսել պարզ քայլերից՝ ծանոթանալ հարթակին, ուսումնասիրել դրա հնարավորությունները և աստիճանաբար անցնել գործնական քայլերի։</p>
-    <p>Իսկ նրանց համար, ովքեր կորոշեն փորձել կրիպտոարժույթով առևտուր անել, Freedx-ն ունի հատուկ առաջարկ։</p>
+    <p>Իսկ նրանց համար, ովքեր կորոշեն փորձել կրիպտոարժույթով առևտուր անել, Freedx-ն ունի հատուկ առաջարկ՝ <span class="offer-hl">մինչև 100&nbsp;USDT առաջին գործարքների կորուստների փոխհատուցում</span>։</p>
+    <p class="fine">Գործում է ակցիայի պայմաններով։ Փոխհատուցումը չի երաշխավորում շահույթ, կրիպտոարժույթով առևտուրը կապված է ռիսկերի հետ։</p>
   </section>
 
-  <section class="offer" data-block="offer" data-block-index="9">
-    <div class="offer-card">
-      <span class="offer-kicker">Հատուկ առաջարկ</span>
-      <p class="offer-amount">մինչև 100&nbsp;USDT</p>
-      <p class="offer-sub">առաջին գործարքների կորուստների փոխհատուցում</p>
-      <a class="offer-cue" href="#handoff" data-track="offer_cue" aria-label="Ոլորեք ներքև">
-        <svg viewBox="0 0 24 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3l5 5 5-5"/><path d="M7 10l5 5 5-5"/><path d="M7 17l5 5 5-5"/></svg>
-      </a>
-      <p class="fine">Գործում է ակցիայի պայմաններով։ Փոխհատուցումը չի երաշխավորում շահույթ, կրիպտոարժույթով առևտուրը կապված է ռիսկերի հետ։</p>
-    </div>
-  </section>
-
-  <section class="handoff" id="handoff" data-block="handoff" data-block-index="10" data-href="https://freedx.com/hy?utm_source=google&utm_medium=promo_page&utm_campaign=new_users&utm_content=5_mif">
+  <section class="handoff" id="handoff" data-block="handoff" data-block-index="9" data-href="https://freedx.com/hy?utm_source=google&utm_medium=promo_page&utm_campaign=new_users&utm_content=5_mif">
     <div class="handoff-stick">
       <div class="handoff-head">
         <p class="handoff-kicker">Հոդվածից՝ Freedx</p>
