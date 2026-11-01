@@ -1,5 +1,5 @@
 // Письмо команде Prodigi: разделы брифа в том же порядке, что и в анкете.
-import { STEPS, CONTACTS } from '../public/js/config/brief.js';
+import { STEPS } from '../public/js/config/brief.js';
 import { getMessages, translate } from '../public/js/config/locales/index.js';
 import { OTHER } from '../public/js/core/validate.js';
 
@@ -68,13 +68,6 @@ export function buildEmail({ id, answers, fileLinks, createdAt, linkDays }) {
   const textParts = [t('email.heading'), meta, ''];
   const htmlSections = [];
 
-  // Контакт — первым блоком, чтобы сразу было видно, кому отвечать.
-  const contactRows = CONTACTS.questions[0].fields.map((f) => [t(`fields.${f.id}.label`), render(f, answers[f.id], fileLinks)]);
-  textParts.push(`== ${t('email.contactTitle')} ==`);
-  contactRows.forEach(([label, v]) => textParts.push(`${label}: ${v.text}`));
-  textParts.push('');
-  htmlSections.push(section(t('email.contactTitle'), null, contactRows));
-
   STEPS.forEach((step, i) => {
     const num = String(i + 1).padStart(2, '0');
     const title = t(`steps.${step.id}.title`);
@@ -96,7 +89,6 @@ export function buildEmail({ id, answers, fileLinks, createdAt, linkDays }) {
 
   const hasFiles = Object.keys(fileLinks).length > 0;
   if (hasFiles) textParts.push(t('email.filesNote', { days: linkDays }));
-  textParts.push(t('email.replyHint'));
 
   const html = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;padding:0;background:#f4f4f1;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#0d0d0d">
@@ -108,7 +100,7 @@ export function buildEmail({ id, answers, fileLinks, createdAt, linkDays }) {
 <tr><td style="padding:4px 32px 20px;font-size:13px;color:#7a7a76">${esc(meta)}</td></tr>
 ${htmlSections.join('\n')}
 <tr><td style="padding:20px 32px 28px;font-size:12px;color:#7a7a76;border-top:1px solid #e7e7e3">
-${hasFiles ? `${esc(t('email.filesNote', { days: linkDays }))}<br>` : ''}${esc(t('email.replyHint'))}
+${hasFiles ? esc(t('email.filesNote', { days: linkDays })) : ''}
 </td></tr>
 </table></td></tr></table></body></html>`;
 

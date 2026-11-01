@@ -44,15 +44,29 @@ export async function uploadFile(file, submissionId, onProgress) {
     size: file.size,
   });
 
+  // Отправляем так же, как официальный клиент Supabase: multipart с типом файла,
+  // который выбрал сервер (браузеры часто не знают тип для .heic, .ai, .psd и т. п.).
+  const body = new FormData();
+  body.append('cacheControl', '3600');
+  body.append('', new File([file], file.name, { type: ticket.contentType }));
+
   await new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', ticket.uploadUrl);
-    xhr.setRequestHeader('Content-Type', ticket.contentType);
     xhr.setRequestHeader('x-upsert', 'false');
     xhr.upload.onprogress = (e) => e.lengthComputable && onProgress && onProgress(e.loaded / e.total);
-    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new ApiError('upload', xhr.status)));
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) return resolve();
+      let reason = '';
+      try {
+        reason = JSON.parse(xhr.responseText).message || '';
+      } catch {
+        /* без подробностей */
+      }
+      reject(new ApiError('upload', xhr.status, reason));
+    };
     xhr.onerror = () => reject(new ApiError('network', 0));
-    xhr.send(file);
+    xhr.send(body);
   });
 
   return { path: ticket.path, name: file.name, size: file.size };

@@ -57,10 +57,10 @@ const payload = (extra = {}) => ({
 });
 
 test('валидация: обязательные поля и форматы', () => {
-  const r = sanitizeBrief(answers({ company: ' ', email: 'not-an-email', website: 'javascript:alert(1)' }));
+  const r = sanitizeBrief(answers({ company: ' ', website: 'javascript:alert(1)' }));
   assert.equal(r.valid, false);
   assert.deepEqual(Object.keys(r.errors.brand).sort(), ['company', 'website']);
-  assert.ok(r.errors.contacts.email);
+  assert.ok(sanitizeBrief(answers({ website: '' })).errors.brand.website, 'ссылка на сайт обязательна');
   const ok = sanitizeBrief(answers());
   assert.equal(ok.valid, true);
   assert.equal(ok.clean.website, 'https://alfaforex.ru/');
@@ -132,10 +132,10 @@ test('загрузка файла и успешная отправка с пис
   const email = mock.state.emails.at(-1);
   assert.equal(email.subject, 'Новый бриф Promo Experience — Альфа Форекс');
   assert.deepEqual(email.to, ['team@prodigi.test']);
-  assert.equal(email.reply_to, 'anna@alfa.example');
+  assert.equal(email.reply_to, undefined);
   assert.ok(email.html.includes('Низкие комиссии &lt;b&gt;и&lt;/b&gt; поддержка'), 'HTML экранирован');
   assert.ok(email.html.includes('/storage/v1/object/sign/brief-files/'), 'есть ссылка на файл');
-  assert.ok(email.text.includes('Анна Смирнова'));
+  assert.ok(!email.text.includes('Анна Смирнова'), 'контактов в письме больше нет');
   assert.ok(email.text.includes('Другое: Повысить доверие'));
 });
 

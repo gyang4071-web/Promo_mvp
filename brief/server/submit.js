@@ -66,8 +66,9 @@ export async function handleSubmit(request, env = process.env) {
     await upsertBrief(cfg, {
       id,
       brand: clean.company,
-      contact_name: clean.name,
-      contact_email: clean.email,
+      // Блок контактов убран из брифа; колонки в базе остаются и заполняются пустыми.
+      contact_name: '',
+      contact_email: '',
       locale,
       brief_version: BRIEF_VERSION,
       answers: clean,
@@ -93,7 +94,7 @@ export async function handleSubmit(request, env = process.env) {
 
   const email = buildEmail({ id, answers: clean, fileLinks, createdAt, linkDays: cfg.linkDays });
   try {
-    const emailId = await sendEmail(cfg, { ...email, replyTo: clean.email });
+    const emailId = await sendEmail(cfg, email);
     await patchBrief(cfg, id, {
       email_status: 'sent',
       email_id: emailId,

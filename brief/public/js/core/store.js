@@ -19,7 +19,7 @@ function blank(locale) {
     locale,
     submissionId: newId(),
     startedAt: null,
-    screen: 'welcome', // welcome | step | contacts | review | success
+    screen: 'welcome', // welcome | step | review | success
     step: 0,
     maxStep: 0,
     answers: {},

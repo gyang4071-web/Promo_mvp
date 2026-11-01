@@ -15,7 +15,7 @@ export const STEPS = [
         fields: [
           { id: 'company', type: 'text', required: true, autocomplete: 'organization' },
           { id: 'product', type: 'textarea', required: true },
-          { id: 'website', type: 'url' },
+          { id: 'website', type: 'url', required: true },
         ],
       },
       { id: 'q2', fields: [{ id: 'advantages', type: 'textarea', required: true }] },
@@ -103,23 +103,7 @@ export const STEPS = [
   },
 ];
 
-// Контактные данные — завершающий блок, не считается этапом брифа.
-export const CONTACTS = {
-  id: 'contacts',
-  questions: [
-    {
-      id: 'contact',
-      fields: [
-        { id: 'name', type: 'text', required: true, autocomplete: 'name' },
-        { id: 'position', type: 'text', autocomplete: 'organization-title' },
-        { id: 'email', type: 'email', required: true, autocomplete: 'email' },
-        { id: 'phone', type: 'tel', autocomplete: 'tel' },
-      ],
-    },
-  ],
-};
-
-export const SECTIONS = [...STEPS, CONTACTS];
+export const SECTIONS = STEPS;
 
 // Ограничения длины (символы) и списков.
 export const LIMITS = {

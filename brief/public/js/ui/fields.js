@@ -299,7 +299,15 @@ function filesInput(field, ctx) {
         fresh.replaceWith(renderDone(saved));
       })
       .catch((e) => {
-        const msg = e.code === 'not_configured' ? ctx.t('files.errorUnavailable') : ctx.t('files.errorUpload');
+        const messages = {
+          not_configured: 'files.errorUnavailable',
+          bad_type: 'files.errorType',
+          bad_size: 'files.errorSize',
+          rate_limited: 'files.errorRate',
+          network: 'files.errorNetwork',
+        };
+        const msg = ctx.t(messages[e.code] || (e.status >= 400 && e.status < 500 && e.code === 'upload' ? 'files.errorRejected' : 'files.errorUpload'));
+        console.error('[brief] Ошибка загрузки файла', file.name, e.code, e.status, e.details || '');
         const failed = h(
           'li',
           { class: 'file is-error' },

@@ -1,4 +1,4 @@
-import { STEPS, CONTACTS, SECTIONS, isQuestionOptional } from './config/brief.js';
+import { STEPS, SECTIONS, isQuestionOptional } from './config/brief.js';
 import { LOCALES, DEFAULT_LOCALE, getMessages, translate } from './config/locales/index.js';
 import { createStore } from './core/store.js';
 import { validateSection, sanitizeBrief, checkField, isEmpty, OTHER } from './core/validate.js';
@@ -30,7 +30,7 @@ const progressFill = document.getElementById('progress-fill');
 const progressText = document.getElementById('progress-text');
 const savedEl = document.getElementById('saved');
 const TOTAL = STEPS.length;
-const CONTACTS_INDEX = TOTAL; // в maxStep: 0..5 — этапы, 6 — контакты, 7 — проверка
+const REVIEW_INDEX = TOTAL; // в maxStep: 0..5 — этапы, 6 — проверка
 
 let savedTimer;
 function flashSaved() {
@@ -75,9 +75,6 @@ function setProgress(screen, step) {
   if (screen === 'step') {
     value = step / TOTAL;
     text = t('progress.step', { n: step + 1, total: TOTAL });
-  } else if (screen === 'contacts') {
-    value = 0.94;
-    text = t('progress.contacts');
   } else if (screen === 'review') {
     value = 1;
     text = t('progress.review');
@@ -93,9 +90,14 @@ function setProgress(screen, step) {
 // ---------- навигация ----------
 let navToken = 0;
 function go(screen, step = store.state.step) {
-  const maxStep = Math.max(
-    store.state.maxStep,
-    screen === 'step' ? step : screen === 'contacts' ? CONTACTS_INDEX : screen === 'review' ? CONTACTS_INDEX + 1 : 0,
+  // Старые черновики могли остановиться на удалённом экране контактов.
+  if (screen === 'contacts') {
+    screen = 'step';
+    step = TOTAL - 1;
+  }
+  const maxStep = Math.min(
+    REVIEW_INDEX,
+    Math.max(store.state.maxStep, screen === 'step' ? step : screen === 'review' ? REVIEW_INDEX : 0),
   );
   const patch = { screen, step, maxStep };
   if (screen === 'review') patch.returnToReview = false;
@@ -111,7 +113,6 @@ function render(animate) {
     if (token !== navToken) return;
     let node;
     if (screen === 'step') node = renderSection(STEPS[step], step);
-    else if (screen === 'contacts') node = renderSection(CONTACTS, CONTACTS_INDEX);
     else if (screen === 'review') node = renderReview();
     else if (screen === 'success') node = renderSuccess();
     else node = renderWelcome();
@@ -187,10 +188,7 @@ function renderWelcome() {
 
 // ---------- этап ----------
 function stepNav(currentIndex, onJump) {
-  const items = [...STEPS.map((s, i) => ({ index: i, title: t(`steps.${s.id}.title`) })), {
-    index: CONTACTS_INDEX,
-    title: t('steps.contacts.title'),
-  }];
+  const items = STEPS.map((s, i) => ({ index: i, title: t(`steps.${s.id}.title`) }));
   return h(
     'nav',
     { class: 'step-nav', 'aria-label': t('nav.stepsLabel') },
@@ -222,7 +220,7 @@ function stepNav(currentIndex, onJump) {
 }
 
 function renderSection(section, index) {
-  const isContacts = section === CONTACTS;
+  const isLast = index === TOTAL - 1;
   const state = store.state;
   const wrappers = new Map();
 
@@ -247,20 +245,18 @@ function renderSection(section, index) {
     return h(
       'div',
       { class: 'question', id: `q-${q.id}` },
-      isContacts
-        ? null
-        : h(
-            'div',
-            { class: 'question__head' },
-            h('span', { class: 'question__num' }, t('common.question', { n: num })),
-            optional ? h('span', { class: 'tag' }, t('common.optional')) : null,
-          ),
-      h(isContacts ? 'h2' : 'h2', { class: 'question__title' }, t(`questions.${q.id}.title`)),
+      h(
+        'div',
+        { class: 'question__head' },
+        h('span', { class: 'question__num' }, t('common.question', { n: num })),
+        optional ? h('span', { class: 'tag' }, t('common.optional')) : null,
+      ),
+      h('h2', { class: 'question__title' }, t(`questions.${q.id}.title`)),
       hint ? h('p', { class: 'question__hint' }, hint) : null,
       example
         ? h('details', { class: 'example' }, h('summary', null, t('common.example')), h('p', null, example))
         : null,
-      h('div', { class: `question__fields${isContacts ? ' question__fields--grid' : ''}` }, fields),
+      h('div', { class: 'question__fields' }, fields),
     );
   });
 
@@ -298,30 +294,25 @@ function renderSection(section, index) {
   const forward = () => {
     if (!validateHere()) return;
     if (store.state.returnToReview) go('review');
-    else if (isContacts) go('review');
-    else if (index < TOTAL - 1) go('step', index + 1);
-    else go('contacts');
+    else if (isLast) go('review');
+    else go('step', index + 1);
   };
   const back = () => {
     if (hasActiveUploads()) return validateHere();
-    if (isContacts) go('step', TOTAL - 1);
-    else if (index === 0) go('welcome');
+    if (index === 0) go('welcome');
     else go('step', index - 1);
   };
   const jump = (target) => {
     if (target > index && !validateHere()) return;
     if (target < index && hasActiveUploads()) return validateHere();
-    if (target === CONTACTS_INDEX) go('contacts');
-    else go('step', target);
+    go('step', target);
   };
 
   const primaryLabel = store.state.returnToReview
     ? t('nav.backToReview')
-    : isContacts
+    : isLast
       ? t('nav.toReview')
-      : index === TOTAL - 1
-        ? t('nav.toContacts')
-        : t('nav.next');
+      : t('nav.next');
 
   const form = h(
     'form',
@@ -335,7 +326,7 @@ function renderSection(section, index) {
     },
     questions,
     // Ловушка для ботов: люди это поле не видят и не заполняют.
-    isContacts
+    isLast
       ? h(
           'div',
           { class: 'hp', 'aria-hidden': 'true' },
@@ -371,16 +362,15 @@ function renderSection(section, index) {
 
   return h(
     'section',
-    { class: `screen screen--step${isContacts ? ' screen--contacts' : ''}` },
+    { class: 'screen screen--step' },
     h(
       'aside',
       { class: 'step-aside' },
       h(
         'p',
         { class: 'step-count' },
-        isContacts
-          ? h('span', { class: 'step-count__label' }, t('progress.contacts'))
-          : [h('span', { class: 'step-count__now' }, String(index + 1).padStart(2, '0')), h('span', { class: 'step-count__total' }, `/${String(TOTAL).padStart(2, '0')}`)],
+        h('span', { class: 'step-count__now' }, String(index + 1).padStart(2, '0')),
+        h('span', { class: 'step-count__total' }, `/${String(TOTAL).padStart(2, '0')}`),
       ),
       h('h1', { class: 'step-title', tabindex: '-1', 'data-autofocus': true }, t(`steps.${section.id}.title`)),
       h('p', { class: 'step-lead' }, t(`steps.${section.id}.lead`)),
@@ -427,8 +417,7 @@ function renderReview() {
 
   const editSection = (section, i) => {
     store.update({ returnToReview: true });
-    if (section === CONTACTS) go('contacts');
-    else go('step', i);
+    go('step', i);
   };
 
   const cards = SECTIONS.map((section, i) => {
@@ -449,7 +438,7 @@ function renderReview() {
       h(
         'header',
         { class: 'review-card__head' },
-        h('span', { class: 'review-card__num' }, section === CONTACTS ? '—' : String(i + 1).padStart(2, '0')),
+        h('span', { class: 'review-card__num' }, String(i + 1).padStart(2, '0')),
         h('h2', null, t(`steps.${section.id}.title`)),
         invalid ? h('span', { class: 'tag tag--error' }, t('errors.summary')) : null,
         h(
@@ -546,7 +535,7 @@ function renderReview() {
         { class: 'actions actions--review' },
         h(
           'button',
-          { type: 'button', class: 'btn btn--ghost', onclick: () => go('contacts'), 'aria-label': t('nav.back') },
+          { type: 'button', class: 'btn btn--ghost', onclick: () => go('step', TOTAL - 1), 'aria-label': t('nav.back') },
           h('span', { class: 'btn__icon btn__icon--left' }, icon('arrowLeft')),
           h('span', null, t('nav.back')),
         ),
