@@ -264,7 +264,7 @@ function filesInput(field, ctx) {
       { class: 'file is-done' },
       icon('file'),
       h('span', { class: 'file__name' }, file.name),
-      h('span', { class: 'file__meta' }, formatSize(file.size)),
+      h('span', { class: 'file__meta' }, formatSize(file.size, ctx.t('meta.units'))),
       h(
         'button',
         {

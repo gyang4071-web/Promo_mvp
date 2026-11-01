@@ -46,10 +46,10 @@ export function icon(name) {
   return h('span', { class: 'icon', html: icons[name] });
 }
 
-export function formatSize(bytes) {
-  if (bytes < 1024) return `${bytes} Б`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} КБ`;
-  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} МБ`;
+export function formatSize(bytes, units = ['Б', 'КБ', 'МБ']) {
+  if (bytes < 1024) return `${bytes} ${units[0]}`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} ${units[1]}`;
+  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} ${units[2]}`;
 }
 
 export const prefersReducedMotion = () =>

@@ -3,15 +3,18 @@ import { STEPS } from '../public/js/config/brief.js';
 import { getMessages, translate } from '../public/js/config/locales/index.js';
 import { OTHER } from '../public/js/core/validate.js';
 
-const ru = getMessages('ru');
-const t = (key, params) => translate(ru, key, params);
+// Письмо пишется на языке, на котором клиент заполнял бриф. buildEmail синхронный,
+// поэтому язык можно переключать на время одного вызова.
+let messages = getMessages('ru');
+const t = (key, params) => translate(messages, key, params);
 
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 function formatSize(bytes) {
-  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} КБ`;
-  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} МБ`;
+  const [, kb, mb] = messages.meta.units;
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} ${kb}`;
+  return `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} ${mb}`;
 }
 
 // Значение поля → { text, html }
@@ -37,7 +40,7 @@ function render(field, value, fileLinks) {
     case 'files':
       if (!value.length) return empty;
       return {
-        text: value.map((f) => `${f.name} (${formatSize(f.size)}): ${fileLinks[f.path] || 'ссылка недоступна'}`).join('\n'),
+        text: value.map((f) => `${f.name} (${formatSize(f.size)}): ${fileLinks[f.path] || '—'}`).join('\n'),
         html: value
           .map((f) =>
             fileLinks[f.path]
@@ -55,15 +58,16 @@ function render(field, value, fileLinks) {
   }
 }
 
-export function buildEmail({ id, answers, fileLinks, createdAt, linkDays }) {
+export function buildEmail({ id, answers, fileLinks, createdAt, linkDays, locale = 'ru' }) {
+  messages = getMessages(locale);
   const brand = answers.company.replace(/[\r\n]+/g, ' ').slice(0, 120);
   const subject = t('email.subject', { brand });
-  const date = new Intl.DateTimeFormat('ru-RU', {
+  const date = new Intl.DateTimeFormat(messages.meta.dateLocale, {
     dateStyle: 'long',
     timeStyle: 'short',
-    timeZone: 'Europe/Moscow',
+    timeZone: 'Asia/Yerevan',
   }).format(createdAt);
-  const meta = t('email.meta', { id: id.slice(0, 8).toUpperCase(), date: `${date} (МСК)` });
+  const meta = t('email.meta', { id: id.slice(0, 8).toUpperCase(), date });
 
   const textParts = [t('email.heading'), meta, ''];
   const htmlSections = [];
@@ -90,7 +94,7 @@ export function buildEmail({ id, answers, fileLinks, createdAt, linkDays }) {
   const hasFiles = Object.keys(fileLinks).length > 0;
   if (hasFiles) textParts.push(t('email.filesNote', { days: linkDays }));
 
-  const html = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+  const html = `<!doctype html><html lang="${messages.meta.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;padding:0;background:#f4f4f1;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#0d0d0d">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f1"><tr><td align="center" style="padding:32px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#ffffff;border-radius:20px;overflow:hidden">

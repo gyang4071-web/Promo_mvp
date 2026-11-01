@@ -7,9 +7,18 @@ import { h, icon, formatSize, prefersReducedMotion } from './ui/dom.js';
 import { renderField, setFieldError, hasActiveUploads } from './ui/fields.js';
 
 // ---------- язык ----------
+const LANG_KEY = 'prodigi-brief-lang';
+
+// Язык: ?lang=ru в ссылке → выбор посетителя в этом браузере → армянский по умолчанию.
 function pickLocale() {
   const fromUrl = new URLSearchParams(location.search).get('lang');
   if (fromUrl && LOCALES[fromUrl]) return fromUrl;
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved && LOCALES[saved]) return saved;
+  } catch {
+    /* без сохранения */
+  }
   return DEFAULT_LOCALE;
 }
 
@@ -19,10 +28,6 @@ const t = (key, params) => translate(messages, key, params);
 
 // ---------- состояние ----------
 const store = createStore({ locale, onSaved: flashSaved });
-if (store.state.locale && LOCALES[store.state.locale] && !new URLSearchParams(location.search).get('lang')) {
-  locale = store.state.locale;
-  messages = getMessages(locale);
-}
 
 const view = document.getElementById('view');
 const progressEl = document.getElementById('progress');
@@ -47,25 +52,44 @@ function applyChrome() {
   document.getElementById('brand-name').textContent = t('brand.name');
   document.getElementById('brand-suffix').textContent = t('brand.suffix');
   document.getElementById('brand-product').textContent = t('brand.product');
+  document.querySelector('.skip-link').textContent = t('nav.skip');
   progressEl.setAttribute('aria-label', t('progress.label'));
 
   const langBox = document.getElementById('lang');
   langBox.replaceChildren();
   const codes = Object.keys(LOCALES);
   if (codes.length > 1) {
-    const select = h(
-      'select',
-      { class: 'lang', 'aria-label': 'Language' },
-      codes.map((c) => h('option', { value: c, selected: c === locale }, LOCALES[c].meta.name)),
-    );
-    select.addEventListener('change', () => {
-      locale = select.value;
-      messages = getMessages(locale);
-      store.update({ locale });
-      applyChrome();
-      render(false);
-    });
-    langBox.append(select);
+    const group = h('div', { class: 'lang-switch', role: 'group', 'aria-label': 'Language / Язык / Լեզու' });
+    for (const code of codes) {
+      group.append(
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'lang-switch__btn',
+            lang: LOCALES[code].meta.lang,
+            'aria-pressed': code === locale ? 'true' : 'false',
+            title: LOCALES[code].meta.name,
+            onclick: () => {
+              if (code === locale) return;
+              locale = code;
+              messages = getMessages(locale);
+              try {
+                localStorage.setItem(LANG_KEY, locale);
+              } catch {
+                /* без сохранения */
+              }
+              store.update({ locale });
+              applyChrome();
+              setProgress(store.state.screen, store.state.step);
+              render(false);
+            },
+          },
+          LOCALES[code].meta.short,
+        ),
+      );
+    }
+    langBox.append(group);
   }
 }
 
@@ -402,7 +426,7 @@ function displayValue(field, value) {
         v.map((url) => h('li', null, h('a', { href: url, target: '_blank', rel: 'noopener noreferrer' }, url))),
       );
     case 'files':
-      return h('ul', { class: 'review-links' }, v.map((f) => h('li', null, `${f.name} · ${formatSize(f.size)}`)));
+      return h('ul', { class: 'review-links' }, v.map((f) => h('li', null, `${f.name} · ${formatSize(f.size, t('meta.units'))}`)));
     case 'url':
       return h('a', { href: v, target: '_blank', rel: 'noopener noreferrer' }, v);
     default:

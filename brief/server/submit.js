@@ -2,7 +2,7 @@
 // Клиент видит успех только если письмо действительно ушло.
 import { sanitizeBrief } from '../public/js/core/validate.js';
 import { BRIEF_VERSION } from '../public/js/config/brief.js';
-import { LOCALES } from '../public/js/config/locales/index.js';
+import { LOCALES, DEFAULT_LOCALE } from '../public/js/config/locales/index.js';
 import { json, fail, readJson, sameOrigin, clientIp, sha256, UUID_RE, readConfig } from './http.js';
 import { getBrief, countRecent, upsertBrief, patchBrief, listFolder, signedDownloadUrl } from './supabase.js';
 import { sendEmail } from './resend.js';
@@ -39,7 +39,7 @@ export async function handleSubmit(request, env = process.env) {
     const details = Object.fromEntries(Object.entries(errors).map(([s, f]) => [s, Object.keys(f)]));
     return fail(422, 'validation', details);
   }
-  const locale = LOCALES[data.locale] ? data.locale : 'ru';
+  const locale = LOCALES[data.locale] ? data.locale : DEFAULT_LOCALE;
   clean.materialFiles = clean.materialFiles.filter((f) => f.path.startsWith(`${id}/`) && !f.path.includes('..'));
 
   const ipHash = await sha256(`${cfg.salt}:${clientIp(request)}`);
@@ -92,7 +92,7 @@ export async function handleSubmit(request, env = process.env) {
     }
   }
 
-  const email = buildEmail({ id, answers: clean, fileLinks, createdAt, linkDays: cfg.linkDays });
+  const email = buildEmail({ id, answers: clean, fileLinks, createdAt, linkDays: cfg.linkDays, locale });
   try {
     const emailId = await sendEmail(cfg, email);
     await patchBrief(cfg, id, {

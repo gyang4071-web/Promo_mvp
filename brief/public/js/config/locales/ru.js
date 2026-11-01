@@ -2,7 +2,7 @@
 // переведите значения и зарегистрируйте его в locales/index.js. Ключи не меняйте.
 
 export default {
-  meta: { lang: 'ru', name: 'Русский' },
+  meta: { lang: 'ru', name: 'Русский', short: 'РУС', dateLocale: 'ru-RU', units: ['Б', 'КБ', 'МБ'] },
 
   brand: { name: 'PRODIGI', suffix: 'AGENCY', product: 'Бриф Promo Experience' },
 
@@ -32,6 +32,7 @@ export default {
     submit: 'Отправить бриф',
     sending: 'Отправляем…',
     stepsLabel: 'Этапы брифа',
+    skip: 'Перейти к анкете',
   },
 
   progress: {

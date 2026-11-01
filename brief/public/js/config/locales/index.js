@@ -1,9 +1,10 @@
+import hy from './hy.js';
 import ru from './ru.js';
 
-// Чтобы добавить язык: import hy from './hy.js'; и добавить его в LOCALES.
-// Переключатель языка появится в интерфейсе сам, когда языков станет больше одного.
-export const LOCALES = { ru };
-export const DEFAULT_LOCALE = 'ru';
+// Чтобы добавить язык: import en from './en.js'; и добавить его в LOCALES.
+// Переключатель языка показывается сам, когда языков больше одного. Порядок здесь = порядок в переключателе.
+export const LOCALES = { hy, ru };
+export const DEFAULT_LOCALE = 'hy';
 
 export function getMessages(locale) {
   return LOCALES[locale] || LOCALES[DEFAULT_LOCALE];
