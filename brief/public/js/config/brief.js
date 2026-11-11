@@ -83,21 +83,6 @@ export const STEPS = [
   {
     id: 'materials',
     questions: [
-      {
-        id: 'q11',
-        fields: [
-          {
-            id: 'materials',
-            type: 'choice',
-            multiple: true,
-            required: true,
-            options: ['brandbook', 'media', 'presentations', 'research', 'ads'],
-            other: true,
-          },
-          { id: 'materialFiles', type: 'files' },
-          { id: 'materialLinks', type: 'links' },
-        ],
-      },
       { id: 'q12', fields: [{ id: 'restrictions', type: 'textarea' }] },
     ],
   },

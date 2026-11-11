@@ -40,7 +40,7 @@ export async function handleSubmit(request, env = process.env) {
     return fail(422, 'validation', details);
   }
   const locale = LOCALES[data.locale] ? data.locale : DEFAULT_LOCALE;
-  clean.materialFiles = clean.materialFiles.filter((f) => f.path.startsWith(`${id}/`) && !f.path.includes('..'));
+  clean.materialFiles = (clean.materialFiles || []).filter((f) => f.path.startsWith(`${id}/`) && !f.path.includes('..'));
 
   const ipHash = await sha256(`${cfg.salt}:${clientIp(request)}`);
   const createdAt = new Date();

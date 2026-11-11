@@ -27,9 +27,6 @@ function answers(extra = {}) {
     cta: { selected: ['signup'], other: '' },
     landingUrl: '',
     offer: '',
-    materials: { selected: ['brandbook'], other: '' },
-    materialFiles: [],
-    materialLinks: [],
     restrictions: '',
     name: 'Анна Смирнова',
     position: '',
@@ -126,15 +123,14 @@ test('загрузка файла и успешная отправка с пис
 
   const row = mock.state.briefs.get(ID);
   assert.equal(row.email_status, 'sent');
-  assert.equal(row.files.length, 1);
-  assert.equal(row.files[0].size, 4);
+  assert.equal(row.files.length, 0, 'вопроса с файлами в брифе больше нет');
 
   const email = mock.state.emails.at(-1);
   assert.equal(email.subject, 'Новый бриф Promo Experience — Альфа Форекс');
   assert.deepEqual(email.to, ['team@prodigi.test']);
   assert.equal(email.reply_to, undefined);
   assert.ok(email.html.includes('Низкие комиссии &lt;b&gt;и&lt;/b&gt; поддержка'), 'HTML экранирован');
-  assert.ok(email.html.includes('/storage/v1/object/sign/brief-files/'), 'есть ссылка на файл');
+  assert.ok(!email.html.includes('/storage/v1/object/sign/brief-files/'), 'файлов в письме нет');
   assert.ok(!email.text.includes('Анна Смирнова'), 'контактов в письме больше нет');
   assert.ok(email.text.includes('Другое: Повысить доверие'));
 });
