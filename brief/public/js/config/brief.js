@@ -86,6 +86,10 @@ export const STEPS = [
       { id: 'q12', fields: [{ id: 'restrictions', type: 'textarea' }] },
     ],
   },
+  {
+    id: 'extra',
+    questions: [{ id: 'q13', fields: [{ id: 'additionalInfo', type: 'textarea' }] }],
+  },
 ];
 
 export const SECTIONS = STEPS;

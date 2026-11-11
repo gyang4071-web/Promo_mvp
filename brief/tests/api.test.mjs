@@ -28,6 +28,7 @@ function answers(extra = {}) {
     landingUrl: '',
     offer: '',
     restrictions: '',
+    additionalInfo: '',
     name: 'Анна Смирнова',
     position: '',
     email: 'anna@alfa.example',
