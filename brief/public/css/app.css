@@ -130,9 +130,10 @@ a {
   font-size: 17px;
   letter-spacing: 0.12em;
 }
-.wordmark__suffix {
-  font-weight: 500;
-  color: var(--muted);
+.wordmark__logo {
+  display: block;
+  height: 30px;
+  width: auto;
 }
 .topbar__product {
   font-size: 13px;
@@ -1316,8 +1317,8 @@ textarea.input {
   body {
     font-size: 15.5px;
   }
-  .wordmark {
-    font-size: 15px;
+  .wordmark__logo {
+    height: 25px;
   }
   .saved,
   .topbar__step {

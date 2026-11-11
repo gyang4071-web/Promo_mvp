@@ -48,10 +48,7 @@ function flashSaved() {
 
 function applyChrome() {
   document.documentElement.lang = messages.meta.lang;
-  document.title = `${t('welcome.title')} · ${t('brand.name')} ${t('brand.suffix')}`;
-  document.getElementById('brand-name').textContent = t('brand.name');
-  document.getElementById('brand-suffix').textContent = t('brand.suffix');
-  document.getElementById('brand-product').textContent = t('brand.product');
+  document.title = `${t('welcome.title')} · Prodigi`;
   document.querySelector('.skip-link').textContent = t('nav.skip');
   progressEl.setAttribute('aria-label', t('progress.label'));
 
@@ -177,7 +174,6 @@ function renderWelcome() {
     h(
       'div',
       { class: 'welcome' },
-      h('p', { class: 'eyebrow' }, h('span', { class: 'dot' }), t('welcome.eyebrow')),
       h('h1', { class: 'display', tabindex: '-1', 'data-autofocus': true }, t('welcome.title')),
       h('p', { class: 'welcome__lead' }, t('welcome.subtitle')),
       draft ? h('p', { class: 'welcome__draft' }, t('welcome.resumeNote')) : null,
