@@ -23,7 +23,7 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1240px;
-  --topbar: 64px;
+  --topbar: 92px;
 }
 
 *,
@@ -132,7 +132,7 @@ a {
 }
 .wordmark__logo {
   display: block;
-  height: 30px;
+  height: 60px;
   width: auto;
 }
 .topbar__product {
@@ -1312,13 +1312,13 @@ textarea.input {
 
 @media (max-width: 640px) {
   :root {
-    --topbar: 56px;
+    --topbar: 76px;
   }
   body {
     font-size: 15.5px;
   }
   .wordmark__logo {
-    height: 25px;
+    height: 50px;
   }
   .saved,
   .topbar__step {
