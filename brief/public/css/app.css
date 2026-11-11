@@ -514,6 +514,16 @@ a {
 }
 
 /* ---------- этап ---------- */
+.screen--step > * {
+  min-width: 0;
+}
+h1,
+h2,
+h3,
+p,
+li {
+  overflow-wrap: break-word;
+}
 .screen--step {
   display: grid;
   grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.6fr);
@@ -523,6 +533,8 @@ a {
 .step-aside {
   position: sticky;
   top: calc(var(--topbar) + 40px);
+  min-width: 0;
+  container-type: inline-size;
 }
 .step-count {
   margin: 0 0 20px;
@@ -559,12 +571,16 @@ a {
 .step-title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(32px, 3.6vw, 52px);
-  line-height: 1.02;
+  font-size: clamp(28px, 3.6vw, 52px);
+  /* Заголовок подстраивается под ширину колонки, чтобы длинные слова
+     (например, армянские) не вылезали на соседний текст. */
+  font-size: clamp(26px, 9cqi, 52px);
+  line-height: 1.04;
   letter-spacing: -0.03em;
   margin: 0;
   outline: none;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 .step-lead {
   margin: 16px 0 0;
