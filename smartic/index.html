@@ -1,23 +1,377 @@
-<!doctype html>
-<html lang="hy">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Smartic · Մեկ որոշում, և տունդ խելացի է</title>
-    <meta name="description" content="Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ բացահայտիր, թե ինչպես կարող է Smartic-ը փոխել առօրյադ տանը։" />
-    <meta name="theme-color" content="#1c130d" />
-    <meta property="og:title" content="Smartic · Մեկ որոշում, և տունդ խելացի է" />
-    <meta property="og:type" content="website" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="preload" as="image" href="./img/scenes/living-1920.webp" imagesrcset="./img/scenes/living-1080.webp 1080w, ./img/scenes/living-1920.webp 1920w" imagesizes="100vw" />
-    <!-- Google Tag Manager: paste the container snippet here (see README). Events are already pushed to window.dataLayer. -->
-    <script type="module" crossorigin src="./assets/index-BQBXnJO-.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DJ62czI2.css">
-  </head>
-  <body>
-    <div id="root"></div>
-    <noscript>
-      <p style="padding:24px;font-family:sans-serif">Smartic · <a href="https://smartic.am/">smartic.am</a></p>
-    </noscript>
-  </body>
-</html>
+<!doctype html><html lang="hy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smartic · Մեկ որոշում</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ բացահայտիր, թե ինչպես կարող է Smartic-ը փոխել առօրյադ տանը։">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700;800&display=swap">
+<!-- Google Tag Manager: paste the container snippet here. Events are already pushed to window.dataLayer. -->
+<style>
+/*
+  Layout follows the Freedx promo page: one reading column (~66ch), blocks separated by whitespace.
+  The page starts on white. Turning the 3D controller's knob moves the whole page through lavender
+  into deep Smartic violet: src/atmosphere/store.ts rewrites the tokens below on every frame of the
+  turn. The values here are the starting (white) state and what visitors without JS see.
+*/
+:root {
+  --bg: #ffffff;
+  --fg: #15131f;
+  --muted: #5e5a72;
+  --brand: #3200ff;
+  --brand-ink: #2600c4;
+  --surface: #f0edff;
+  --on-brand: #ffffff;
+  --cta-bg: #3200ff;
+  --cta-fg: #ffffff;
+  --font-display: "Noto Sans Armenian", system-ui, sans-serif;
+  --font-body: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --col: 42rem;
+  color-scheme: light;
+}
+
+html { background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+/* a soft violet light that grows from the top-right as the knob is turned up */
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background: radial-gradient(70vmax 60vmax at 85% -10%, rgb(var(--glow-rgb, 140 110 255) / calc(var(--dial, 0) * .28)), transparent 70%);
+}
+.page {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 4rem;
+  position: relative;
+}
+section { padding-block: 2.25rem; }
+.page > section { max-width: var(--col); margin-inline: auto; }
+p { margin: 0; }
+section > * + * { margin-top: 1.1em; }
+strong { font-weight: 650; }
+a { color: inherit; }
+
+/* Hero */
+.hero { padding-top: 2.75rem; }
+.brandbar { display: flex; align-items: center; gap: 1rem; }
+.brandbar img { height: 28px; width: auto; display: block; flex: none; }
+.brandbar::after { content: ""; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--brand), transparent); opacity: .55; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5rem; }
+.meta { font-size: .9rem; color: var(--muted); }
+.lead { font-size: 1.25rem; line-height: 1.55; }
+.turn { font-size: 1.25rem; line-height: 1.5; }
+
+/* Chapters */
+.ch { padding-block: 3rem; }
+.ch-no { display: flex; align-items: center; gap: .9rem; }
+.ch-num {
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(3.2rem, 11vw, 4.5rem); line-height: .9; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; color: transparent;
+  background: linear-gradient(135deg, var(--brand) 10%, var(--brand-ink) 90%); -webkit-background-clip: text; background-clip: text;
+}
+.ch-label {
+  font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-ink);
+  background: var(--surface); padding: .4rem .85rem; border-radius: 999px; line-height: 1.3;
+}
+.ch h2 { font-size: clamp(1.5rem, 4.2vw, 2rem); line-height: 1.2; margin-top: 1rem; }
+.ch .hook { font-size: 1.2rem; line-height: 1.5; }
+.takeaway { font-size: 1.2rem; line-height: 1.5; padding-top: .4em; }
+.more { font-size: 1rem; font-weight: 600; color: var(--brand-ink); text-decoration: none; display: inline-flex; gap: .4em; align-items: center; }
+.more:hover { text-decoration: underline; text-underline-offset: 4px; }
+.more span { transition: transform .2s ease; }
+.more:hover span { transform: translateX(3px); }
+
+/* Closing */
+.closing { padding-block: 5rem 3rem; }
+
+/* Controller block: wider than the text column so the device has room */
+.page > section.controller { max-width: 48rem; text-align: center; padding-block: 3rem; }
+.controller h2 { font-size: clamp(1.6rem, 4.6vw, 2.3rem); line-height: 1.15; }
+.controller > p { max-width: 34rem; margin-inline: auto; }
+.controller #controller-root { margin-top: .5rem; }
+.closing h2 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; }
+.cta {
+  display: inline-block;
+  background: var(--cta-bg);
+  color: var(--cta-fg);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  padding: 1rem 1.6rem;
+  border-radius: 999px;
+  transition: transform .15s ease, filter .15s ease;
+}
+.cta:hover { filter: brightness(1.08); }
+.cta:active { transform: scale(.98); }
+.cta:focus-visible, a:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 3px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; padding-top: .6rem; }
+.fine { font-size: .85rem; line-height: 1.5; color: var(--muted); }
+@media (max-width: 480px) { .cta { display: block; text-align: center; } }
+
+/* The background follows the knob frame by frame; only the text colour flip gets a short fade */
+body, .meta, .fine, .more { transition: color .4s ease; }
+
+/* Scroll reveal (only with JS and motion allowed) */
+.reveal-on .page > section { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal-on .page > section.is-in { opacity: 1; transform: none; }
+.reveal-on .ch-num { display: inline-block; transform: scale(.6); opacity: 0; transition: transform .6s cubic-bezier(.3,1.5,.5,1) .15s, opacity .4s ease .15s; }
+.reveal-on .ch-label { opacity: 0; transform: translateX(-12px); transition: opacity .5s ease .3s, transform .5s ease .3s; }
+.reveal-on .is-in .ch-num, .reveal-on .is-in .ch-label { transform: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .cta, .more span, body, .meta, .fine, .more { transition: none; }
+}
+
+#trk-debug {
+  position: fixed; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: min(340px, calc(100vw - 24px)); max-height: 40vh; overflow: auto;
+  background: #15131f; color: #fff; font: 12px/1.45 ui-monospace, Menlo, monospace;
+  padding: 10px 12px; border-radius: 10px; z-index: 50; opacity: .92;
+}
+</style>
+<script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) document.documentElement.classList.add('reveal-on');</script>
+  <script type="module" crossorigin src="./assets/index-BmNzxFjS.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-aV6WZB-1.css">
+</head><body>
+
+<main class="page" data-lang="hy">
+
+  <section class="hero" data-block="hero" data-block-index="0">
+    <div class="brandbar">
+      <img src="./smartic-logo.svg" alt="Smartic" width="180" height="28">
+    </div>
+    <h1>Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
+    <p class="meta">3 րոպե ընթերցում</p>
+  </section>
+
+  <section class="intro" data-block="intro" data-block-index="1">
+    <p class="lead">Տան գեղեցկությունը տեսանելի է, իսկ իրական հարմարավետությունը՝ զգալի։</p>
+    <p>Այն զգում ես ամեն օր՝ քեզ հաճելի լուսավորության, հարմարավետ ջերմաստիճանի, հանգիստ առավոտների ու սիրելի երեկոների ընթացքում։</p>
+    <p>Երբեմն բավական է ընդամենը մեկ ճիշտ որոշում, որպեսզի տանը անցկացրած ժամանակը բոլորովին այլ զգացողություններ պարգևի։</p>
+    <p class="turn"><strong>Տեսնենք, թե ինչից է սկսվում այդ զգացողությունը՝ 5 ոլորտում։</strong></p>
+  </section>
+
+  <section class="controller" id="controller" data-block="controller" data-block-index="2">
+    <h2>Փոխիր լույսը։ Զգա տարբերությունը։</h2>
+    <p id="controller-instruction">Պտտիր կարգավորիչը, և ամբողջ էջը կփոխի իր լույսը՝ սպիտակից մինչև խորը մանուշակագույն։</p>
+    <div id="controller-root"></div>
+    <p class="fine">Կարգավորիչը ստեղծագործական ցուցադրություն է և Smartic-ի կոնկրետ սարքի ճշգրիտ պատճենը չէ։</p>
+  </section>
+
+  <section class="ch" id="lighting" data-block="lighting" data-block-index="3">
+    <div class="ch-no"><span class="ch-num">01</span><span class="ch-label">Լուսավորություն</span></div>
+    <h2>Տան մթնոլորտը սկսվում է լույսից</h2>
+    <p class="hook">Երբեմն բավական է փոխել լուսավորությունը, և նույն սենյակը բոլորովին այլ տրամադրություն է ստանում։</p>
+    <p>Մեղմ լույս՝ հանգիստ երեկոյի համար, ավելի պայծառ լուսավորություն՝ առօրյա գործերի, իսկ ջերմ երանգներ՝ մտերիմների հետ անցկացվող պահերի համար։</p>
+    <p>Smartic-ի լուսավորության կառավարման լուծումներն օգնում են հարմարեցնել լույսը քո նախընտրություններին և օրվա տարբեր պահերին։</p>
+    <p class="takeaway"><strong>Նույն սենյակը, բայց բոլորովին այլ երեկո։</strong></p>
+    <p><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="ch" id="heating" data-block="heating" data-block-index="4">
+    <div class="ch-no"><span class="ch-num">02</span><span class="ch-label">Ջեռուցում և էներգիայի կառավարում</span></div>
+    <h2>Հարմարավետություն, որը զգում ես ամեն օր</h2>
+    <p class="hook">Տան հարմարավետությունը սկսվում է նաև ճիշտ ջերմաստիճանից։</p>
+    <p>Երբ դրսում ցուրտ է, հաճելի է վերադառնալ տուն, որտեղ քեզ սպասում է քո նախընտրած միջավայրը։</p>
+    <p>Smartic-ի ջեռուցման և էներգիայի կառավարման լուծումներն օգնում են վերահսկել տան ջերմային պայմաններն ու դրանք հարմարեցնել առօրյայիդ։</p>
+    <p><a class="more" data-track="category_heating" data-out="heating" href="https://smartic.am/product/?product_category=%D5%BB%D5%A5%D5%BC%D5%B8%D6%82%D6%81%D5%B8%D6%82%D5%B4-%D6%87-%D5%A7%D5%B6%D5%A5%D6%80%D5%A3%D5%AB%D5%A1%D5%B5%D5%AB-%D5%AF%D5%A1%D5%BC%D5%A1%D5%BE%D5%A1%D6%80%D5%B8%D6%82%D5%B4" target="_blank" rel="noopener">Տեսնել ջեռուցման լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="ch" id="windows" data-block="windows" data-block-index="5">
+    <div class="ch-no"><span class="ch-num">03</span><span class="ch-label">Պատուհաններ և մուտք</span></div>
+    <h2>Առավոտներ, որոնք սկսվում են քո ուզած ձևով</h2>
+    <p class="hook">Պատկերացրու առավոտ, երբ վարագույրները բացվում են, և սենյակը կամաց-կամաց լցվում է բնական լույսով։</p>
+    <p>Կամ երեկո, երբ կարող ես ստեղծել ավելի հանգիստ ու առանձնացված միջավայր՝ առանց ավելորդ գործողությունների։</p>
+    <p>Smartic-ի պատուհանների, վարագույրների և մուտքի կառավարման լուծումները առօրյան դարձնում են ավելի հարմարավետ։</p>
+    <p>Իսկ մուտքի համար դռան խելացի փականը թույլ է տալիս մուտք գործել մատնահետքով, կոդերով կամ քարտերով։</p>
+    <p><a class="more" data-track="category_windows" data-out="windows" href="https://smartic.am/product/?product_category=%D5%BA%D5%A1%D5%BF%D5%B8%D6%82%D5%B0%D5%A1%D5%B6%D5%B6%D5%A5%D6%80-%D6%87-%D5%B4%D5%B8%D6%82%D5%BF%D6%84" target="_blank" rel="noopener">Տեսնել պատուհանների և մուտքի լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="ch" id="central" data-block="central" data-block-index="6">
+    <div class="ch-no"><span class="ch-num">04</span><span class="ch-label">Կենտրոնական կառավարում</span></div>
+    <h2>Քո տունը՝ քո կանոններով</h2>
+    <p class="hook">Երբ տան տարբեր սարքերը կարելի է կառավարել մեկ հարթակից, ամեն ինչ դառնում է ավելի պարզ։</p>
+    <p>Լուսավորության կարգավորում, տան միջավայրի վերահսկում կամ նախընտրելի սցենարի գործարկում՝ առանց բազմաթիվ առանձին գործողությունների։</p>
+    <p>Smartic-ի կենտրոնական կառավարման լուծումները թույլ են տալիս համատեղելի սարքերը միավորել ու կառավարել առավել հարմար եղանակով։</p>
+    <p><a class="more" data-track="category_central" data-out="central" href="https://smartic.am/product/?product_category=central-control" target="_blank" rel="noopener">Տեսնել կենտրոնական կառավարման լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="ch" id="security" data-block="security" data-block-index="7">
+    <div class="ch-no"><span class="ch-num">05</span><span class="ch-label">Անվտանգություն և պաշտպանություն</span></div>
+    <h2>Հանգստություն, նույնիսկ երբ տանը չես</h2>
+    <p class="hook">Տանը քեզ ապահով զգալը կարևոր է, բայց նույնքան կարևոր է հանգիստ լինել նաև այն ժամանակ, երբ բացակայում ես։</p>
+    <p>Smartic-ի անվտանգության և պաշտպանության լուծումները կարող են օգնել վերահսկել տան որոշ կարևոր հատվածներն ու համապատասխան սարքավորումների միջոցով տեղեկանալ հնարավոր միջադեպերի մասին։</p>
+    <p><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="closing" id="closing" data-block="conclusion" data-block-index="8">
+    <h2>Մեկ որոշում, և տունդ խելացի է</h2>
+    <p>Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ ամեն ինչ կարելի է հարմարեցնել քո առօրյային։</p>
+    <p>Smartic-ի մասնագետները կօգնեն հասկանալ, թե որ լուծումներն են հարմար հենց քո տանը։</p>
+    <div class="cta-row">
+      <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ը</a>
+      <a class="more" data-track="cta_contact" data-out="contact" href="https://smartic.am/contact-us/" target="_blank" rel="noopener">Կապ Smartic-ի հետ <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* Scroll reveal: each block rises in once as it enters the screen. */
+(function () {
+  if (!document.documentElement.classList.contains('reveal-on')) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
+  document.querySelectorAll('.page > section').forEach(function (s) { io.observe(s); });
+})();
+</script>
+
+<script>
+/*
+  Outbound links to smartic.am carry UTM tags. Tags the visitor arrived with (utm_*, gclid, …)
+  are passed on; otherwise the defaults below are used. Existing parameters are never overwritten.
+*/
+(function () {
+  var DEFAULTS = { utm_source: 'google', utm_medium: 'promo_page', utm_campaign: 'smartic_one_decision' };
+  var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'wbraid', 'gbraid'];
+  var incoming = {};
+  try {
+    var q = new URLSearchParams(location.search);
+    KEYS.forEach(function (k) { if (q.get(k)) incoming[k] = q.get(k); });
+    if (Object.keys(incoming).length) sessionStorage.setItem('smartic.utm', JSON.stringify(incoming));
+    else incoming = JSON.parse(sessionStorage.getItem('smartic.utm') || '{}');
+  } catch (e) {}
+  var hasCampaign = !!incoming.utm_source;
+  document.querySelectorAll('a[data-out]').forEach(function (a) {
+    try {
+      var u = new URL(a.href);
+      var add = Object.assign({}, hasCampaign ? incoming : DEFAULTS);
+      if (!add.utm_content) add.utm_content = 'landing_' + a.dataset.out;
+      Object.keys(add).forEach(function (k) { if (!u.searchParams.has(k)) u.searchParams.set(k, add[k]); });
+      a.href = u.toString();
+    } catch (e) {}
+  });
+})();
+</script>
+
+<script>
+/*
+  Block tracking (same events as the Freedx page).
+  Every <section data-block="..."> is a block. Events:
+    block_view   — block reached (its top entered the upper 60% of the screen), once per block
+    landing_exit — visitor left the page: last_block = deepest block reached, current_block = block on screen
+    cta_click    — click on an element with data-track
+  Sent to GA4 (gtag), GTM (dataLayer) and Yandex Metrica (ym + YM_COUNTER_ID), whichever is installed.
+  No personal data is collected.
+*/
+(function () {
+  var YM_COUNTER_ID = null;
+
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+  var total = blocks.length;
+  var seen = {};
+  var deepest = null;
+  var current = null;
+  var exitSent = false;
+  var t0 = Date.now();
+  var debug = location.hash === '#debug';
+  var panel = null;
+
+  function info(el) {
+    return { block_id: el.dataset.block, block_index: Number(el.dataset.blockIndex), blocks_total: total };
+  }
+
+  function send(name, params, beacon) {
+    params = Object.assign({ page_lang: 'hy', page_id: 'smartic_landing' }, params || {});
+    try {
+      if (typeof window.gtag === 'function') {
+        var p = Object.assign({}, params);
+        if (beacon) p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign({ event: name }, params));
+      }
+      if (YM_COUNTER_ID && typeof window.ym === 'function') {
+        window.ym(YM_COUNTER_ID, 'reachGoal', name === 'block_view' ? 'block_' + params.block_id : name, params);
+      }
+    } catch (e) {}
+    if (debug) log(name, params);
+  }
+
+  window.__trackEvent = function (n, p) { send(n, p); };
+
+  function log(name, params) {
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'trk-debug';
+      document.body.appendChild(panel);
+    }
+    var line = document.createElement('div');
+    line.textContent = name + ' ' + JSON.stringify(params);
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  var reachObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var d = info(en.target);
+      if (seen[d.block_id]) return;
+      seen[d.block_id] = true;
+      if (!deepest || d.block_index > deepest.block_index) deepest = d;
+      send('block_view', Object.assign({ seconds_on_page: Math.round((Date.now() - t0) / 1000) }, d));
+    });
+  }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
+
+  var currentObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) current = info(en.target); });
+  }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+
+  blocks.forEach(function (el) { reachObs.observe(el); currentObs.observe(el); });
+
+  function sendExit() {
+    if (exitSent || !deepest) return;
+    exitSent = true;
+    send('landing_exit', {
+      last_block: deepest.block_id,
+      last_block_index: deepest.block_index,
+      current_block: current ? current.block_id : deepest.block_id,
+      blocks_total: total,
+      read_to_end: deepest.block_index === total - 1,
+      seconds_on_page: Math.round((Date.now() - t0) / 1000)
+    }, true);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') sendExit();
+    else exitSent = false;
+  });
+  window.addEventListener('pagehide', sendExit);
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-track]');
+    if (!a) return;
+    var block = a.closest('[data-block]');
+    send('cta_click', {
+      cta_id: a.dataset.track,
+      block_id: block ? block.dataset.block : null,
+      link_url: a.href || null
+    }, true);
+  });
+})();
+</script>
+</body></html>

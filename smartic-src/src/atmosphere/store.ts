@@ -14,7 +14,7 @@ export type Source = 'knob' | 'slider' | 'keyboard' | 'init' | 'tween';
 type Listener = (p: Palette, source: Source) => void;
 
 const STORAGE_KEY = 'smartic.atmosphere';
-const DEFAULT_VALUE = 8; // a warm evening is the campaign's signature look
+const DEFAULT_VALUE = 0; // the page starts on white
 
 function readStored(): number {
   try {
@@ -35,25 +35,17 @@ let tweenRaf = 0;
 function writeCssVars(p: Palette) {
   const s = document.documentElement.style;
   s.setProperty('--bg', rgbToHex(p.bg));
-  s.setProperty('--bg-2', rgbToHex(p.bg2));
-  s.setProperty('--surface', rgbToHex(p.surface));
-  s.setProperty('--ink', rgbToHex(p.ink));
+  s.setProperty('--fg', rgbToHex(p.fg));
   s.setProperty('--muted', rgbToHex(p.muted));
-  s.setProperty('--line', rgbToHex(p.line));
-  s.setProperty('--accent', rgbToHex(p.accent));
-  s.setProperty('--accent-ink', rgbToHex(p.accentInk));
-  s.setProperty('--light', rgbToHex(p.light));
+  s.setProperty('--brand', rgbToHex(p.brand));
+  s.setProperty('--brand-ink', rgbToHex(p.brandInk));
+  s.setProperty('--surface', rgbToHex(p.surface));
+  s.setProperty('--cta-bg', rgbToHex(p.ctaBg));
+  s.setProperty('--cta-fg', rgbToHex(p.ctaFg));
   s.setProperty('--glow', rgbToHex(p.glow));
-  // space-separated channels for rgb(var(--x-rgb) / a)
-  s.setProperty('--ink-rgb', rgbToCss(p.ink));
-  s.setProperty('--bg-rgb', rgbToCss(p.bg));
-  s.setProperty('--accent-rgb', rgbToCss(p.accent));
-  s.setProperty('--light-rgb', rgbToCss(p.light));
   s.setProperty('--glow-rgb', rgbToCss(p.glow));
-  s.setProperty('--lamp', p.lampStrength.toFixed(3));
-  s.setProperty('--daylight', p.daylight.toFixed(3));
-  s.setProperty('--warmth', p.warmth.toFixed(3));
   s.setProperty('--dial', (p.value / 100).toFixed(4));
+  s.setProperty('color-scheme', p.isDark ? 'dark' : 'light');
   document.documentElement.dataset.tone = p.isDark ? 'dark' : 'light';
   document.documentElement.dataset.mood = p.mood.id;
   const meta = document.querySelector('meta[name="theme-color"]');

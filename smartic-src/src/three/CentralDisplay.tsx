@@ -6,7 +6,7 @@ import { MOODS, rgbToHex } from '../atmosphere/palette';
 import { KNOB } from './RotaryKnob';
 
 const SIZE = 512;
-const FONT = '"Noto Sans Armenian Variable", "Inter Variable", system-ui, sans-serif';
+const FONT = '"Noto Sans Armenian", system-ui, sans-serif';
 
 /**
  * Round display embedded in the knob. It does not rotate with the knob,
@@ -94,9 +94,6 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
         ctx.arc(x, c + 112, m.id === p.mood.id ? 7 : 5, 0, Math.PI * 2);
         ctx.fill();
       });
-      ctx.font = `500 26px ${FONT}`;
-      ctx.fillStyle = 'rgba(244,241,236,0.45)';
-      ctx.fillText(`${p.kelvin} K`, c, c + 160);
     }
     texture.needsUpdate = true;
     return true;
@@ -104,7 +101,7 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
 
   useEffect(() => {
     draw(true);
-    document.fonts?.load(`600 40px "Noto Sans Armenian Variable"`, 'Ջերմ').then(() => {
+    document.fonts?.load(`600 40px "Noto Sans Armenian"`, 'Լույս').then(() => {
       fontsReady.current = true;
       draw(true);
     });
