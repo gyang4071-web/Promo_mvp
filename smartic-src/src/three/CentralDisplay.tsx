@@ -94,6 +94,9 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
         ctx.arc(x, c + 112, m.id === p.mood.id ? 7 : 5, 0, Math.PI * 2);
         ctx.fill();
       });
+      ctx.font = `500 26px ${FONT}`;
+      ctx.fillStyle = 'rgba(244,241,236,0.45)';
+      ctx.fillText(`${p.kelvin} K`, c, c + 160);
     }
     texture.needsUpdate = true;
     return true;
@@ -101,7 +104,7 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
 
   useEffect(() => {
     draw(true);
-    document.fonts?.load(`600 40px "Noto Sans Armenian"`, 'Լույս').then(() => {
+    document.fonts?.load(`600 40px "Noto Sans Armenian"`, 'Ջերմ երեկո').then(() => {
       fontsReady.current = true;
       draw(true);
     });

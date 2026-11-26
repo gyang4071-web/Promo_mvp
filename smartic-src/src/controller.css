@@ -1,24 +1,46 @@
-/* The rotary controller block inside the landing. Colours come from the page tokens. */
-.stage {
-  position: relative; margin: 0 auto; width: 100%; max-width: 600px; aspect-ratio: 6 / 5;
+/* The lighting experience inside the article. Colours come from the page tokens. */
+.light-stage {
+  display: grid; grid-template-columns: 1.55fr 1fr; align-items: stretch;
+  border-radius: 22px; overflow: hidden; background: var(--panel);
+  box-shadow: 0 30px 60px -30px rgb(30 20 10 / .35);
 }
+.room { position: relative; min-height: 100%; aspect-ratio: 16 / 10; background: #2a1d15; }
+.room img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; display: block; }
+.room .room-natural { opacity: var(--room-natural, 0); }
+.room .room-cool { opacity: var(--room-cool, 0); }
+
+.device-panel { position: relative; display: grid; place-items: center; padding: 1rem; }
+.stage { position: relative; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; }
 .stage-halo {
-  position: absolute; inset: 8%; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(closest-side, rgb(var(--glow-rgb, 140 110 255) / calc(.18 + var(--dial, 0) * .22)), rgb(var(--glow-rgb, 140 110 255) / 0) 72%);
+  position: absolute; inset: 10%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgb(var(--glow-rgb, 255 179 92) / calc(.16 + var(--lamp, 1) * .18)), rgb(var(--glow-rgb, 255 179 92) / 0) 72%);
   filter: blur(10px);
 }
 .stage-poster, .stage-canvas { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity .7s ease; }
 .stage-poster { object-fit: contain; user-select: none; }
-.stage-status { position: absolute; inset: auto 0 .5rem; text-align: center; font-size: .85rem; color: var(--muted); margin: 0; }
+.stage-status { position: absolute; inset: auto 0 .25rem; text-align: center; font-size: .8rem; color: var(--panel-ink); opacity: .7; }
 .knob-hit { position: absolute; border-radius: 50%; touch-action: none; cursor: grab; z-index: 3; }
 .knob-hit[data-active] { cursor: grabbing; }
-.knob-hit:focus-visible { outline: 3px solid var(--brand); outline-offset: 6px; }
-.stage-caption { text-align: center; font-size: 1rem; color: var(--muted); margin: .25rem 0 0; }
-.stage-caption strong { color: var(--fg); font-variant-numeric: tabular-nums; }
-.stage-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; margin-right: .5rem; vertical-align: .1em; background: var(--glow); box-shadow: 0 0 10px var(--glow); }
-.stage-hint { display: flex; justify-content: center; align-items: center; gap: .45rem; font-size: .9rem; color: var(--muted); margin: .4rem 0 0; }
+.knob-hit:focus-visible { outline: 3px solid var(--hl); outline-offset: 6px; }
+
+.stage-caption {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .3rem .5rem;
+  text-align: center; font-size: .95rem; color: var(--muted); margin: 1rem 0 0;
+}
+.stage-caption strong { color: var(--fg); font-weight: 600; }
+.stage-dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--glow); box-shadow: 0 0 0 1px rgb(0 0 0 / .08), 0 0 10px var(--glow); }
+.stage-hint { display: inline-flex; align-items: center; gap: .35rem; margin-left: .9rem; }
 .stage-hint svg { animation: hint-turn 2.4s ease-in-out infinite; }
 @keyframes hint-turn { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(25deg); } }
-.stage-fallback { text-align: center; font-size: .95rem; color: var(--muted); }
-.stage-fallback input { width: min(100%, 360px); margin-top: .6rem; accent-color: var(--brand); }
+.stage-fallback { text-align: center; font-size: .95rem; color: var(--muted); margin-top: .8rem; }
+.stage-fallback input { width: min(100%, 360px); margin-top: .6rem; accent-color: var(--accent); }
+
+@media (max-width: 899px) {
+  .light-stage { grid-template-columns: 1fr; border-radius: 18px; }
+  .room { aspect-ratio: 4 / 3; }
+  .room img { object-position: 46% 55%; }
+  .device-panel { padding: .25rem 1rem .5rem; }
+  .stage { max-width: 360px; aspect-ratio: 5 / 4; }
+  .stage-hint { margin-left: 0; flex-basis: 100%; justify-content: center; }
+}
 @media (prefers-reduced-motion: reduce) { .stage-hint svg { animation: none; } .stage-poster, .stage-canvas { transition: none; } }

@@ -1,47 +1,82 @@
 /**
- * Page colour driven by the rotary controller.
+ * Lighting atmospheres driven by the rotary controller.
  *
- * One value 0–100 sets the whole landing: 0 is a clean white page, 100 is
- * deep Smartic violet. Stops are mixed in OKLab with a smoothstep between
- * them, so the in-between states stay clear lavenders instead of greyish
- * purples. Text colour is picked by contrast, so it turns white only once
- * the violet is deep enough to need it.
+ * One value 0–100 sets three architectural moods: warm evening (0),
+ * natural light (50) and cool modern light (100). The biggest change
+ * happens in the apartment photo and the panel around the device; the
+ * article itself only takes a soft tint, so reading stays comfortable.
+ * Article text is always dark, so it never flips from black to white.
+ * Every colour is mixed in OKLab between the anchors, with a short hold
+ * near each anchor so each mood keeps its character.
  */
 
-export type MoodId = 'day' | 'evening' | 'night';
+export type MoodId = 'warm' | 'natural' | 'cool';
 
 export interface MoodAnchor {
   id: MoodId;
-  label: string; // shown on the device display
+  label: string; // shown on the device display and in the caption
   at: number; // 0–100
+  /* article (subtle) */
+  bg: string;
+  fg: string;
+  accent: string; // chapter numbers, labels, links
+  hl: string; // inline highlight: Smartic violet, tuned per mood
+  ctaBg: string;
+  ctaFg: string;
+  /* lighting stage (strong) */
+  panel: string; // ground behind the device
+  glow: string; // device LEDs and halo
+  lampStrength: number;
+  kelvin: number;
 }
 
 export const MOODS: MoodAnchor[] = [
-  { id: 'day', label: 'Ցերեկային լույս', at: 0 },
-  { id: 'evening', label: 'Երեկոյան լույս', at: 50 },
-  { id: 'night', label: 'Գիշերային լույս', at: 100 },
+  {
+    id: 'warm',
+    label: 'Ջերմ երեկո',
+    at: 0,
+    bg: '#faf5ee',
+    fg: '#2a2019',
+    accent: '#8a5f2c',
+    hl: '#5530c8',
+    ctaBg: '#2f2219',
+    ctaFg: '#fbf4ea',
+    panel: '#2a1d15',
+    glow: '#ffb35c',
+    lampStrength: 1,
+    kelvin: 2700,
+  },
+  {
+    id: 'natural',
+    label: 'Բնական լույս',
+    at: 50,
+    bg: '#fcfbf8',
+    fg: '#24211e',
+    accent: '#6e604f',
+    hl: '#5433d6',
+    ctaBg: '#26231f',
+    ctaFg: '#fbf9f5',
+    panel: '#ece5da',
+    glow: '#ffe2bd',
+    lampStrength: 0.55,
+    kelvin: 4000,
+  },
+  {
+    id: 'cool',
+    label: 'Սառը լույս',
+    at: 100,
+    bg: '#f5f7f9',
+    fg: '#1c2530',
+    accent: '#4b6580',
+    hl: '#4936cf',
+    ctaBg: '#1f2d3c',
+    ctaFg: '#f4f7fa',
+    panel: '#dfe5eb',
+    glow: '#cfe1f7',
+    lampStrength: 0.45,
+    kelvin: 6000,
+  },
 ];
-
-/** Page background along the dial. */
-const BG_STOPS: [number, string][] = [
-  [0, '#ffffff'],
-  [22, '#f8f6ff'],
-  [45, '#ece6ff'],
-  [65, '#d6caff'],
-  [82, '#9c87ff'],
-  [100, '#3210d2'],
-];
-/** Colour of the device's LEDs and halo along the dial. */
-const GLOW_STOPS: [number, string][] = [
-  [0, '#b3a4ff'],
-  [50, '#8a6dff'],
-  [100, '#b7a6ff'],
-];
-
-const BRAND = '#3200ff';
-const BRAND_INK = '#2600c4';
-const INK_DARK = '#15131f';
-const INK_LIGHT = '#ffffff';
 
 /* ---------- colour maths (sRGB <-> OKLab) ---------- */
 
@@ -108,14 +143,21 @@ export function contrast(a: RGB, b: RGB) {
 /* ---------- palette evaluation ---------- */
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
+/** share of each segment that stays close to its anchor mood */
+const HOLD = 0.14;
 
-function along(stops: [number, string][], v: number): RGB {
-  for (let i = 0; i < stops.length - 1; i++) {
-    const [a, ca] = stops[i];
-    const [b, cb] = stops[i + 1];
-    if (v <= b) return oklabToRgb(mixLab(lab(ca), lab(cb), smooth((v - a) / (b - a))));
+function segment(value: number) {
+  const v = Math.min(100, Math.max(0, value));
+  for (let i = 0; i < MOODS.length - 1; i++) {
+    const a = MOODS[i], b = MOODS[i + 1];
+    if (v <= b.at) {
+      const raw = (v - a.at) / (b.at - a.at);
+      const t = Math.min(1, Math.max(0, (raw - HOLD) / (1 - 2 * HOLD)));
+      return { i, a, b, t: smooth(t) };
+    }
   }
-  return hexToRgb(stops[stops.length - 1][1]);
+  const last = MOODS[MOODS.length - 1];
+  return { i: MOODS.length - 1, a: last, b: last, t: 0 };
 }
 
 export interface Palette {
@@ -124,16 +166,21 @@ export interface Palette {
   bg: RGB;
   fg: RGB;
   muted: RGB;
-  brand: RGB;
-  brandInk: RGB;
-  surface: RGB;
+  accent: RGB;
+  hl: RGB;
   ctaBg: RGB;
   ctaFg: RGB;
+  panel: RGB;
+  panelInk: RGB;
   glow: RGB;
-  /** 0–1, brightness of the device's light ring */
   lampStrength: number;
-  isDark: boolean;
+  kelvin: number;
+  /** opacity of the natural-light and cool-light room photos over the warm one */
+  roomNatural: number;
+  roomCool: number;
 }
+
+type ColorKey = 'bg' | 'fg' | 'accent' | 'hl' | 'ctaBg' | 'ctaFg' | 'panel' | 'glow';
 
 export function nearestMood(value: number): MoodAnchor {
   return MOODS.reduce((best, m) => (Math.abs(m.at - value) < Math.abs(best.at - value) ? m : best));
@@ -141,28 +188,33 @@ export function nearestMood(value: number): MoodAnchor {
 
 export function evaluatePalette(value: number): Palette {
   const v = Math.min(100, Math.max(0, value));
-  const bg = along(BG_STOPS, v);
-  const glow = along(GLOW_STOPS, v);
-  const inkL = hexToRgb(INK_LIGHT);
-  const inkD = hexToRgb(INK_DARK);
-  const isDark = contrast(inkL, bg) > contrast(inkD, bg);
-  const fg = isDark ? inkL : inkD;
-  const bgLab = rgbToOklab(bg);
-  const white = rgbToOklab([1, 1, 1]);
+  const { i, a, b, t } = segment(v);
+  const pick = (k: ColorKey) => oklabToRgb(mixLab(lab(a[k]), lab(b[k]), t));
+  const num = (k: 'lampStrength' | 'kelvin') => a[k] + (b[k] - a[k]) * t;
+  const bg = pick('bg');
+  const fg = pick('fg');
+  const panel = pick('panel');
+  // the caption on the panel: cream on walnut, charcoal on the light panels,
+  // cross-faded through the panel's own colour so it never flashes
+  const cream = hexToRgb('#f6ecdf');
+  const charcoal = hexToRgb('#2b2722');
+  const ink = contrast(cream, panel) >= contrast(charcoal, panel) ? cream : charcoal;
   return {
     value: v,
     mood: nearestMood(v),
     bg,
     fg,
-    muted: oklabToRgb(mixLab(rgbToOklab(fg), bgLab, 0.38)),
-    // on light grounds the accent is Smartic violet; on the deep violet it turns white
-    brand: isDark ? inkL : hexToRgb(BRAND),
-    brandInk: isDark ? hexToRgb('#e6e0ff') : hexToRgb(BRAND_INK),
-    surface: oklabToRgb(isDark ? mixLab(bgLab, white, 0.16) : mixLab(bgLab, lab(BRAND), 0.09)),
-    ctaBg: isDark ? inkL : hexToRgb(BRAND),
-    ctaFg: isDark ? hexToRgb('#2a0bc7') : inkL,
-    glow,
-    lampStrength: 0.45 + 0.55 * (v / 100),
-    isDark,
+    muted: oklabToRgb(mixLab(rgbToOklab(fg), rgbToOklab(bg), 0.36)),
+    accent: pick('accent'),
+    hl: pick('hl'),
+    ctaBg: pick('ctaBg'),
+    ctaFg: pick('ctaFg'),
+    panel,
+    panelInk: ink,
+    glow: pick('glow'),
+    lampStrength: num('lampStrength'),
+    kelvin: Math.round(num('kelvin') / 100) * 100,
+    roomNatural: i === 0 ? t : 1,
+    roomCool: i === 0 ? 0 : i === 1 ? t : 1,
   };
 }

@@ -3,9 +3,12 @@
 A single-column landing in the same format as the Freedx promo page, served at `/smartic/`.
 
 - `index.html` holds the whole page: copy, styles, block tracking and UTM tagging.
-- The only interactive element is the 3D rotary controller (`src/`, React Three Fiber).
-  Turning its knob (mouse, touch, keyboard) moves the page colour from white to deep
-  Smartic violet. Colour stops are in `src/atmosphere/palette.ts`.
+- The lighting block after chapter 01 pairs the living-room photo with the 3D rotary
+  controller (`src/`, React Three Fiber). Turning the knob (mouse, touch, keyboard)
+  cross-fades the room between three lightings (warm evening, natural, cool) and softly
+  tints the article. Moods are in `src/atmosphere/palette.ts`; the room photos in
+  `public/img/room/` were made from one shot with `tools/relight.py`.
+- Each chapter has one inline highlight (`<span class="hl">`), drawn with a thin underline.
 - Browsers without WebGL get a static picture of the device and a range input instead.
 
 ## Build

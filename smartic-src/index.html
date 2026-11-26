@@ -2,7 +2,7 @@
 <title>Smartic · Մեկ որոշում</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ բացահայտիր, թե ինչպես կարող է Smartic-ը փոխել առօրյադ տանը։">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#faf5ee">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,24 +10,27 @@
 <!-- Google Tag Manager: paste the container snippet here. Events are already pushed to window.dataLayer. -->
 <style>
 /*
-  Layout follows the Freedx promo page: one reading column (~66ch), blocks separated by whitespace.
-  The page starts on white. Turning the 3D controller's knob moves the whole page through lavender
-  into deep Smartic violet: src/atmosphere/store.ts rewrites the tokens below on every frame of the
-  turn. The values here are the starting (white) state and what visitors without JS see.
+  Editorial review in the Freedx format: one reading column, blocks separated by whitespace.
+  The lighting controller after chapter 01 sets three architectural moods (warm evening,
+  natural light, cool light). It relights the apartment photo strongly and tints the article
+  only softly: src/atmosphere/store.ts rewrites the tokens below while the knob turns.
+  Article text stays dark in every mood. The values here are the warm-evening start and
+  what visitors without JS see.
 */
 :root {
-  --bg: #ffffff;
-  --fg: #15131f;
-  --muted: #5e5a72;
-  --brand: #3200ff;
-  --brand-ink: #2600c4;
-  --surface: #f0edff;
-  --on-brand: #ffffff;
-  --cta-bg: #3200ff;
-  --cta-fg: #ffffff;
+  --bg: #faf5ee;
+  --fg: #2a2019;
+  --muted: #6f6257;
+  --accent: #8a5f2c;
+  --hl: #5530c8;
+  --cta-bg: #2f2219;
+  --cta-fg: #fbf4ea;
+  --panel: #2a1d15;
+  --panel-ink: #f6ecdf;
+  --glow: #ffb35c;
   --font-display: "Noto Sans Armenian", system-ui, sans-serif;
   --font-body: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --col: 42rem;
+  --col: 40rem;          /* ≈ 640 px reading column */
   color-scheme: light;
 }
 
@@ -38,25 +41,23 @@ body {
   color: var(--fg);
   font-family: var(--font-body);
   font-size: 1.125rem;
-  line-height: 1.65;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
-}
-/* a soft violet light that grows from the top-right as the knob is turned up */
-body::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-  background: radial-gradient(70vmax 60vmax at 85% -10%, rgb(var(--glow-rgb, 140 110 255) / calc(var(--dial, 0) * .28)), transparent 70%);
+  text-rendering: optimizeLegibility;
 }
 .page {
-  max-width: 56rem;
+  max-width: 72rem;
   margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 0 4rem;
-  position: relative;
 }
 section { padding-block: 2.25rem; }
 .page > section { max-width: var(--col); margin-inline: auto; }
-p { margin: 0; }
+/* Line breaking: measured in Chromium, plain greedy wrapping gives the most even lines in this
+   column on desktop (every line but the last within ~10 % of the longest), while text-wrap: pretty
+   shortened first lines there. On phones, where long Armenian words dominate, pretty does better. */
+p { margin: 0; hyphens: manual; }
 section > * + * { margin-top: 1.1em; }
 strong { font-weight: 650; }
 a { color: inherit; }
@@ -65,72 +66,82 @@ a { color: inherit; }
 .hero { padding-top: 2.75rem; }
 .brandbar { display: flex; align-items: center; gap: 1rem; }
 .brandbar img { height: 28px; width: auto; display: block; flex: none; }
-.brandbar::after { content: ""; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--brand), transparent); opacity: .55; }
+.brandbar::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--fg), transparent); opacity: .22; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
 h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5rem; }
 .meta { font-size: .9rem; color: var(--muted); }
-.lead { font-size: 1.25rem; line-height: 1.55; }
-.turn { font-size: 1.25rem; line-height: 1.5; }
+.lead { font-size: 1.25rem; line-height: 1.6; }
 
-/* Chapters */
+/* Chapters: a quiet number and category above an emotional headline */
 .ch { padding-block: 3rem; }
-.ch-no { display: flex; align-items: center; gap: .9rem; }
-.ch-num {
-  font-family: var(--font-display); font-weight: 800; font-size: clamp(3.2rem, 11vw, 4.5rem); line-height: .9; letter-spacing: -.03em;
-  font-variant-numeric: tabular-nums; color: transparent;
-  background: linear-gradient(135deg, var(--brand) 10%, var(--brand-ink) 90%); -webkit-background-clip: text; background-clip: text;
+.ch-no { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+.ch-num { font-size: .85rem; font-weight: 700; letter-spacing: .06em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ch-num::after { content: ""; display: inline-block; width: 1.6rem; height: 1px; background: currentColor; opacity: .5; margin-left: .75rem; vertical-align: .3em; }
+.ch-label { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); line-height: 1.4; }
+.ch h2 { font-size: clamp(1.6rem, 4.4vw, 2.15rem); line-height: 1.18; margin-top: .9rem; }
+
+/* Inline highlight: one sentence per chapter, kept in its paragraph. Smartic violet,
+   slightly heavier, with a thin underline that draws itself left to right across the lines. */
+.hl {
+  color: var(--hl);
+  font-weight: 600;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1.5px;
+  padding-bottom: 2px;
 }
-.ch-label {
-  font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-ink);
-  background: var(--surface); padding: .4rem .85rem; border-radius: 999px; line-height: 1.3;
-}
-.ch h2 { font-size: clamp(1.5rem, 4.2vw, 2rem); line-height: 1.2; margin-top: 1rem; }
-.ch .hook { font-size: 1.2rem; line-height: 1.5; }
-.takeaway { font-size: 1.2rem; line-height: 1.5; padding-top: .4em; }
-.more { font-size: 1rem; font-weight: 600; color: var(--brand-ink); text-decoration: none; display: inline-flex; gap: .4em; align-items: center; }
+.reveal-on .hl { background-size: 0% 1.5px; transition: background-size 1.2s cubic-bezier(.3,.6,.2,1) .15s; }
+.reveal-on .hl.is-in { background-size: 100% 1.5px; }
+
+.more { font-size: 1rem; font-weight: 600; color: var(--accent); text-decoration: none; display: inline-flex; gap: .4em; align-items: center; }
 .more:hover { text-decoration: underline; text-underline-offset: 4px; }
 .more span { transition: transform .2s ease; }
 .more:hover span { transform: translateX(3px); }
 
-/* Closing */
-.closing { padding-block: 5rem 3rem; }
+/* Lighting experience: wider than the column, right after chapter 01 */
+.page > section.light { max-width: 68rem; padding-block: 1rem 3.5rem; }
+.light-head { max-width: var(--col); margin-inline: auto; }
+.light-head h2 { font-size: clamp(1.45rem, 3.8vw, 1.85rem); line-height: 1.2; }
+.light-head p { margin-top: .6rem; color: var(--muted); }
+#controller-root { margin-top: 1.6rem; }
+.light .fine { max-width: var(--col); margin: 1rem auto 0; text-align: center; }
 
-/* Controller block: wider than the text column so the device has room */
-.page > section.controller { max-width: 48rem; text-align: center; padding-block: 3rem; }
-.controller h2 { font-size: clamp(1.6rem, 4.6vw, 2.3rem); line-height: 1.15; }
-.controller > p { max-width: 34rem; margin-inline: auto; }
-.controller #controller-root { margin-top: .5rem; }
-.closing h2 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; }
+/* Closing */
+.closing { padding-block: 4rem 2rem; }
+.closing h2 { font-size: clamp(1.6rem, 4.4vw, 2.15rem); line-height: 1.18; }
+.closing .slogan { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; line-height: 1.4; padding-top: .4em; }
 .cta {
   display: inline-block;
   background: var(--cta-bg);
   color: var(--cta-fg);
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   line-height: 1.3;
-  padding: 1rem 1.6rem;
+  padding: .95rem 1.5rem;
   border-radius: 999px;
   transition: transform .15s ease, filter .15s ease;
 }
-.cta:hover { filter: brightness(1.08); }
+.cta:hover { filter: brightness(1.12); }
 .cta:active { transform: scale(.98); }
-.cta:focus-visible, a:focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 3px; }
-.cta-row { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; padding-top: .6rem; }
+.cta:focus-visible, a:focus-visible { outline: 3px solid var(--hl); outline-offset: 3px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; padding-top: .8rem; }
 .fine { font-size: .85rem; line-height: 1.5; color: var(--muted); }
-@media (max-width: 480px) { .cta { display: block; text-align: center; } }
-
-/* The background follows the knob frame by frame; only the text colour flip gets a short fade */
-body, .meta, .fine, .more { transition: color .4s ease; }
+@media (max-width: 640px) {
+  p { text-wrap: pretty; }
+  .lead { font-size: 1.15rem; }
+}
+@media (max-width: 480px) {
+  body { font-size: 1.0625rem; }
+  .cta { display: block; text-align: center; }
+}
 
 /* Scroll reveal (only with JS and motion allowed) */
-.reveal-on .page > section { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal-on .page > section { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
 .reveal-on .page > section.is-in { opacity: 1; transform: none; }
-.reveal-on .ch-num { display: inline-block; transform: scale(.6); opacity: 0; transition: transform .6s cubic-bezier(.3,1.5,.5,1) .15s, opacity .4s ease .15s; }
-.reveal-on .ch-label { opacity: 0; transform: translateX(-12px); transition: opacity .5s ease .3s, transform .5s ease .3s; }
-.reveal-on .is-in .ch-num, .reveal-on .is-in .ch-label { transform: none; opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
-  .cta, .more span, body, .meta, .fine, .more { transition: none; }
+  .cta, .more span { transition: none; }
 }
 
 #trk-debug {
@@ -150,75 +161,82 @@ body, .meta, .fine, .more { transition: color .4s ease; }
       <img src="/smartic-logo.svg" alt="Smartic" width="180" height="28">
     </div>
     <h1>Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
-    <p class="meta">3 րոպե ընթերցում</p>
+    <p class="meta">4 րոպե ընթերցում</p>
   </section>
 
   <section class="intro" data-block="intro" data-block-index="1">
     <p class="lead">Տան գեղեցկությունը տեսանելի է, իսկ իրական հարմարավետությունը՝ զգալի։</p>
     <p>Այն զգում ես ամեն օր՝ քեզ հաճելի լուսավորության, հարմարավետ ջերմաստիճանի, հանգիստ առավոտների ու սիրելի երեկոների ընթացքում։</p>
     <p>Երբեմն բավական է ընդամենը մեկ ճիշտ որոշում, որպեսզի տանը անցկացրած ժամանակը բոլորովին այլ զգացողություններ պարգևի։</p>
-    <p class="turn"><strong>Տեսնենք, թե ինչից է սկսվում այդ զգացողությունը՝ 5 ոլորտում։</strong></p>
   </section>
 
-  <section class="controller" id="controller" data-block="controller" data-block-index="2">
-    <h2>Փոխիր լույսը։ Զգա տարբերությունը։</h2>
-    <p id="controller-instruction">Պտտիր կարգավորիչը, և ամբողջ էջը կփոխի իր լույսը՝ սպիտակից մինչև խորը մանուշակագույն։</p>
-    <div id="controller-root"></div>
-    <p class="fine">Կարգավորիչը ստեղծագործական ցուցադրություն է և Smartic-ի կոնկրետ սարքի ճշգրիտ պատճենը չէ։</p>
-  </section>
-
-  <section class="ch" id="lighting" data-block="lighting" data-block-index="3">
+  <section class="ch" id="lighting" data-block="lighting" data-block-index="2">
     <div class="ch-no"><span class="ch-num">01</span><span class="ch-label">Լուսավորություն</span></div>
-    <h2>Տան մթնոլորտը սկսվում է լույսից</h2>
-    <p class="hook">Երբեմն բավական է փոխել լուսավորությունը, և նույն սենյակը բոլորովին այլ տրամադրություն է ստանում։</p>
-    <p>Մեղմ լույս՝ հանգիստ երեկոյի համար, ավելի պայծառ լուսավորություն՝ առօրյա գործերի, իսկ ջերմ երանգներ՝ մտերիմների հետ անցկացվող պահերի համար։</p>
-    <p>Smartic-ի լուսավորության կառավարման լուծումներն օգնում են հարմարեցնել լույսը քո նախընտրություններին և օրվա տարբեր պահերին։</p>
-    <p class="takeaway"><strong>Նույն սենյակը, բայց բոլորովին այլ երեկո։</strong></p>
+    <h2>Նույն սենյակը։ Բոլորովին այլ մթնոլորտ։</h2>
+    <p>Պատկերացրու՝ հյուրեր ես ընդունում, և հյուրասենյակը ողողված է պայծառ լույսով։ Իսկ երբ երեկոն ավարտվում է, մեկ հպումով լուսավորությունը դառնում է մեղմ ու ջերմ՝ ստեղծելով հանգստի տրամադրություն։</p>
+    <p>Սենյակը նույնն է, կահույքը՝ նույնպես։ Փոխվել է միայն լուսավորությունը, բայց փոխվել է նաև ամբողջ մթնոլորտը։</p>
+    <p>Smartic-ի լուսավորության կառավարման լուծումներով կարող ես ստեղծել տարբեր լուսային սցենարներ։ <span class="hl">Լուսավորությունը կարող ես հարմարեցնել օրվա ժամին, զբաղմունքիդ կամ տրամադրությանդ։</span></p>
     <p><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
+  </section>
+
+  <section class="light" id="controller" data-block="controller" data-block-index="3">
+    <div class="light-head">
+      <h2>Փոխիր լույսը։ Զգա տարբերությունը։</h2>
+      <p id="controller-instruction">Պտտիր կարգավորիչը և տես, թե ինչպես է փոխվում սենյակի մթնոլորտը՝ ջերմ երեկոյից մինչև սառը ժամանակակից լույս։</p>
+    </div>
+    <div id="controller-root"></div>
+    <p class="fine">Ցուցադրական օրինակ․ կարգավորիչը Smartic-ի կոնկրետ սարքի ճշգրիտ պատճենը չէ, իսկ ինտերիերի լուսանկարը ստեղծված է գովազդային նպատակով։</p>
   </section>
 
   <section class="ch" id="heating" data-block="heating" data-block-index="4">
     <div class="ch-no"><span class="ch-num">02</span><span class="ch-label">Ջեռուցում և էներգիայի կառավարում</span></div>
-    <h2>Հարմարավետություն, որը զգում ես ամեն օր</h2>
-    <p class="hook">Տան հարմարավետությունը սկսվում է նաև ճիշտ ջերմաստիճանից։</p>
-    <p>Երբ դրսում ցուրտ է, հաճելի է վերադառնալ տուն, որտեղ քեզ սպասում է քո նախընտրած միջավայրը։</p>
-    <p>Smartic-ի ջեռուցման և էներգիայի կառավարման լուծումներն օգնում են վերահսկել տան ջերմային պայմաններն ու դրանք հարմարեցնել առօրյայիդ։</p>
+    <h2>Երբ տունը պատրաստ է քո վերադարձին</h2>
+    <p>Ձմեռային ցուրտ երեկո է։ Աշխատանքային երկար օրվանից հետո տուն ես վերադառնում և ուզում ես պարզապես հանգստանալ, ոչ թե սպասել, մինչև սենյակը տաքանա։</p>
+    <p>Իսկ եթե տունը հնարավոր լինի նախապես պատրաստել քո վերադարձին։</p>
+    <p>Smartic-ի ջեռուցման կառավարման լուծումները հնարավորություն են տալիս <span class="hl">նախապես կարգավորել ջերմաստիճանը՝ առանց տուն հասնելուն սպասելու։</span></p>
+    <p>Այդպես տուն վերադառնալու պահը դառնում է օրվա ամենահաճելի պահերից մեկը։</p>
     <p><a class="more" data-track="category_heating" data-out="heating" href="https://smartic.am/product/?product_category=%D5%BB%D5%A5%D5%BC%D5%B8%D6%82%D6%81%D5%B8%D6%82%D5%B4-%D6%87-%D5%A7%D5%B6%D5%A5%D6%80%D5%A3%D5%AB%D5%A1%D5%B5%D5%AB-%D5%AF%D5%A1%D5%BC%D5%A1%D5%BE%D5%A1%D6%80%D5%B8%D6%82%D5%B4" target="_blank" rel="noopener">Տեսնել ջեռուցման լուծումները <span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="ch" id="windows" data-block="windows" data-block-index="5">
     <div class="ch-no"><span class="ch-num">03</span><span class="ch-label">Պատուհաններ և մուտք</span></div>
-    <h2>Առավոտներ, որոնք սկսվում են քո ուզած ձևով</h2>
-    <p class="hook">Պատկերացրու առավոտ, երբ վարագույրները բացվում են, և սենյակը կամաց-կամաց լցվում է բնական լույսով։</p>
-    <p>Կամ երեկո, երբ կարող ես ստեղծել ավելի հանգիստ ու առանձնացված միջավայր՝ առանց ավելորդ գործողությունների։</p>
-    <p>Smartic-ի պատուհանների, վարագույրների և մուտքի կառավարման լուծումները առօրյան դարձնում են ավելի հարմարավետ։</p>
-    <p>Իսկ մուտքի համար դռան խելացի փականը թույլ է տալիս մուտք գործել մատնահետքով, կոդերով կամ քարտերով։</p>
+    <h2>Առավոտ, որը սկսվում է քո ուզած ձևով</h2>
+    <p>Պատկերացրու առավոտ, երբ քեզ արթնացնում է ոչ թե զարթուցիչի ձայնը, այլ վարագույրների արանքից ներս թափանցող արևի մեղմ լույսը։</p>
+    <p><span class="hl">Վարագույրները կարող են բացվել ու փակվել քո նախընտրած ժամերին։</span> Իսկ երեկոյան դրանք կարող են փակվել՝ ստեղծելով հանգստի ու առանձնության մթնոլորտ։</p>
+    <p>Smartic-ի ավտոմատացման լուծումներով նման գործողությունները կարող են դառնալ օրվա սովորական ու հաճելի մասը։</p>
+    <p>Իսկ մուտքի կառավարման խելացի լուծումներն օգնում են տուն մուտք գործել ավելի հարմար եղանակով՝ առանց ամեն անգամ ավանդական բանալին օգտագործելու։</p>
     <p><a class="more" data-track="category_windows" data-out="windows" href="https://smartic.am/product/?product_category=%D5%BA%D5%A1%D5%BF%D5%B8%D6%82%D5%B0%D5%A1%D5%B6%D5%B6%D5%A5%D6%80-%D6%87-%D5%B4%D5%B8%D6%82%D5%BF%D6%84" target="_blank" rel="noopener">Տեսնել պատուհանների և մուտքի լուծումները <span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="ch" id="central" data-block="central" data-block-index="6">
     <div class="ch-no"><span class="ch-num">04</span><span class="ch-label">Կենտրոնական կառավարում</span></div>
-    <h2>Քո տունը՝ քո կանոններով</h2>
-    <p class="hook">Երբ տան տարբեր սարքերը կարելի է կառավարել մեկ հարթակից, ամեն ինչ դառնում է ավելի պարզ։</p>
-    <p>Լուսավորության կարգավորում, տան միջավայրի վերահսկում կամ նախընտրելի սցենարի գործարկում՝ առանց բազմաթիվ առանձին գործողությունների։</p>
-    <p>Smartic-ի կենտրոնական կառավարման լուծումները թույլ են տալիս համատեղելի սարքերը միավորել ու կառավարել առավել հարմար եղանակով։</p>
+    <h2>Երբ տունը հարմարվում է քո սովորություններին</h2>
+    <p>Երկար օրվանից հետո ուզում ես միացնել սիրելի ֆիլմդ ու հանգստանալ։ Բայց մինչ այդ պետք է կարգավորել լույսերը, փակել վարագույրներն ու ստեղծել հարմարավետ միջավայր։</p>
+    <p>Իսկ եթե այս ամենը հնարավոր լինի անել մեկ հպումով։</p>
+    <p>Smartic-ի կենտրոնական կառավարման համակարգով համատեղելի սարքերը կարելի է միավորել ընդհանուր սցենարների մեջ։</p>
+    <p><span class="hl">Մի քանի առանձին գործողություն կարող ես միավորել մեկ կառավարման սցենարում։</span> Դու ընտրում ես «Հանգիստ» ռեժիմը, իսկ տունը պատրաստվում է քո երեկոյին՝ ըստ նախապես սահմանված կարգավորումների։</p>
     <p><a class="more" data-track="category_central" data-out="central" href="https://smartic.am/product/?product_category=central-control" target="_blank" rel="noopener">Տեսնել կենտրոնական կառավարման լուծումները <span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="ch" id="security" data-block="security" data-block-index="7">
     <div class="ch-no"><span class="ch-num">05</span><span class="ch-label">Անվտանգություն և պաշտպանություն</span></div>
-    <h2>Հանգստություն, նույնիսկ երբ տանը չես</h2>
-    <p class="hook">Տանը քեզ ապահով զգալը կարևոր է, բայց նույնքան կարևոր է հանգիստ լինել նաև այն ժամանակ, երբ բացակայում ես։</p>
-    <p>Smartic-ի անվտանգության և պաշտպանության լուծումները կարող են օգնել վերահսկել տան որոշ կարևոր հատվածներն ու համապատասխան սարքավորումների միջոցով տեղեկանալ հնարավոր միջադեպերի մասին։</p>
+    <h2>Ավելի հանգիստ, նույնիսկ երբ տնից հեռու ես</h2>
+    <p>Արձակուրդ ես մեկնել։ Տանը ոչ ոք չկա, բայց ժամանակ առ ժամանակ մտածում ես՝ արդյոք ամեն ինչ կարգի՞ն է։</p>
+    <p>Պատկերացրու, որ տնից հեռու լինելով էլ կարող ես տեղեկանալ որոշ կարևոր իրադարձությունների մասին։ <span class="hl">Համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
+    <p>Smartic-ի անվտանգության և պաշտպանության լուծումներն օգնում են ժամանակին ստանալ համապատասխան ազդանշաններ և ավելի տեղեկացված լինել տանը կատարվողի մասին։</p>
+    <p>Որովհետև հարմարավետ տունը նաև այն տունն է, որի մասին կարող ես ավելի հանգիստ լինել հեռվից։</p>
     <p><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="closing" id="closing" data-block="conclusion" data-block-index="8">
-    <h2>Մեկ որոշում, և տունդ խելացի է</h2>
-    <p>Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ ամեն ինչ կարելի է հարմարեցնել քո առօրյային։</p>
-    <p>Smartic-ի մասնագետները կօգնեն հասկանալ, թե որ լուծումներն են հարմար հենց քո տանը։</p>
+    <h2>Մեծ փոփոխությունները միշտ չէ, որ մեծ քայլերից են սկսվում</h2>
+    <p>Երբեմն բավական է փոխել միայն լուսավորությունը, որպեսզի երեկոն այլ տրամադրություն ստանա։ Կամ ընտրել ջեռուցման կառավարման լուծում, որպեսզի տուն վերադառնալն ավելի հաճելի դառնա։</p>
+    <p>Մեկի համար առաջնայինը հարմարավետությունն է, մյուսի համար՝ անվտանգությունը, իսկ երրորդը ցանկանում է տան տարբեր համակարգերը կառավարել մեկ հարթակից։</p>
+    <p>Քո տունն էլ կարող է հարմարվել հենց քո սովորություններին ու ցանկություններին։</p>
+    <p class="slogan">Մեկ որոշում, և տունդ խելացի է։</p>
+    <p>Բացահայտիր Smartic-ի լուծումները և գտիր այն տարբերակը, որը համապատասխանում է քո տանը։</p>
     <div class="cta-row">
-      <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ը</a>
+      <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ի լուծումները</a>
       <a class="more" data-track="cta_contact" data-out="contact" href="https://smartic.am/contact-us/" target="_blank" rel="noopener">Կապ Smartic-ի հետ <span aria-hidden="true">→</span></a>
     </div>
   </section>
@@ -226,7 +244,7 @@ body, .meta, .fine, .more { transition: color .4s ease; }
 </main>
 
 <script>
-/* Scroll reveal: each block rises in once as it enters the screen. */
+/* Scroll reveal: each block rises in once as it enters the screen; highlights draw their underline. */
 (function () {
   if (!document.documentElement.classList.contains('reveal-on')) return;
   var io = new IntersectionObserver(function (entries) {
@@ -235,6 +253,14 @@ body, .meta, .fine, .more { transition: color .4s ease; }
     });
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
   document.querySelectorAll('.page > section').forEach(function (s) { io.observe(s); });
+
+  // highlighted sentences draw their underline once they are well inside the screen
+  var hlObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('is-in'); hlObs.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -22% 0px', threshold: 1 });
+  document.querySelectorAll('.hl').forEach(function (s) { hlObs.observe(s); });
 })();
 </script>
 

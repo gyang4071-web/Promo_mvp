@@ -4,3 +4,4 @@ const base = import.meta.env.BASE_URL;
 
 export const logoUrl = `${base}smartic-logo.svg`;
 export const posterUrl = `${base}img/controller-poster.webp`;
+export const roomImg = (mood: 'warm' | 'natural' | 'cool', w: 1080 | 1920) => `${base}img/room/living-${mood}-${w}.webp`;
