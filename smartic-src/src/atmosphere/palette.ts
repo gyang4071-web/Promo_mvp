@@ -1,82 +1,34 @@
 /**
- * Lighting atmospheres driven by the rotary controller.
+ * One apartment, one day.
  *
- * One value 0–100 sets three architectural moods: warm evening (0),
- * natural light (50) and cool modern light (100). The biggest change
- * happens in the apartment photo and the panel around the device; the
- * article itself only takes a soft tint, so reading stays comfortable.
- * Article text is always dark, so it never flips from black to white.
- * Every colour is mixed in OKLab between the anchors, with a short hold
- * near each anchor so each mood keeps its character.
+ * The rotary controller drives a single value 0–100 that moves the
+ * apartment through the day: 0 is 09:00 (morning), 50 is 17:00 (friends
+ * over) and 100 is 22:00 (movie night). Light colours and the device's
+ * illumination change continuously; the scene with people changes only at
+ * two narrative moments, with a short dissolve. Nothing here touches the
+ * article, which stays white.
  */
 
-export type MoodId = 'warm' | 'natural' | 'cool';
+export type SceneId = 'morning' | 'friends' | 'movie';
 
-export interface MoodAnchor {
-  id: MoodId;
-  label: string; // shown on the device display and in the caption
+export interface SceneAnchor {
+  id: SceneId;
+  label: string; // shown small on the device display
   at: number; // 0–100
-  /* article (subtle) */
-  bg: string;
-  fg: string;
-  accent: string; // chapter numbers, labels, links
-  hl: string; // inline highlight: Smartic violet, tuned per mood
-  ctaBg: string;
-  ctaFg: string;
-  /* lighting stage (strong) */
-  panel: string; // ground behind the device
+  hour: number; // clock time at this anchor
+  panel: string; // ground behind the device, taken from the room's light
   glow: string; // device LEDs and halo
   lampStrength: number;
-  kelvin: number;
 }
 
-export const MOODS: MoodAnchor[] = [
-  {
-    id: 'warm',
-    label: 'Ջերմ երեկո',
-    at: 0,
-    bg: '#faf5ee',
-    fg: '#2a2019',
-    accent: '#8a5f2c',
-    hl: '#5530c8',
-    ctaBg: '#2f2219',
-    ctaFg: '#fbf4ea',
-    panel: '#2a1d15',
-    glow: '#ffb35c',
-    lampStrength: 1,
-    kelvin: 2700,
-  },
-  {
-    id: 'natural',
-    label: 'Բնական լույս',
-    at: 50,
-    bg: '#fcfbf8',
-    fg: '#24211e',
-    accent: '#6e604f',
-    hl: '#5433d6',
-    ctaBg: '#26231f',
-    ctaFg: '#fbf9f5',
-    panel: '#ece5da',
-    glow: '#ffe2bd',
-    lampStrength: 0.55,
-    kelvin: 4000,
-  },
-  {
-    id: 'cool',
-    label: 'Սառը լույս',
-    at: 100,
-    bg: '#f5f7f9',
-    fg: '#1c2530',
-    accent: '#4b6580',
-    hl: '#4936cf',
-    ctaBg: '#1f2d3c',
-    ctaFg: '#f4f7fa',
-    panel: '#dfe5eb',
-    glow: '#cfe1f7',
-    lampStrength: 0.45,
-    kelvin: 6000,
-  },
+export const SCENES: SceneAnchor[] = [
+  { id: 'morning', label: 'Առավոտ', at: 0, hour: 9, panel: '#ece7df', glow: '#f2efe8', lampStrength: 0.35 },
+  { id: 'friends', label: 'Հյուրեր', at: 50, hour: 17, panel: '#3a2b20', glow: '#ffb867', lampStrength: 1 },
+  { id: 'movie', label: 'Կինոերեկո', at: 100, hour: 22, panel: '#121015', glow: '#ff9a52', lampStrength: 0.55 },
 ];
+
+/** Dial positions where the people in the room change (with hysteresis in the scene layer). */
+export const SCENE_CUTS = [27, 76];
 
 /* ---------- colour maths (sRGB <-> OKLab) ---------- */
 
@@ -135,86 +87,70 @@ export const rgbToCss = (c: RGB) => c.map((v) => Math.round(v * 255)).join(' ');
 export function luminance([r, g, b]: RGB) {
   return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 }
-export function contrast(a: RGB, b: RGB) {
+function contrast(a: RGB, b: RGB) {
   const la = luminance(a), lb = luminance(b);
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
 }
 
-/* ---------- palette evaluation ---------- */
+/* ---------- evaluation ---------- */
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
-/** share of each segment that stays close to its anchor mood */
-const HOLD = 0.14;
-
-function segment(value: number) {
-  const v = Math.min(100, Math.max(0, value));
-  for (let i = 0; i < MOODS.length - 1; i++) {
-    const a = MOODS[i], b = MOODS[i + 1];
-    if (v <= b.at) {
-      const raw = (v - a.at) / (b.at - a.at);
-      const t = Math.min(1, Math.max(0, (raw - HOLD) / (1 - 2 * HOLD)));
-      return { i, a, b, t: smooth(t) };
-    }
-  }
-  const last = MOODS[MOODS.length - 1];
-  return { i: MOODS.length - 1, a: last, b: last, t: 0 };
-}
 
 export interface Palette {
   value: number;
-  mood: MoodAnchor; // nearest anchor
-  bg: RGB;
-  fg: RGB;
-  muted: RGB;
-  accent: RGB;
-  hl: RGB;
-  ctaBg: RGB;
-  ctaFg: RGB;
+  /** scene whose people are shown at this dial position */
+  mood: SceneAnchor;
+  /** "09:00" … "22:00" */
+  clock: string;
   panel: RGB;
-  panelInk: RGB;
   glow: RGB;
   lampStrength: number;
-  kelvin: number;
-  /** opacity of the natural-light and cool-light room photos over the warm one */
-  roomNatural: number;
-  roomCool: number;
+  /** 0 morning … 1 night */
+  dusk: number;
+  /** continuous light grade over the current scene photo: amber wash and dimming, 0–1 */
+  warmWash: number;
+  dim: number;
 }
 
-type ColorKey = 'bg' | 'fg' | 'accent' | 'hl' | 'ctaBg' | 'ctaFg' | 'panel' | 'glow';
+export function sceneAt(value: number): SceneAnchor {
+  return value < SCENE_CUTS[0] ? SCENES[0] : value < SCENE_CUTS[1] ? SCENES[1] : SCENES[2];
+}
 
-export function nearestMood(value: number): MoodAnchor {
-  return MOODS.reduce((best, m) => (Math.abs(m.at - value) < Math.abs(best.at - value) ? m : best));
+/**
+ * Between two scene photos the light keeps moving: the morning room warms
+ * toward the afternoon, the afternoon room dims toward the evening. At each
+ * cut the grade roughly matches the next photo, so the dissolve stays calm.
+ */
+function grade(v: number) {
+  const [c1, c2] = SCENE_CUTS;
+  if (v < c1) return { warmWash: (v / c1) * 0.38, dim: (v / c1) * 0.05 };
+  if (v < c2) {
+    const u = (v - c1) / (c2 - c1);
+    return { warmWash: 0.06 + u * 0.22, dim: u * 0.34 };
+  }
+  const u = (v - c2) / (100 - c2);
+  return { warmWash: 0, dim: 0.08 * (1 - u) };
 }
 
 export function evaluatePalette(value: number): Palette {
   const v = Math.min(100, Math.max(0, value));
-  const { i, a, b, t } = segment(v);
-  const pick = (k: ColorKey) => oklabToRgb(mixLab(lab(a[k]), lab(b[k]), t));
-  const num = (k: 'lampStrength' | 'kelvin') => a[k] + (b[k] - a[k]) * t;
-  const bg = pick('bg');
-  const fg = pick('fg');
-  const panel = pick('panel');
-  // the caption on the panel: cream on walnut, charcoal on the light panels,
-  // cross-faded through the panel's own colour so it never flashes
-  const cream = hexToRgb('#f6ecdf');
-  const charcoal = hexToRgb('#2b2722');
-  const ink = contrast(cream, panel) >= contrast(charcoal, panel) ? cream : charcoal;
+  const i = v <= 50 ? 0 : 1;
+  const a = SCENES[i], b = SCENES[i + 1];
+  const t = smooth((v - a.at) / (b.at - a.at));
+  const mix = (x: string, y: string) => oklabToRgb(mixLab(lab(x), lab(y), t));
+  const hours = a.hour + (b.hour - a.hour) * ((v - a.at) / (b.at - a.at));
+  const h = Math.floor(hours);
+  const m = Math.floor(((hours - h) * 60) / 5) * 5;
   return {
     value: v,
-    mood: nearestMood(v),
-    bg,
-    fg,
-    muted: oklabToRgb(mixLab(rgbToOklab(fg), rgbToOklab(bg), 0.36)),
-    accent: pick('accent'),
-    hl: pick('hl'),
-    ctaBg: pick('ctaBg'),
-    ctaFg: pick('ctaFg'),
-    panel,
-    panelInk: ink,
-    glow: pick('glow'),
-    lampStrength: num('lampStrength'),
-    kelvin: Math.round(num('kelvin') / 100) * 100,
-    roomNatural: i === 0 ? t : 1,
-    roomCool: i === 0 ? 0 : i === 1 ? t : 1,
+    mood: sceneAt(v),
+    clock: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+    panel: mix(a.panel, b.panel),
+    glow: mix(a.glow, b.glow),
+    lampStrength: a.lampStrength + (b.lampStrength - a.lampStrength) * t,
+    dusk: v / 100,
+    ...grade(v),
   };
 }
+
+export { contrast };

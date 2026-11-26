@@ -13,8 +13,8 @@ import { evaluatePalette, rgbToCss, rgbToHex, type Palette } from './palette';
 export type Source = 'knob' | 'slider' | 'keyboard' | 'init' | 'tween';
 type Listener = (p: Palette, source: Source) => void;
 
-const STORAGE_KEY = 'smartic.atmosphere';
-const DEFAULT_VALUE = 8; // a warm evening: the room photo as it was shot
+const STORAGE_KEY = 'smartic.daycycle';
+const DEFAULT_VALUE = 0; // the day starts in the morning
 
 function readStored(): number {
   try {
@@ -32,26 +32,18 @@ let driver: ((target: number, source: Source) => void) | null = null;
 let saveTimer = 0;
 let tweenRaf = 0;
 
+/** Only the interactive scene reads these; the article never does. */
 function writeCssVars(p: Palette) {
-  const s = document.documentElement.style;
-  s.setProperty('--bg', rgbToHex(p.bg));
-  s.setProperty('--fg', rgbToHex(p.fg));
-  s.setProperty('--muted', rgbToHex(p.muted));
-  s.setProperty('--accent', rgbToHex(p.accent));
-  s.setProperty('--hl', rgbToHex(p.hl));
-  s.setProperty('--cta-bg', rgbToHex(p.ctaBg));
-  s.setProperty('--cta-fg', rgbToHex(p.ctaFg));
+  const el = document.getElementById('controller');
+  if (!el) return;
+  const s = el.style;
   s.setProperty('--panel', rgbToHex(p.panel));
-  s.setProperty('--panel-ink', rgbToHex(p.panelInk));
   s.setProperty('--glow', rgbToHex(p.glow));
   s.setProperty('--glow-rgb', rgbToCss(p.glow));
   s.setProperty('--lamp', p.lampStrength.toFixed(3));
-  s.setProperty('--room-natural', p.roomNatural.toFixed(4));
-  s.setProperty('--room-cool', p.roomCool.toFixed(4));
-  s.setProperty('--dial', (p.value / 100).toFixed(4));
-  document.documentElement.dataset.mood = p.mood.id;
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', rgbToHex(p.bg));
+  s.setProperty('--dusk', p.dusk.toFixed(4));
+  s.setProperty('--warm-wash', p.warmWash.toFixed(4));
+  s.setProperty('--dim', p.dim.toFixed(4));
 }
 
 export const atmosphere = {

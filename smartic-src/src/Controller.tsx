@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from 'react';
 import { atmosphere } from './atmosphere/store';
+import { SCENE_CUTS, SCENES, type SceneId } from './atmosphere/palette';
 import { posterUrl, roomImg } from './lib/assets';
 import { useMediaQuery, useReducedMotion } from './lib/useReducedMotion';
 
@@ -22,26 +23,54 @@ function useAtmosphere<T>(select: (p: ReturnType<typeof atmosphere.get>) => T): 
 }
 
 /**
- * The lighting experience: the living room on one side, the rotary
+ * Which scene's people are on screen. It changes only at the two cut points,
+ * with a little hysteresis so a knob resting on a cut doesn't flicker.
+ */
+function useScene(): SceneId {
+  const [scene, setScene] = useState<SceneId>(() => {
+    const v = atmosphere.get().value;
+    return v < SCENE_CUTS[0] ? 'morning' : v < SCENE_CUTS[1] ? 'friends' : 'movie';
+  });
+  useEffect(
+    () =>
+      atmosphere.subscribe((p) => {
+        const v = p.value;
+        const H = 2;
+        setScene((cur) => {
+          if (cur === 'morning') return v >= SCENE_CUTS[1] + H ? 'movie' : v >= SCENE_CUTS[0] + H ? 'friends' : cur;
+          if (cur === 'friends') return v < SCENE_CUTS[0] - H ? 'morning' : v >= SCENE_CUTS[1] + H ? 'movie' : cur;
+          return v < SCENE_CUTS[0] - H ? 'morning' : v < SCENE_CUTS[1] - H ? 'friends' : cur;
+        });
+      }),
+    [],
+  );
+  return scene;
+}
+
+/**
+ * ONE APARTMENT, ONE DAY. The apartment photo on one side, the rotary
  * controller on the other. Turning the knob (mouse, touch or keyboard)
- * relights the room and softly tints the article. A range input appears
- * only for browsers without WebGL, where there is no knob to turn.
+ * moves the same room from 09:00 to 22:00: the light grade follows the
+ * dial continuously, the people change at two moments with a short
+ * dissolve. No visible text: only the room, the device and a quiet hint.
  */
 export function Controller() {
-  const compact = useMediaQuery('(max-width: 767px)');
+  const compact = useMediaQuery('(max-width: 899px)');
   const wrap = useRef<HTMLDivElement>(null);
   const hitRef = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
   const [ready, setReady] = useState(false);
+  const [used, setUsed] = useState(false);
   const [webgl] = useState(hasWebGL);
   const reduced = useReducedMotion();
   const value = useAtmosphere((p) => Math.round(p.value));
+  const clock = useAtmosphere((p) => p.clock);
   const label = useAtmosphere((p) => p.mood.label);
-  const kelvin = useAtmosphere((p) => p.kelvin);
+  const scene = useScene();
 
   // Load the 3D scene only when the block approaches the viewport.
   useEffect(() => {
-    if (!webgl || !wrap.current) return;
+    if (!wrap.current) return;
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -53,7 +82,16 @@ export function Controller() {
     );
     io.observe(wrap.current);
     return () => io.disconnect();
-  }, [webgl]);
+  }, []);
+
+  // The rotation hint goes away for good after the first real turn.
+  useEffect(
+    () =>
+      atmosphere.subscribe((_p, source) => {
+        if (source === 'knob' || source === 'keyboard' || source === 'slider') setUsed(true);
+      }),
+    [],
+  );
 
   // keys add up while the knob is still travelling to the previous key's target
   const pending = useRef<{ v: number; t: number } | null>(null);
@@ -76,92 +114,74 @@ export function Controller() {
   }, []);
 
   return (
-    <>
-      <div className="light-stage">
-        {/* the same room, photographed light by light; the dial cross-fades between them */}
-        <div className="room">
-          {(['warm', 'natural', 'cool'] as const).map((m) => (
-            <img
-              key={m}
-              className={`room-${m}`}
-              src={roomImg(m, 1920)}
-              srcSet={`${roomImg(m, 1080)} 1080w, ${roomImg(m, 1920)} 1920w`}
-              sizes="(min-width: 900px) 62vw, 100vw"
-              alt={m === 'warm' ? 'Հյուրասենյակ՝ երեկոյան լուսավորությամբ' : ''}
-              aria-hidden={m === 'warm' ? undefined : true}
-              loading="lazy"
-              decoding="async"
-            />
-          ))}
-        </div>
-
-        <div className="device-panel">
-          <div ref={wrap} className="stage">
-            <div aria-hidden className="stage-halo" />
-            {/* static product preview while the 3D scene loads (or without WebGL) */}
-            <img
-              src={posterUrl}
-              alt={webgl ? '' : 'Smartic լուսավորության պտտվող կարգավորիչ'}
-              aria-hidden={webgl ? true : undefined}
-              className="stage-poster"
-              style={{ opacity: ready ? 0 : 1 }}
-              draggable={false}
-            />
-            {webgl && near && (
-              <div className="stage-canvas" style={{ opacity: ready ? 1 : 0 }}>
-                <Suspense fallback={null}>
-                  <RotaryController3D hitRef={hitRef} onReady={() => setReady(true)} compact={compact} reducedMotion={reduced} />
-                </Suspense>
-              </div>
-            )}
-            {webgl && (
-              <div
-                ref={hitRef}
-                className="knob-hit"
-                role="slider"
-                tabIndex={ready ? 0 : -1}
-                aria-label="Սենյակի լուսավորությունը"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={value}
-                aria-valuetext={`${label}, ${value}%`}
-                aria-describedby="controller-instruction"
-                onKeyDown={onKey}
-                style={{ display: ready ? 'block' : 'none' }}
-              />
-            )}
-            {!ready && webgl && near && <span className="stage-status" role="status">Կարգավորիչը բեռնվում է…</span>}
-          </div>
-        </div>
+    <div className="day-stage" data-scene={scene}>
+      <div className="room" aria-hidden="true">
+        {SCENES.map((s) => (
+          <img
+            key={s.id}
+            className={`room-shot${s.id === scene ? ' on' : ''}`}
+            src={roomImg(s.id, 1920)}
+            srcSet={`${roomImg(s.id, 1080)} 1080w, ${roomImg(s.id, 1920)} 1920w`}
+            sizes="(min-width: 900px) 66vw, 100vw"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        ))}
+        <div className="room-grade" />
+        <div className="room-dim" />
+        <div className="room-tv" />
       </div>
 
-      <p className="stage-caption" aria-live="polite">
-        <span className="stage-dot" aria-hidden />
-        <strong>{label}</strong> · {kelvin} K
-        {webgl && (
-          <span className="stage-hint">
-            <svg aria-hidden viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 12a8 8 0 1 1-2.34-5.66" />
-              <path d="M20 4v4.5h-4.5" />
+      <div className="device-panel">
+        <div ref={wrap} className="stage">
+          <div aria-hidden className="stage-halo" />
+          <img src={posterUrl} alt="" aria-hidden className="stage-poster" style={{ opacity: ready ? 0 : 1 }} draggable={false} />
+          {webgl && near && (
+            <div className="stage-canvas" style={{ opacity: ready ? 1 : 0 }}>
+              <Suspense fallback={null}>
+                <RotaryController3D hitRef={hitRef} onReady={() => setReady(true)} compact={compact} reducedMotion={reduced} />
+              </Suspense>
+            </div>
+          )}
+          {webgl && (
+            <div
+              ref={hitRef}
+              className="knob-hit"
+              role="slider"
+              tabIndex={ready ? 0 : -1}
+              aria-label="Օրվա ժամը բնակարանում"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={value}
+              aria-valuetext={`${clock}, ${label}`}
+              aria-describedby="controller-instruction"
+              onKeyDown={onKey}
+              style={{ display: ready ? 'block' : 'none' }}
+            />
+          )}
+          {/* nonverbal hint: a thin arc that sweeps along the knob, gone after the first turn */}
+          {ready && !used && (
+            <svg className="turn-hint" viewBox="0 0 100 100" aria-hidden="true">
+              <path className="turn-hint-arc" d="M 22 30 A 38 30 0 0 1 78 30" pathLength={1} />
+              <path className="turn-hint-head" d="M 72.5 24.5 L 78.5 30.2 L 70.8 32.2" />
             </svg>
-            Բռնիր օղակը և պտտիր
-          </span>
-        )}
-      </p>
-      {!webgl && (
-        <div className="stage-fallback">
-          <p>Քո դիտարկիչը չի աջակցում 3D պատկերումը, բայց լույսը կարող ես փոխել այստեղ։</p>
+          )}
+        </div>
+        {!webgl && (
           <input
+            className="stage-fallback"
             type="range"
             min={0}
             max={100}
             value={value}
-            aria-label="Սենյակի լուսավորությունը"
-            aria-valuetext={`${label}, ${value}%`}
+            aria-label="Օրվա ժամը բնակարանում"
+            aria-valuetext={`${clock}, ${label}`}
             onChange={(e) => atmosphere.set(Number(e.target.value), 'slider')}
           />
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 }

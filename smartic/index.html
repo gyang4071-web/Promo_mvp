@@ -2,7 +2,7 @@
 <title>Smartic · Մեկ որոշում</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ բացահայտիր, թե ինչպես կարող է Smartic-ը փոխել առօրյադ տանը։">
-<meta name="theme-color" content="#faf5ee">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,23 +11,17 @@
 <style>
 /*
   Editorial review in the Freedx format: one reading column, blocks separated by whitespace.
-  The lighting controller after chapter 01 sets three architectural moods (warm evening,
-  natural light, cool light). It relights the apartment photo strongly and tints the article
-  only softly: src/atmosphere/store.ts rewrites the tokens below while the knob turns.
-  Article text stays dark in every mood. The values here are the warm-evening start and
-  what visitors without JS see.
+  The article is always white with near-black type and violet inline highlights. The rotary
+  controller after chapter 01 changes only its own scene (the apartment through the day).
 */
 :root {
-  --bg: #faf5ee;
-  --fg: #2a2019;
-  --muted: #6f6257;
-  --accent: #8a5f2c;
-  --hl: #5530c8;
-  --cta-bg: #2f2219;
-  --cta-fg: #fbf4ea;
-  --panel: #2a1d15;
-  --panel-ink: #f6ecdf;
-  --glow: #ffb35c;
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #5c5c5c;
+  --accent: #5b5b5b;     /* chapter numbers, labels, links: neutral */
+  --hl: #4f2bd9;         /* Smartic violet, toned for body text on white (contrast ≈ 8:1) */
+  --cta-bg: #111111;
+  --cta-fg: #ffffff;
   --font-display: "Noto Sans Armenian", system-ui, sans-serif;
   --font-body: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --col: 40rem;          /* ≈ 640 px reading column */
@@ -101,11 +95,11 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 
 /* Lighting experience: wider than the column, right after chapter 01 */
 .page > section.light { max-width: 68rem; padding-block: 1rem 3.5rem; }
-.light-head { max-width: var(--col); margin-inline: auto; }
-.light-head h2 { font-size: clamp(1.45rem, 3.8vw, 1.85rem); line-height: 1.2; }
-.light-head p { margin-top: .6rem; color: var(--muted); }
-#controller-root { margin-top: 1.6rem; }
-.light .fine { max-width: var(--col); margin: 1rem auto 0; text-align: center; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Footer */
+.foot { max-width: var(--col); margin: 0 auto; padding: 2.5rem 0 0; border-top: 1px solid #ececec; display: grid; gap: .6rem; }
+.foot img { height: 20px; width: auto; }
 
 /* Closing */
 .closing { padding-block: 4rem 2rem; }
@@ -152,8 +146,8 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
 }
 </style>
 <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) document.documentElement.classList.add('reveal-on');</script>
-  <script type="module" crossorigin src="./assets/index-D3sISAdM.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Cref0jnx.css">
+  <script type="module" crossorigin src="./assets/index-BNEVbX22.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-6RWjoALt.css">
 </head><body>
 
 <main class="page" data-lang="hy">
@@ -181,13 +175,9 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     <p><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
   </section>
 
-  <section class="light" id="controller" data-block="controller" data-block-index="3">
-    <div class="light-head">
-      <h2>Փոխիր լույսը։ Զգա տարբերությունը։</h2>
-      <p id="controller-instruction">Պտտիր կարգավորիչը և տես, թե ինչպես է փոխվում սենյակի մթնոլորտը՝ ջերմ երեկոյից մինչև սառը ժամանակակից լույս։</p>
-    </div>
+  <section class="light" id="controller" data-block="controller" data-block-index="3" aria-label="Մեկ բնակարան, մեկ օր․ պտտիր կարգավորիչը՝ առավոտից մինչև գիշեր">
+    <p class="sr-only" id="controller-instruction">Պտտիր կարգավորիչը կամ օգտագործիր սլաքները՝ բնակարանում օրը առավոտից երեկո տեղափոխելու համար։</p>
     <div id="controller-root"></div>
-    <p class="fine">Ցուցադրական օրինակ․ կարգավորիչը Smartic-ի կոնկրետ սարքի ճշգրիտ պատճենը չէ, իսկ ինտերիերի լուսանկարը ստեղծված է գովազդային նպատակով։</p>
   </section>
 
   <section class="ch" id="heating" data-block="heating" data-block-index="4">
@@ -224,7 +214,7 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     <div class="ch-no"><span class="ch-num">05</span><span class="ch-label">Անվտանգություն և պաշտպանություն</span></div>
     <h2>Ավելի հանգիստ, նույնիսկ երբ տնից հեռու ես</h2>
     <p>Արձակուրդ ես մեկնել։ Տանը ոչ ոք չկա, բայց ժամանակ առ ժամանակ մտածում ես՝ արդյոք ամեն ինչ կարգի՞ն է։</p>
-    <p>Պատկերացրու, որ տնից հեռու լինելով էլ կարող ես տեղեկանալ որոշ կարևոր իրադարձությունների մասին։ <span class="hl">Համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
+    <p>Պատկերացրու, որ <span class="hl">համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
     <p>Smartic-ի անվտանգության և պաշտպանության լուծումներն օգնում են ժամանակին ստանալ համապատասխան ազդանշաններ և ավելի տեղեկացված լինել տանը կատարվողի մասին։</p>
     <p>Որովհետև հարմարավետ տունը նաև այն տունն է, որի մասին կարող ես ավելի հանգիստ լինել հեռվից։</p>
     <p><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
@@ -244,6 +234,13 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
   </section>
 
 </main>
+
+<footer class="page">
+  <div class="foot">
+    <img src="./smartic-logo.svg" alt="Smartic" width="128" height="20">
+    <p class="fine">Էջի կարգավորիչը և ինտերիերի պատկերները ցուցադրական են և ստեղծված են գովազդային նպատակով։ Լուծումների ընտրությունն ու համատեղելիությունը որոշվում են Smartic-ի մասնագետների հետ։ <a href="https://smartic.am/" data-out="footer" data-track="footer_smartic" target="_blank" rel="noopener">smartic.am</a></p>
+  </div>
+</footer>
 
 <script>
 /* Scroll reveal: each block rises in once as it enters the screen; highlights draw their underline. */
@@ -301,6 +298,9 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     block_view   — block reached (its top entered the upper 60% of the screen), once per block
     landing_exit — visitor left the page: last_block = deepest block reached, current_block = block on screen
     cta_click    — click on an element with data-track
+    product_link_click / smartic_cta_click — product category links / main CTA
+    product_section_view — a product chapter is half on screen
+    lighting_* — sent from the controller block (src/main.tsx)
   Sent to GA4 (gtag), GTM (dataLayer) and Yandex Metrica (ym + YM_COUNTER_ID), whichever is installed.
   No personal data is collected.
 */
@@ -397,7 +397,22 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
       block_id: block ? block.dataset.block : null,
       link_url: a.href || null
     }, true);
+    if (a.dataset.track.indexOf('category_') === 0) {
+      send('product_link_click', { product_category: a.dataset.track.slice(9), block_id: block ? block.dataset.block : null }, true);
+    } else if (a.dataset.track === 'cta_smartic') {
+      send('smartic_cta_click', { block_id: block ? block.dataset.block : null }, true);
+    }
   });
+
+  // product_section_view: a product chapter (01–05) is half on screen, once each
+  var prodObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      prodObs.unobserve(en.target);
+      send('product_section_view', { block_id: en.target.dataset.block, block_index: Number(en.target.dataset.blockIndex) });
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('section.ch[data-block]').forEach(function (el) { prodObs.observe(el); });
 })();
 </script>
 </body></html>

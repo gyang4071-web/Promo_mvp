@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { atmosphere } from '../atmosphere/store';
-import { MOODS, rgbToHex } from '../atmosphere/palette';
+import { SCENES, rgbToHex } from '../atmosphere/palette';
 import { KNOB } from './RotaryKnob';
 
 const SIZE = 512;
@@ -10,7 +10,7 @@ const FONT = '"Noto Sans Armenian", system-ui, sans-serif';
 
 /**
  * Round display embedded in the knob. It does not rotate with the knob,
- * so the mood label and value stay readable. Drawn to a canvas texture
+ * so the scene label and time stay readable. Drawn to a canvas texture
  * only when what it shows actually changes.
  */
 export function CentralDisplay({ compact = false }: { compact?: boolean }) {
@@ -32,7 +32,7 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
     const p = atmosphere.get();
     const pct = Math.round(p.value);
     const glow = rgbToHex(p.glow);
-    const key = `${pct}|${p.mood.id}|${glow}|${fontsReady.current}`;
+    const key = `${pct}|${p.clock}|${p.mood.id}|${glow}|${fontsReady.current}`;
     if (!force && key === last.current) return false;
     last.current = key;
 
@@ -69,15 +69,10 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // value
+    // time of day
     ctx.fillStyle = '#f4f1ec';
-    ctx.font = `300 ${compact ? 150 : 132}px ${FONT}`;
-    ctx.fillText(String(pct), c - 14, c + 6);
-    const vw = ctx.measureText(String(pct)).width;
-    ctx.font = `400 44px ${FONT}`;
-    ctx.fillStyle = 'rgba(244,241,236,0.6)';
-    ctx.textAlign = 'left';
-    ctx.fillText('%', c - 14 + vw / 2 + 6, c - 22);
+    ctx.font = `300 ${compact ? 128 : 116}px ${FONT}`;
+    ctx.fillText(p.clock, c, c + 8);
 
     // mood label
     ctx.textAlign = 'center';
@@ -87,16 +82,13 @@ export function CentralDisplay({ compact = false }: { compact?: boolean }) {
 
     // zone dots (status indicators)
     if (!compact) {
-      MOODS.forEach((m, i) => {
+      SCENES.forEach((m, i) => {
         const x = c + (i - 1) * 30;
         ctx.beginPath();
         ctx.fillStyle = m.id === p.mood.id ? glow : 'rgba(255,255,255,0.18)';
         ctx.arc(x, c + 112, m.id === p.mood.id ? 7 : 5, 0, Math.PI * 2);
         ctx.fill();
       });
-      ctx.font = `500 26px ${FONT}`;
-      ctx.fillStyle = 'rgba(244,241,236,0.45)';
-      ctx.fillText(`${p.kelvin} K`, c, c + 160);
     }
     texture.needsUpdate = true;
     return true;
