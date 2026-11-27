@@ -7,9 +7,9 @@ three original Smartic films centred on the same axis.
 - `index.html` holds the copy, the styles, UTM tagging and block tracking.
 - `src/main.ts` drives the motion and the films:
   - headlines rise line by line through a mask;
-  - paragraphs settle in, and the hairline rules and the chapter-03 window frame draw themselves;
-  - films open through a clean mask, with a light parallax on wide screens only.
-  - Everything runs once. With reduced motion nothing moves and the films wait for a tap.
+  - paragraphs settle in and the hairline rules draw themselves;
+  - films open through a clean mask.
+  - Everything comes to rest on the shared column and runs once. With reduced motion nothing moves and the films wait for a tap.
 - Films live in `public/video/`. They are web encodes of the original files; the content is unchanged:
   - `intro.mp4` comes from "Smartic (4)(1).mp4" and plays in the hero;
   - `lighting.mp4` comes from "Smartic v2.0(1).mp4" and plays in chapter 01;
