@@ -10,133 +10,223 @@
 <!-- Google Tag Manager: paste the container snippet here. Events are already pushed to window.dataLayer. -->
 <style>
 /*
-  Editorial review in the Freedx format: one reading column, blocks separated by whitespace.
-  The article is always white with near-black type and violet inline highlights. The rotary
-  controller after chapter 01 changes only its own scene (the apartment through the day).
+  SMART LIVING — BEAUTIFULLY TOLD
+  A white editorial publication: one type family (Noto Sans Armenian) used at architectural
+  scale, hairline rules, three original Smartic films, and five chapters that share one grid
+  but each take their own composition. Motion lives in src/main.ts and only runs when the
+  visitor allows motion; without it every element is simply in place.
 */
 :root {
   --bg: #ffffff;
   --fg: #111111;
-  --muted: #5c5c5c;
-  --accent: #5b5b5b;     /* chapter numbers, labels, links: neutral */
-  --hl: #4f2bd9;         /* Smartic violet, toned for body text on white (contrast ≈ 8:1) */
-  --cta-bg: #111111;
-  --cta-fg: #ffffff;
-  --font-display: "Noto Sans Armenian", system-ui, sans-serif;
-  --font-body: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --col: 40rem;          /* ≈ 640 px reading column */
+  --muted: #555555;
+  --line: #eaeaea;
+  --violet: #7045d9;        /* Smartic violet (contrast on white 5.9:1) */
+  --font: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+  --wrap: 80rem;
+  --text: 40rem;            /* ≈ 640 px reading measure */
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --fs-body: clamp(1rem, .93rem + .35vw, 1.1875rem);
+  --fs-h1: clamp(2.125rem, 1.2rem + 3.9vw, 4.75rem);
+  --fs-h2: clamp(1.875rem, 1.15rem + 2.6vw, 3.5rem);
   color-scheme: light;
 }
-
+* { box-sizing: border-box; }
 html { background: var(--bg); }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-body);
-  font-size: 1.125rem;
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font); font-size: var(--fs-body); line-height: 1.72;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
-.page {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 4rem;
-}
-section { padding-block: 2.25rem; }
-.page > section { max-width: var(--col); margin-inline: auto; }
-/* Line breaking: measured in Chromium, plain greedy wrapping gives the most even lines in this
-   column on desktop (every line but the last within ~10 % of the longest), while text-wrap: pretty
-   shortened first lines there. On phones, where long Armenian words dominate, pretty does better. */
-p { margin: 0; hyphens: manual; }
-section > * + * { margin-top: 1.1em; }
-strong { font-weight: 650; }
+img, video { max-width: 100%; display: block; }
 a { color: inherit; }
+/* body copy: plain greedy wrapping measured the most even right edge here at 1440, 1024, 768, 390 and 360 px
+   (text-wrap: pretty was equal or slightly worse with long Armenian words), so it stays the default */
+p { margin: 0; hyphens: manual; }
+h1, h2 { font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.022em; }
+h1 { font-size: var(--fs-h1); line-height: 1.06; font-weight: 750; }
+h2 { font-size: var(--fs-h2); line-height: 1.1; }
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-left: var(--gutter); padding-right: var(--gutter-r); }
+.copy > p + p { margin-top: 1.15em; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
 
-/* Hero */
-.hero { padding-top: 2.75rem; }
-.brandbar { display: flex; align-items: center; gap: 1rem; }
-.brandbar img { height: 28px; width: auto; display: block; flex: none; }
-.brandbar::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--fg), transparent); opacity: .22; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
-h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5rem; }
-.meta { font-size: .9rem; color: var(--muted); }
-.lead { font-size: 1.25rem; line-height: 1.6; }
+/* ---------- shared editorial pieces ---------- */
+.kicker { display: flex; align-items: center; gap: .9rem; font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+.kicker b { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.kicker i { font-style: normal; color: #b5b5b5; }
+.rule { display: block; height: 1px; background: var(--line); transform-origin: 0 50%; }
+.kicker .rule { flex: 1; min-width: 2rem; }
 
-/* Chapters: a quiet number and category above an emotional headline */
-.ch { padding-block: 3rem; }
-.ch-no { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
-.ch-num { font-size: .85rem; font-weight: 700; letter-spacing: .06em; color: var(--accent); font-variant-numeric: tabular-nums; }
-.ch-num::after { content: ""; display: inline-block; width: 1.6rem; height: 1px; background: currentColor; opacity: .5; margin-left: .75rem; vertical-align: .3em; }
-.ch-label { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); line-height: 1.4; }
-.ch h2 { font-size: clamp(1.6rem, 4.4vw, 2.15rem); line-height: 1.18; margin-top: .9rem; }
+.hl { color: var(--violet); font-weight: 500; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 1.5px; padding-bottom: 1px; }
 
-/* Inline highlight: one sentence per chapter, kept in its paragraph. Smartic violet,
-   slightly heavier, with a thin underline that draws itself left to right across the lines. */
-.hl {
-  color: var(--hl);
-  font-weight: 600;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 1.5px;
-  padding-bottom: 2px;
+.more { display: inline-flex; align-items: center; gap: .5em; font-size: .95rem; font-weight: 600; text-decoration: none; color: var(--fg); padding-bottom: .2em; border-bottom: 1px solid var(--line); transition: border-color .3s ease; }
+.more span { transition: transform .3s var(--ease); }
+.more:hover { border-color: var(--fg); }
+.more:hover span { transform: translateX(4px); }
+
+/* ---------- films ---------- */
+.film { position: relative; margin: 0; background: #f3f3f3; overflow: hidden; border-radius: 2px; }
+.film video { width: 100%; height: 100%; object-fit: cover; }
+.film--tall { aspect-ratio: 9 / 16; }
+.film--wide { aspect-ratio: 16 / 9; }
+.film-ctl { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; }
+.film-ctl button {
+  width: 40px; height: 40px; border-radius: 50%; border: 0; padding: 0; display: grid; place-items: center; cursor: pointer;
+  background: rgb(255 255 255 / .86); color: #111; box-shadow: 0 1px 0 rgb(0 0 0 / .06); transition: background .2s ease, transform .2s ease;
 }
-.reveal-on .hl { background-size: 0% 1.5px; transition: background-size 1.2s cubic-bezier(.3,.6,.2,1) .15s; }
-.reveal-on .hl.is-in { background-size: 100% 1.5px; }
+.film-ctl button:hover { background: #fff; transform: scale(1.05); }
+.film-ctl svg { width: 16px; height: 16px; fill: currentColor; }
+.film-ctl [data-icon] { display: none; }
+.film[data-state='playing'] .film-ctl [data-icon='pause'],
+.film[data-state='paused'] .film-ctl [data-icon='play'],
+.film[data-state='ended'] .film-ctl [data-icon='replay'] { display: block; }
+.film .film-sound [data-icon='on'] { display: none; }
+.film .film-sound[aria-pressed='true'] [data-icon='on'] { display: block; }
+.film .film-sound[aria-pressed='true'] [data-icon='off'] { display: none; }
+.film .film-sound [data-icon='off'] { display: block; }
 
-.more { font-size: 1rem; font-weight: 600; color: var(--accent); text-decoration: none; display: inline-flex; gap: .4em; align-items: center; }
-.more:hover { text-decoration: underline; text-underline-offset: 4px; }
-.more span { transition: transform .2s ease; }
-.more:hover span { transform: translateX(3px); }
+/* ---------- hero ---------- */
+.masthead { display: flex; align-items: center; gap: 1.25rem; padding-block: 1.5rem; }
+.masthead img { height: 26px; width: auto; flex: none; }
+.masthead .rule { flex: 1; }
+.masthead span { font-size: .8125rem; color: var(--muted); white-space: nowrap; }
+.hero-stage { display: grid; grid-template-columns: 1fr auto 1fr; gap: 2rem; align-items: end; padding-top: .5rem; }
+.hero-film { height: min(64svh, 38rem); width: auto; }
+.hero-film.film--tall { aspect-ratio: 9 / 16; }
+.hero-aside { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: .25rem; min-width: 0; }
+.hero-aside .slogan-sm { font-size: 1.05rem; font-weight: 600; line-height: 1.4; max-width: 14em; }
+.toc { list-style: none; margin: 0; padding: 0; display: grid; gap: .1rem; }
+.toc a { display: grid; grid-template-columns: 2.2rem 1fr; text-decoration: none; font-size: .9rem; line-height: 1.5; padding: .42rem 0; border-top: 1px solid var(--line); color: var(--muted); transition: color .2s ease; }
+.toc a:hover { color: var(--fg); }
+.toc b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.hero-side { align-self: end; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; font-size: .8125rem; color: var(--muted); }
+.scroll-cue { width: 1px; height: 4.5rem; background: var(--line); position: relative; overflow: hidden; }
+.scroll-cue::after { content: ""; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: var(--fg); animation: cue 2.4s var(--ease) infinite; }
+@keyframes cue { to { top: 100%; } }
+.hero-title { margin-top: clamp(2rem, 4.5vw, 3.25rem); max-width: 15.5em; }
+.hero-side .vert { display: none; writing-mode: vertical-rl; font-size: .8125rem; font-weight: 600; letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
+.hero-intro { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; margin-top: clamp(2rem, 4vw, 3.25rem); padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+.hero-intro .lead { grid-column: 1 / span 5; font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); line-height: 1.42; font-weight: 500; letter-spacing: -.01em; }
+.hero-intro .copy { grid-column: 7 / span 5; padding-top: .35rem; }
+.hero-intro .lead > span { display: block; }
 
-/* Lighting experience: wider than the column, right after chapter 01 */
-.page > section.light { max-width: 68rem; padding-block: 1rem 3.5rem; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* ---------- chapters ---------- */
+.ch { padding-block: clamp(3.5rem, 6.5vw, 6rem); position: relative; }
+.ch + .ch, .closing { border-top: 0; }
+.ch h2 { margin-top: 1.6rem; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1.5rem; }
 
-/* Footer */
-.foot { max-width: var(--col); margin: 0 auto; padding: 2.5rem 0 0; border-top: 1px solid #ececec; display: grid; gap: .6rem; }
-.foot img { height: 20px; width: auto; }
+/* 01 lighting: headline across, story offset, the film set to the right of a quiet numeral */
+.ch-light .head { grid-column: 1 / span 10; }
+.ch-light .copy { grid-column: 4 / span 6; margin-top: 2.5rem; }
+.ch-light .media { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: inherit; margin-top: clamp(3rem, 7vw, 6rem); align-items: end; }
+.numeral { grid-column: 1 / span 5; font-size: clamp(8rem, 19vw, 17rem); line-height: .8; font-weight: 800; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px #dcdcdc; user-select: none; margin: 0; }
+.ch-light .film { grid-column: 7 / span 4; }
 
-/* Closing */
-.closing { padding-block: 4rem 2rem; }
-.closing h2 { font-size: clamp(1.6rem, 4.4vw, 2.15rem); line-height: 1.18; }
-.closing .slogan { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; line-height: 1.4; padding-top: .4em; }
-.cta {
-  display: inline-block;
-  background: var(--cta-bg);
-  color: var(--cta-fg);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.02rem;
-  line-height: 1.3;
-  padding: .95rem 1.5rem;
-  border-radius: 999px;
-  transition: transform .15s ease, filter .15s ease;
-}
-.cta:hover { filter: brightness(1.12); }
+/* 02 heating: asymmetric, headline held on the left while the story scrolls on the right */
+.ch-heat .head { grid-column: 1 / span 5; align-self: start; position: sticky; top: 14vh; }
+.ch-heat .copy { grid-column: 7 / span 6; padding-left: 2rem; position: relative; margin-top: 3.4rem; max-width: var(--text); }
+.ch-heat .copy::before { content: ""; position: absolute; left: 0; top: .5rem; bottom: .5rem; width: 1px; background: var(--line); transform-origin: 50% 0; }
+.ch-heat .copy > p:first-child { font-size: 1.12em; line-height: 1.6; }
+
+/* 03 windows: an open, window-like frame of hairlines; the morning comes in through it */
+.ch-win .frame { position: relative; height: clamp(17rem, 34vw, 29rem); display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 clamp(1.5rem, 3vw, 2.75rem); }
+.ch-win .frame .pane { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); transform-origin: 50% 0; }
+.ch-win .frame .sill { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--fg); transform-origin: 0 50%; }
+.ch-win .frame .lintel { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line); transform-origin: 0 50%; }
+.ch-win .frame .pane:nth-of-type(1) { left: 0; } .ch-win .frame .pane:nth-of-type(2) { left: 58%; } .ch-win .frame .pane:nth-of-type(3) { left: 79%; } .ch-win .frame .pane:nth-of-type(4) { right: 0; }
+.ch-win .frame .head { position: relative; padding-left: clamp(1rem, 2.5vw, 2.25rem); padding-right: 1rem; max-width: 56%; }
+.ch-win .copy { grid-column: 5 / span 6; margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+/* 04 central control: narrative, then the widest moment of the page */
+.ch-central .head { grid-column: 1 / span 9; }
+.ch-central .copy { grid-column: 2 / span 6; margin-top: 2.5rem; }
+.ch-central .film { margin-top: clamp(3rem, 7vw, 6rem); }
+
+/* 05 security: quiet and centred on the page, a lot of air */
+.ch-safe .inner { max-width: 46rem; margin-inline: auto; }
+.ch-safe .copy { margin-top: 2.25rem; max-width: var(--text); }
+.ch-safe .copy > p:last-of-type { font-weight: 500; }
+
+/* closing */
+.closing { padding-block: clamp(4rem, 9vw, 8rem) clamp(4rem, 8vw, 7rem); }
+.closing .rule-top { margin-bottom: clamp(3rem, 6vw, 5rem); }
+.closing .copy { max-width: var(--text); margin-top: 2.25rem; }
+.closing .slogan { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem); font-weight: 750; letter-spacing: -.02em; line-height: 1.12; margin-top: clamp(2.5rem, 5vw, 3.75rem); text-wrap: balance; }
+.closing .slogan span { color: var(--violet); }
+.closing .after { max-width: var(--text); margin-top: 1.25rem; color: var(--muted); }
+.cta-row { display: flex; flex-wrap: wrap; gap: .9rem 1.75rem; align-items: center; margin-top: 2.25rem; }
+.cta { display: inline-flex; align-items: center; gap: .6em; background: var(--fg); color: #fff; text-decoration: none; font-weight: 600; font-size: 1rem; line-height: 1.3; padding: 1rem 1.6rem; border-radius: 999px; transition: background .25s ease, transform .2s ease; }
+.cta:hover { background: #2a2a2a; }
 .cta:active { transform: scale(.98); }
-.cta:focus-visible, a:focus-visible { outline: 3px solid var(--hl); outline-offset: 3px; }
-.cta-row { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; padding-top: .8rem; }
-.fine { font-size: .85rem; line-height: 1.5; color: var(--muted); }
-@media (max-width: 640px) {
-  p { text-wrap: pretty; }
-  .lead { font-size: 1.15rem; }
+
+/* footer */
+.foot { border-top: 1px solid var(--line); padding-block: 2rem 3rem; display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; }
+.foot img { height: 18px; width: auto; }
+.fine { font-size: .8125rem; line-height: 1.55; color: var(--muted); max-width: 44rem; }
+
+/* ---------- tablet and phone ---------- */
+@media (max-width: 1023px) {
+  .hero-stage { grid-template-columns: auto 1fr; gap: 1.25rem; }
+  .hero-aside { display: none; }
+  .hero-film { height: auto; width: min(62vw, 22rem); }
+  .hero-side { align-self: stretch; justify-content: space-between; }
+  .hero-side .vert { display: block; }
+  .hero-intro .lead, .hero-intro .copy { grid-column: 1 / -1; }
+  .hero-intro { row-gap: 1.75rem; }
+  .ch-light .head, .ch-light .copy, .ch-heat .head, .ch-heat .copy, .ch-win .copy, .ch-central .head, .ch-central .copy { grid-column: 1 / -1; }
+  .ch-light .copy { margin-top: 2rem; max-width: var(--text); }
+  .numeral { grid-column: 1 / span 5; font-size: clamp(6rem, 24vw, 11rem); }
+  .ch-light .film { grid-column: 6 / -1; }
+  .ch-heat .head { position: static; }
+  .ch-heat .copy { margin-top: 2rem; }
+  .ch-win .copy { max-width: var(--text); }
+  .ch-central .copy { max-width: var(--text); margin-top: 2rem; }
 }
-@media (max-width: 480px) {
-  body { font-size: 1.0625rem; }
-  .cta { display: block; text-align: center; }
+@media (min-width: 640px) and (max-width: 1023px) {
+  .ch-win .copy { margin-left: 16%; }
+  .ch-win .frame .pane:nth-of-type(2) { display: none; }
+  .ch-win .frame .head { max-width: 76%; }
+}
+@media (max-width: 639px) {
+  .masthead span { display: none; }
+  .hero-film { width: min(64vw, 18rem); }
+  .grid { column-gap: 1rem; }
+  .numeral { display: none; }
+  .ch-light .film { grid-column: 3 / -1; }
+  .ch-heat .copy { padding-left: 1.1rem; }
+  .ch-win .frame { height: clamp(15rem, 70vw, 19rem); }
+  .ch-win .frame .pane:nth-of-type(2), .ch-win .frame .pane:nth-of-type(3) { display: none; }
+  .ch-win .frame .head { max-width: none; padding-right: clamp(1rem, 2.5vw, 2.25rem); }
+  .film-ctl { left: 10px; bottom: 10px; }
+  .cta { width: 100%; justify-content: center; }
 }
 
-/* Scroll reveal (only with JS and motion allowed) */
-.reveal-on .page > section { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
-.reveal-on .page > section.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .cta, .more span { transition: none; }
-}
+/* ---------- motion (classes set by the head script; src/main.ts drives the rest) ---------- */
+.motion [data-reveal='lines'] .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.motion [data-reveal='lines'] .ln-i { display: block; transform: translate3d(0, 108%, 0); transition: transform .85s var(--ease) calc(var(--i, 0) * 95ms); }
+.motion [data-reveal='lines'].is-in .ln-i { transform: none; }
+.motion [data-reveal='lines']:not(.is-split) { opacity: 0; }
+.motion [data-reveal='fade'] > * { opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity .9s ease calc(var(--d, 0) * 110ms + 120ms), transform .9s var(--ease) calc(var(--d, 0) * 110ms + 120ms); }
+.motion [data-reveal='fade'].is-in > * { opacity: 1; transform: none; }
+.motion [data-reveal='film'] { clip-path: inset(7% 7% 7% 7%); transition: clip-path 1.1s var(--ease); }
+.motion [data-reveal='film'] video { transform: scale(1.04); transition: transform 1.4s var(--ease); }
+.motion [data-reveal='film'].is-in { clip-path: inset(0 0 0 0); }
+.motion [data-reveal='film'].is-in video { transform: none; }
+.motion [data-reveal='rule'] .rule, .motion [data-reveal='rule'].rule { transform: scaleX(0); transition: transform 1.1s var(--ease) .1s; }
+.motion [data-reveal='rule'].is-in .rule, .motion [data-reveal='rule'].rule.is-in { transform: none; }
+.motion .ch-heat .copy[data-reveal]::before { transform: scaleY(0); transition: transform 1.4s var(--ease) .2s; }
+.motion .ch-heat .copy.is-in::before { transform: none; }
+.motion .ch-win .frame .pane { transform: scaleY(0); transition: transform 1.3s var(--ease) calc(var(--p, 0) * 120ms); }
+.motion .ch-win .frame .lintel, .motion .ch-win .frame .sill { transform: scaleX(0); transition: transform 1.3s var(--ease) .1s; }
+.motion .ch-win .frame.is-in .pane, .motion .ch-win .frame.is-in .lintel, .motion .ch-win .frame.is-in .sill { transform: none; }
+.motion .hl { background-size: 0% 1.5px; transition: background-size .9s var(--ease) .2s; }
+.motion .hl.is-in { background-size: 100% 1.5px; }
+.motion .numeral { will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .scroll-cue::after { animation: none; } }
 
 #trk-debug {
   position: fixed; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
@@ -145,123 +235,212 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
   padding: 10px 12px; border-radius: 10px; z-index: 50; opacity: .92;
 }
 </style>
-<script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) document.documentElement.classList.add('reveal-on');</script>
-  <script type="module" crossorigin src="./assets/index-BNEVbX22.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-6RWjoALt.css">
+<script>
+/* Motion only when the visitor allows it. If the module never starts, everything is shown as is. */
+(function () {
+  var d = document.documentElement;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  d.classList.add('motion');
+  setTimeout(function () { if (!window.__motionReady) d.classList.remove('motion'); }, 4000);
+})();
+</script>
+  <script type="module" crossorigin src="./assets/index-ozIW0sJr.js"></script>
 </head><body>
 
-<main class="page" data-lang="hy">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 16 16"><path d="M4 2.5v11l9.5-5.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 16 16"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 16 16"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2.2L4.6 3.2 8 .3z"/></symbol>
+  <symbol id="i-sound-off" viewBox="0 0 16 16"><path d="M2 6h2.5L8 3v10l-3.5-3H2zM10.3 5.6l1.2 1.2 1.2-1.2.9.9-1.2 1.2 1.2 1.2-.9.9-1.2-1.2-1.2 1.2-.9-.9 1.2-1.2-1.2-1.2z"/></symbol>
+  <symbol id="i-sound-on" viewBox="0 0 16 16"><path d="M2 6h2.5L8 3v10l-3.5-3H2zM10 5.2a3.6 3.6 0 0 1 0 5.6l-.9-1a2.3 2.3 0 0 0 0-3.6zM11.8 3.4a6 6 0 0 1 0 9.2l-.9-1a4.7 4.7 0 0 0 0-7.2z"/></symbol>
+</svg>
 
-  <section class="hero" data-block="hero" data-block-index="0">
-    <div class="brandbar">
-      <img src="./smartic-logo.svg" alt="Smartic" width="180" height="28">
+<header class="wrap hero" id="top" data-block="hero" data-block-index="0">
+  <div class="masthead">
+    <img src="./smartic-logo.svg" alt="Smartic" width="168" height="26">
+    <span class="rule" aria-hidden="true"></span>
+    <span>4 րոպե ընթերցում</span>
+  </div>
+
+  <div class="hero-stage">
+    <div class="hero-aside" data-reveal="fade">
+      <p class="slogan-sm">Մեկ որոշում, և տունդ խելացի է</p>
+      <ol class="toc" aria-label="Բովանդակություն">
+        <li><a href="#lighting"><b>01</b>Լուսավորություն</a></li>
+        <li><a href="#heating"><b>02</b>Ջեռուցում և էներգիա</a></li>
+        <li><a href="#windows"><b>03</b>Պատուհաններ և մուտք</a></li>
+        <li><a href="#central"><b>04</b>Կենտրոնական կառավարում</a></li>
+        <li><a href="#security"><b>05</b>Անվտանգություն</a></li>
+      </ol>
     </div>
-    <h1>Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
-    <p class="meta">4 րոպե ընթերցում</p>
+
+    <figure class="film film--tall hero-film" data-reveal="film" data-video="intro" data-parallax="-0.05">
+      <video muted playsinline preload="auto" poster="./video/intro-poster.webp" src="./video/intro.mp4" aria-label="Smartic-ի խելացի տան սարքերը և կառավարման վահանակները"></video>
+      <div class="film-ctl">
+        <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+          <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+        </button>
+      </div>
+    </figure>
+
+    <div class="hero-side">
+      <span class="vert" aria-hidden="true">Մեկ որոշում, և տունդ խելացի է</span>
+      <span class="scroll-cue" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <h1 class="hero-title" data-reveal="lines">Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
+
+  <div class="hero-intro" data-block="intro" data-block-index="1">
+    <p class="lead" data-reveal="fade"><span>Տան գեղեցկությունը տեսանելի է, իսկ իրական հարմարավետությունը՝ զգալի։</span></p>
+    <div class="copy" data-reveal="fade">
+      <p>Այն զգում ես ամեն օր՝ քեզ հաճելի լուսավորության, հարմարավետ ջերմաստիճանի, հանգիստ առավոտների ու սիրելի երեկոների ընթացքում։</p>
+      <p style="--d:1">Երբեմն բավական է ընդամենը մեկ ճիշտ որոշում, որպեսզի տանը անցկացրած ժամանակը բոլորովին այլ զգացողություններ պարգևի։</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- 01 · strong typographic opening, then the lighting film as the chapter's demonstration -->
+  <section class="ch ch-light wrap" id="lighting" data-block="lighting" data-block-index="2">
+    <div class="grid">
+      <div class="head">
+        <p class="kicker" data-reveal="rule"><b>01</b><i>/</i>Լուսավորություն<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Նույն սենյակը։ Բոլորովին այլ մթնոլորտ։</h2>
+      </div>
+      <div class="copy" data-reveal="fade">
+        <p>Պատկերացրու՝ հյուրեր ես ընդունում, և հյուրասենյակը ողողված է պայծառ լույսով։ Իսկ երբ երեկոն ավարտվում է, մեկ հպումով լուսավորությունը դառնում է մեղմ ու ջերմ՝ ստեղծելով հանգստի տրամադրություն։</p>
+        <p style="--d:1">Սենյակը նույնն է, կահույքը՝ նույնպես։ Փոխվել է միայն լուսավորությունը, բայց փոխվել է նաև ամբողջ մթնոլորտը։</p>
+        <p style="--d:2">Smartic-ի լուսավորության կառավարման լուծումներով կարող ես ստեղծել տարբեր լուսային սցենարներ։ <span class="hl">Լուսավորությունը կարող ես հարմարեցնել օրվա ժամին, զբաղմունքիդ կամ տրամադրությանդ։</span></p>
+        <p style="--d:3">Ավելին՝ համապատասխան սարքերի և սենսորների օգնությամբ լույսը կարող է ինքնաբերաբար միանալ, երբ մտնում ես սենյակ, կամ արձագանքել բնական լուսավորության փոփոխությանը։ Այդպես նույնիսկ ամենասովորական գործողությունները դառնում են ավելի հարմարավետ։</p>
+        <p style="--d:4"><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+      <div class="media">
+        <p class="numeral" aria-hidden="true" data-parallax="0.12">01</p>
+        <figure class="film film--tall" data-reveal="film" data-video="lighting">
+          <video muted playsinline preload="none" poster="./video/lighting-poster.webp" src="./video/lighting.mp4" aria-label="Նույն ինտերիերը՝ լուսավորության տարբեր սցենարներով"></video>
+          <div class="film-ctl">
+            <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+              <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+            </button>
+          </div>
+        </figure>
+      </div>
+    </div>
   </section>
 
-  <section class="intro" data-block="intro" data-block-index="1">
-    <p class="lead">Տան գեղեցկությունը տեսանելի է, իսկ իրական հարմարավետությունը՝ զգալի։</p>
-    <p>Այն զգում ես ամեն օր՝ քեզ հաճելի լուսավորության, հարմարավետ ջերմաստիճանի, հանգիստ առավոտների ու սիրելի երեկոների ընթացքում։</p>
-    <p>Երբեմն բավական է ընդամենը մեկ ճիշտ որոշում, որպեսզի տանը անցկացրած ժամանակը բոլորովին այլ զգացողություններ պարգևի։</p>
+  <!-- 02 · asymmetric: the headline stays while the story moves -->
+  <section class="ch ch-heat wrap" id="heating" data-block="heating" data-block-index="3">
+    <div class="grid">
+      <div class="head">
+        <p class="kicker" data-reveal="rule"><b>02</b><i>/</i>Ջեռուցում և էներգիայի կառավարում<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Երբ տունը պատրաստ է քո վերադարձին</h2>
+      </div>
+      <div class="copy" data-reveal="fade">
+        <p>Ձմեռային ցուրտ երեկո է։ Աշխատանքային երկար օրվանից հետո տուն ես վերադառնում և ուզում ես պարզապես հանգստանալ, ոչ թե սպասել, մինչև սենյակը տաքանա։</p>
+        <p style="--d:1">Իսկ եթե տունը հնարավոր լինի նախապես պատրաստել քո վերադարձին։</p>
+        <p style="--d:2">Smartic-ի ջեռուցման կառավարման լուծումները հնարավորություն են տալիս <span class="hl">նախապես կարգավորել ջերմաստիճանը՝ առանց տուն հասնելուն սպասելու։</span></p>
+        <p style="--d:3">Կարող ես ջերմաստիճանի կառավարումը հարմարեցնել քո առօրյային՝ ընտրելով, թե երբ է տանը անհրաժեշտ ավելի շատ ջերմություն, և երբ կարելի է նվազեցնել ջեռուցման ինտենսիվությունը։ Համապատասխան համակարգի դեպքում սա նաև օգնում է ավելի արդյունավետ օգտագործել էներգիան։</p>
+        <p style="--d:4">Այդպես տուն վերադառնալու պահը դառնում է օրվա ամենահաճելի պահերից մեկը։</p>
+        <p style="--d:5"><a class="more" data-track="category_heating" data-out="heating" href="https://smartic.am/product/?product_category=%D5%BB%D5%A5%D5%BC%D5%B8%D6%82%D6%81%D5%B8%D6%82%D5%B4-%D6%87-%D5%A7%D5%B6%D5%A5%D6%80%D5%A3%D5%AB%D5%A1%D5%B5%D5%AB-%D5%AF%D5%A1%D5%BC%D5%A1%D5%BE%D5%A1%D6%80%D5%B8%D6%82%D5%B4" target="_blank" rel="noopener">Տեսնել ջեռուցման լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
   </section>
 
-  <section class="ch" id="lighting" data-block="lighting" data-block-index="2">
-    <div class="ch-no"><span class="ch-num">01</span><span class="ch-label">Լուսավորություն</span></div>
-    <h2>Նույն սենյակը։ Բոլորովին այլ մթնոլորտ։</h2>
-    <p>Պատկերացրու՝ հյուրեր ես ընդունում, և հյուրասենյակը ողողված է պայծառ լույսով։ Իսկ երբ երեկոն ավարտվում է, մեկ հպումով լուսավորությունը դառնում է մեղմ ու ջերմ՝ ստեղծելով հանգստի տրամադրություն։</p>
-    <p>Սենյակը նույնն է, կահույքը՝ նույնպես։ Փոխվել է միայն լուսավորությունը, բայց փոխվել է նաև ամբողջ մթնոլորտը։</p>
-    <p>Smartic-ի լուսավորության կառավարման լուծումներով կարող ես ստեղծել տարբեր լուսային սցենարներ։ <span class="hl">Լուսավորությունը կարող ես հարմարեցնել օրվա ժամին, զբաղմունքիդ կամ տրամադրությանդ։</span></p>
-    <p><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
+  <!-- 03 · open and light: a window drawn in hairlines, the morning headline set at its sill -->
+  <section class="ch ch-win wrap" id="windows" data-block="windows" data-block-index="4">
+    <div class="frame" data-reveal="frame">
+      <span class="lintel" aria-hidden="true"></span>
+      <span class="pane" aria-hidden="true" style="--p:0"></span><span class="pane" aria-hidden="true" style="--p:1"></span><span class="pane" aria-hidden="true" style="--p:2"></span><span class="pane" aria-hidden="true" style="--p:3"></span>
+      <span class="sill" aria-hidden="true"></span>
+      <div class="head">
+        <p class="kicker"><b>03</b><i>/</i>Պատուհաններ և մուտք</p>
+        <h2 data-reveal="lines">Առավոտ, որը սկսվում է քո ուզած ձևով</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="copy" data-reveal="fade">
+        <p>Պատկերացրու առավոտ, երբ քեզ արթնացնում է ոչ թե զարթուցիչի ձայնը, այլ վարագույրների արանքից ներս թափանցող արևի մեղմ լույսը։</p>
+        <p style="--d:1"><span class="hl">Վարագույրները կարող են բացվել ու փակվել քո նախընտրած ժամերին։</span> Իսկ երեկոյան դրանք կարող են փակվել՝ ստեղծելով հանգստի ու առանձնության մթնոլորտ։</p>
+        <p style="--d:2">Smartic-ի ավտոմատացման լուծումներով կարող ես նաև հեռակառավարել վարագույրները՝ անգամ տնից դուրս գտնվելիս։ Իսկ արևոտ օրերին դրանց դիրքը կարգավորելը կարող է օգնել նվազեցնել սենյակի գերտաքացումը և պահպանել հաճելի միջավայր։</p>
+        <p style="--d:3">Իսկ մուտքի կառավարման խելացի լուծումներն օգնում են տուն մուտք գործել ավելի հարմար եղանակով՝ առանց ամեն անգամ ավանդական բանալին օգտագործելու։ Համապատասխան խելացի կողպեքները կարող են ապահովել մուտք PIN կոդով, քարտով կամ մատնահետքով։</p>
+        <p style="--d:4"><a class="more" data-track="category_windows" data-out="windows" href="https://smartic.am/product/?product_category=%D5%BA%D5%A1%D5%BF%D5%B8%D6%82%D5%B0%D5%A1%D5%B6%D5%B6%D5%A5%D6%80-%D6%87-%D5%B4%D5%B8%D6%82%D5%BF%D6%84" target="_blank" rel="noopener">Տեսնել պատուհանների և մուտքի լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
   </section>
 
-  <section class="light" id="controller" data-block="controller" data-block-index="3" aria-label="Մեկ բնակարան, մեկ օր․ պտտիր կարգավորիչը՝ առավոտից մինչև գիշեր">
-    <p class="sr-only" id="controller-instruction">Պտտիր կարգավորիչը կամ օգտագործիր սլաքները՝ բնակարանում օրը առավոտից երեկո տեղափոխելու համար։</p>
-    <div id="controller-root"></div>
+  <!-- 04 · narrative, then the widest film of the page -->
+  <section class="ch ch-central wrap" id="central" data-block="central" data-block-index="5">
+    <div class="grid">
+      <div class="head">
+        <p class="kicker" data-reveal="rule"><b>04</b><i>/</i>Կենտրոնական կառավարում<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Երբ տունը հարմարվում է քո սովորություններին</h2>
+      </div>
+      <div class="copy" data-reveal="fade">
+        <p>Երկար օրվանից հետո ուզում ես միացնել սիրելի ֆիլմդ ու հանգստանալ։ Բայց մինչ այդ պետք է կարգավորել լույսերը, փակել վարագույրներն ու ստեղծել հարմարավետ միջավայր։</p>
+        <p style="--d:1">Իսկ եթե այս ամենը հնարավոր լինի անել մեկ հպումով։</p>
+        <p style="--d:2">Smartic-ի կենտրոնական կառավարման համակարգով համատեղելի սարքերը կարելի է միավորել ընդհանուր սցենարների մեջ։</p>
+        <p style="--d:3"><span class="hl">Մի քանի առանձին գործողություն կարող ես միավորել մեկ կառավարման սցենարում։</span> Դու ընտրում ես «Հանգիստ» ռեժիմը, իսկ տունը պատրաստվում է քո երեկոյին՝ ըստ նախապես սահմանված կարգավորումների։</p>
+        <p style="--d:4">Նմանապես կարելի է նախապես մտածել առավոտյան կամ քնելուց առաջ կատարվող գործողությունների մասին՝ որոշելով, թե երբ պետք է բացվեն վարագույրները, ինչպես փոխվի լուսավորությունը և որ սարքերն աշխատեն։ Ամեն ինչ՝ քո սովորություններին համապատասխան։</p>
+        <p style="--d:5"><a class="more" data-track="category_central" data-out="central" href="https://smartic.am/product/?product_category=central-control" target="_blank" rel="noopener">Տեսնել կենտրոնական կառավարման լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+    <figure class="film film--wide" data-reveal="film" data-video="central">
+      <video muted playsinline preload="none" poster="./video/bedroom-poster.webp" src="./video/bedroom.mp4" aria-label="Խելացի ննջասենյակ․ գիշերային և արթնանալու ռեժիմներ"></video>
+      <div class="film-ctl">
+        <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+          <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+        </button>
+        <button type="button" class="film-sound" aria-pressed="false" aria-label="Միացնել ձայնը">
+          <svg data-icon="off"><use href="#i-sound-off"/></svg><svg data-icon="on"><use href="#i-sound-on"/></svg>
+        </button>
+      </div>
+    </figure>
   </section>
 
-  <section class="ch" id="heating" data-block="heating" data-block-index="4">
-    <div class="ch-no"><span class="ch-num">02</span><span class="ch-label">Ջեռուցում և էներգիայի կառավարում</span></div>
-    <h2>Երբ տունը պատրաստ է քո վերադարձին</h2>
-    <p>Ձմեռային ցուրտ երեկո է։ Աշխատանքային երկար օրվանից հետո տուն ես վերադառնում և ուզում ես պարզապես հանգստանալ, ոչ թե սպասել, մինչև սենյակը տաքանա։</p>
-    <p>Իսկ եթե տունը հնարավոր լինի նախապես պատրաստել քո վերադարձին։</p>
-    <p>Smartic-ի ջեռուցման կառավարման լուծումները հնարավորություն են տալիս <span class="hl">նախապես կարգավորել ջերմաստիճանը՝ առանց տուն հասնելուն սպասելու։</span></p>
-    <p>Այդպես տուն վերադառնալու պահը դառնում է օրվա ամենահաճելի պահերից մեկը։</p>
-    <p><a class="more" data-track="category_heating" data-out="heating" href="https://smartic.am/product/?product_category=%D5%BB%D5%A5%D5%BC%D5%B8%D6%82%D6%81%D5%B8%D6%82%D5%B4-%D6%87-%D5%A7%D5%B6%D5%A5%D6%80%D5%A3%D5%AB%D5%A1%D5%B5%D5%AB-%D5%AF%D5%A1%D5%BC%D5%A1%D5%BE%D5%A1%D6%80%D5%B8%D6%82%D5%B4" target="_blank" rel="noopener">Տեսնել ջեռուցման լուծումները <span aria-hidden="true">→</span></a></p>
+  <!-- 05 · restrained: a quiet centred column, peace of mind -->
+  <section class="ch ch-safe wrap" id="security" data-block="security" data-block-index="6">
+    <div class="inner">
+      <p class="kicker" data-reveal="rule"><b>05</b><i>/</i>Անվտանգություն և պաշտպանություն<span class="rule" aria-hidden="true"></span></p>
+      <h2 data-reveal="lines">Ավելի հանգիստ, նույնիսկ երբ տնից հեռու ես</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Արձակուրդ ես մեկնել։ Տանը ոչ ոք չկա, բայց ժամանակ առ ժամանակ մտածում ես՝ արդյոք ամեն ինչ կարգի՞ն է։</p>
+        <p style="--d:1">Պատկերացրու, որ <span class="hl">համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
+        <p style="--d:2">Smartic-ի անվտանգության և պաշտպանության լուծումներն օգնում են ժամանակին ստանալ համապատասխան ազդանշաններ և ավելի տեղեկացված լինել տանը կատարվողի մասին։</p>
+        <p style="--d:3">Կախված ընտրված սարքերից՝ հնարավոր է վերահսկել մուտքի հետ կապված իրադարձությունները կամ ծանուցումներ ստանալ որոշ անսպասելի իրավիճակներում։ Սա հատկապես կարևոր է, երբ տանը երկար ժամանակ ոչ ոք չկա։</p>
+        <p style="--d:4">Որովհետև հարմարավետ տունը նաև այն տունն է, որի մասին կարող ես ավելի հանգիստ լինել հեռվից։</p>
+        <p style="--d:5"><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
   </section>
 
-  <section class="ch" id="windows" data-block="windows" data-block-index="5">
-    <div class="ch-no"><span class="ch-num">03</span><span class="ch-label">Պատուհաններ և մուտք</span></div>
-    <h2>Առավոտ, որը սկսվում է քո ուզած ձևով</h2>
-    <p>Պատկերացրու առավոտ, երբ քեզ արթնացնում է ոչ թե զարթուցիչի ձայնը, այլ վարագույրների արանքից ներս թափանցող արևի մեղմ լույսը։</p>
-    <p><span class="hl">Վարագույրները կարող են բացվել ու փակվել քո նախընտրած ժամերին։</span> Իսկ երեկոյան դրանք կարող են փակվել՝ ստեղծելով հանգստի ու առանձնության մթնոլորտ։</p>
-    <p>Smartic-ի ավտոմատացման լուծումներով նման գործողությունները կարող են դառնալ օրվա սովորական ու հաճելի մասը։</p>
-    <p>Իսկ մուտքի կառավարման խելացի լուծումներն օգնում են տուն մուտք գործել ավելի հարմար եղանակով՝ առանց ամեն անգամ ավանդական բանալին օգտագործելու։</p>
-    <p><a class="more" data-track="category_windows" data-out="windows" href="https://smartic.am/product/?product_category=%D5%BA%D5%A1%D5%BF%D5%B8%D6%82%D5%B0%D5%A1%D5%B6%D5%B6%D5%A5%D6%80-%D6%87-%D5%B4%D5%B8%D6%82%D5%BF%D6%84" target="_blank" rel="noopener">Տեսնել պատուհանների և մուտքի լուծումները <span aria-hidden="true">→</span></a></p>
-  </section>
-
-  <section class="ch" id="central" data-block="central" data-block-index="6">
-    <div class="ch-no"><span class="ch-num">04</span><span class="ch-label">Կենտրոնական կառավարում</span></div>
-    <h2>Երբ տունը հարմարվում է քո սովորություններին</h2>
-    <p>Երկար օրվանից հետո ուզում ես միացնել սիրելի ֆիլմդ ու հանգստանալ։ Բայց մինչ այդ պետք է կարգավորել լույսերը, փակել վարագույրներն ու ստեղծել հարմարավետ միջավայր։</p>
-    <p>Իսկ եթե այս ամենը հնարավոր լինի անել մեկ հպումով։</p>
-    <p>Smartic-ի կենտրոնական կառավարման համակարգով համատեղելի սարքերը կարելի է միավորել ընդհանուր սցենարների մեջ։</p>
-    <p><span class="hl">Մի քանի առանձին գործողություն կարող ես միավորել մեկ կառավարման սցենարում։</span> Դու ընտրում ես «Հանգիստ» ռեժիմը, իսկ տունը պատրաստվում է քո երեկոյին՝ ըստ նախապես սահմանված կարգավորումների։</p>
-    <p><a class="more" data-track="category_central" data-out="central" href="https://smartic.am/product/?product_category=central-control" target="_blank" rel="noopener">Տեսնել կենտրոնական կառավարման լուծումները <span aria-hidden="true">→</span></a></p>
-  </section>
-
-  <section class="ch" id="security" data-block="security" data-block-index="7">
-    <div class="ch-no"><span class="ch-num">05</span><span class="ch-label">Անվտանգություն և պաշտպանություն</span></div>
-    <h2>Ավելի հանգիստ, նույնիսկ երբ տնից հեռու ես</h2>
-    <p>Արձակուրդ ես մեկնել։ Տանը ոչ ոք չկա, բայց ժամանակ առ ժամանակ մտածում ես՝ արդյոք ամեն ինչ կարգի՞ն է։</p>
-    <p>Պատկերացրու, որ <span class="hl">համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
-    <p>Smartic-ի անվտանգության և պաշտպանության լուծումներն օգնում են ժամանակին ստանալ համապատասխան ազդանշաններ և ավելի տեղեկացված լինել տանը կատարվողի մասին։</p>
-    <p>Որովհետև հարմարավետ տունը նաև այն տունն է, որի մասին կարող ես ավելի հանգիստ լինել հեռվից։</p>
-    <p><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
-  </section>
-
-  <section class="closing" id="closing" data-block="conclusion" data-block-index="8">
-    <h2>Մեծ փոփոխությունները միշտ չէ, որ մեծ քայլերից են սկսվում</h2>
-    <p>Երբեմն բավական է փոխել միայն լուսավորությունը, որպեսզի երեկոն այլ տրամադրություն ստանա։ Կամ ընտրել ջեռուցման կառավարման լուծում, որպեսզի տուն վերադառնալն ավելի հաճելի դառնա։</p>
-    <p>Մեկի համար առաջնայինը հարմարավետությունն է, մյուսի համար՝ անվտանգությունը, իսկ երրորդը ցանկանում է տան տարբեր համակարգերը կառավարել մեկ հարթակից։</p>
-    <p>Քո տունն էլ կարող է հարմարվել հենց քո սովորություններին ու ցանկություններին։</p>
-    <p class="slogan">Մեկ որոշում, և տունդ խելացի է։</p>
-    <p>Բացահայտիր Smartic-ի լուծումները և գտիր այն տարբերակը, որը համապատասխանում է քո տանը։</p>
-    <div class="cta-row">
-      <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ի լուծումները</a>
-      <a class="more" data-track="cta_contact" data-out="contact" href="https://smartic.am/contact-us/" target="_blank" rel="noopener">Կապ Smartic-ի հետ <span aria-hidden="true">→</span></a>
+  <section class="closing wrap" id="closing" data-block="conclusion" data-block-index="7">
+    <span class="rule rule-top" data-reveal="rule" aria-hidden="true"></span>
+    <h2 data-reveal="lines">Մեծ փոփոխությունները միշտ չէ, որ մեծ քայլերից են սկսվում</h2>
+    <div class="copy" data-reveal="fade">
+      <p>Երբեմն բավական է փոխել միայն լուսավորությունը, որպեսզի երեկոն այլ տրամադրություն ստանա։ Կամ ընտրել ջեռուցման կառավարման լուծում, որպեսզի տուն վերադառնալն ավելի հաճելի դառնա։</p>
+      <p style="--d:1">Մեկի համար առաջնայինը հարմարավետությունն է, մյուսի համար՝ անվտանգությունը, իսկ երրորդը ցանկանում է տան տարբեր համակարգերը կառավարել մեկ հարթակից։</p>
+      <p style="--d:2">Քո տունն էլ կարող է հարմարվել հենց քո սովորություններին ու ցանկություններին։</p>
+    </div>
+    <p class="slogan" data-reveal="lines">Մեկ որոշում, և տունդ խելացի է։</p>
+    <div data-reveal="fade">
+      <p class="after">Բացահայտիր Smartic-ի լուծումները և գտիր այն տարբերակը, որը համապատասխանում է քո տանը։</p>
+      <div class="cta-row" style="--d:1">
+        <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ի լուծումները <span aria-hidden="true">→</span></a>
+        <a class="more" data-track="cta_consult" data-out="contact" href="https://smartic.am/contact-us/" target="_blank" rel="noopener">Ստանալ խորհրդատվություն <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
 </main>
 
-<footer class="page">
+<footer class="wrap">
   <div class="foot">
-    <img src="./smartic-logo.svg" alt="Smartic" width="128" height="20">
-    <p class="fine">Էջի կարգավորիչը և ինտերիերի պատկերները ցուցադրական են և ստեղծված են գովազդային նպատակով։ Լուծումների ընտրությունն ու համատեղելիությունը որոշվում են Smartic-ի մասնագետների հետ։ <a href="https://smartic.am/" data-out="footer" data-track="footer_smartic" target="_blank" rel="noopener">smartic.am</a></p>
+    <img src="./smartic-logo.svg" alt="Smartic" width="116" height="18">
+    <p class="fine">Լուծումների ընտրությունն ու համատեղելիությունը որոշվում են Smartic-ի մասնագետների հետ՝ կախված տան համակարգերից և ընտրված սարքերից։ <a href="https://smartic.am/" data-out="footer" data-track="footer_smartic" target="_blank" rel="noopener">smartic.am</a></p>
   </div>
 </footer>
-
-<script>
-/* Scroll reveal: each block rises in once as it enters the screen; highlights draw their underline. */
-(function () {
-  if (!document.documentElement.classList.contains('reveal-on')) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
-    });
-  }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
-  document.querySelectorAll('.page > section').forEach(function (s) { io.observe(s); });
-
-  // highlighted sentences draw their underline once they are well inside the screen
-  var hlObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add('is-in'); hlObs.unobserve(en.target); }
-    });
-  }, { rootMargin: '0px 0px -22% 0px', threshold: 1 });
-  document.querySelectorAll('.hl').forEach(function (s) { hlObs.observe(s); });
-})();
-</script>
 
 <script>
 /*
@@ -299,8 +478,8 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     landing_exit — visitor left the page: last_block = deepest block reached, current_block = block on screen
     cta_click    — click on an element with data-track
     product_link_click / smartic_cta_click — product category links / main CTA
-    product_section_view — a product chapter is half on screen
-    lighting_* — sent from the controller block (src/main.tsx)
+    product_section_view — a product chapter reaches the middle of the screen
+    video_view / video_play / video_complete — sent from src/main.ts (video_id: intro, lighting, central)
   Sent to GA4 (gtag), GTM (dataLayer) and Yandex Metrica (ym + YM_COUNTER_ID), whichever is installed.
   No personal data is collected.
 */
@@ -399,8 +578,8 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
     }, true);
     if (a.dataset.track.indexOf('category_') === 0) {
       send('product_link_click', { product_category: a.dataset.track.slice(9), block_id: block ? block.dataset.block : null }, true);
-    } else if (a.dataset.track === 'cta_smartic') {
-      send('smartic_cta_click', { block_id: block ? block.dataset.block : null }, true);
+    } else if (a.dataset.track === 'cta_smartic' || a.dataset.track === 'cta_consult') {
+      send('smartic_cta_click', { cta_id: a.dataset.track, block_id: block ? block.dataset.block : null }, true);
     }
   });
 
@@ -411,7 +590,7 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 2.9rem); line-height: 1.12; margin-top: 2.5
       prodObs.unobserve(en.target);
       send('product_section_view', { block_id: en.target.dataset.block, block_index: Number(en.target.dataset.blockIndex) });
     });
-  }, { threshold: 0.5 });
+  }, { rootMargin: '0px 0px -50% 0px', threshold: 0 });
   document.querySelectorAll('section.ch[data-block]').forEach(function (el) { prodObs.observe(el); });
 })();
 </script>
