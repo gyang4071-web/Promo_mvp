@@ -1,8 +1,7 @@
 /*
   Motion and films for the Smartic promo page.
   - Headlines rise line by line through a mask, paragraphs settle in, rules draw themselves,
-    the window frame in chapter 03 is drawn in hairlines, films open through a clean mask.
-  - Two elements drift very slightly with scroll (the hero film and the chapter-01 numeral).
+    films open through a clean mask. Every element comes to rest on the shared central column.
   - Films: muted, inline, played once when visible, paused when out of view, one at a time.
   Everything runs once per element. With reduced motion nothing moves and films wait for a tap.
 */
@@ -106,36 +105,6 @@ if (motion) {
     { rootMargin: '0px 0px -20% 0px', threshold: 1 },
   );
   document.querySelectorAll('.hl').forEach((el) => hl.observe(el));
-}
-
-/* ---------- restrained depth ---------- */
-
-// only on wide screens, where there is room for it; phones keep a still, steady column
-if (motion && matchMedia('(min-width: 1024px)').matches) {
-  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
-  const visible = new Set<HTMLElement>();
-  const vio = new IntersectionObserver((entries) =>
-    entries.forEach((en) => (en.isIntersecting ? visible.add(en.target as HTMLElement) : visible.delete(en.target as HTMLElement))),
-  );
-  items.forEach((el) => vio.observe(el));
-  let ticking = false;
-  const update = () => {
-    ticking = false;
-    const mid = innerHeight / 2;
-    visible.forEach((el) => {
-      const f = Number(el.dataset.parallax) || 0;
-      const r = el.getBoundingClientRect();
-      const off = Math.max(-60, Math.min(60, (r.top + r.height / 2 - mid) * f));
-      el.style.translate = `0 ${off.toFixed(1)}px`;
-    });
-  };
-  addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-  }, { passive: true });
-  update();
 }
 
 /* ---------- films ---------- */

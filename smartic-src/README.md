@@ -1,7 +1,8 @@
 # Smartic landing
 
-An editorial promo page in Armenian, served at `/smartic/`: a white publication in five
-chapters with three original Smartic films.
+A long-form advertising article in Armenian, served at `/smartic/`: white, one centred
+reading column (~700 px) shared by every heading, paragraph, link and CTA, five chapters and
+three original Smartic films centred on the same axis.
 
 - `index.html` holds the copy, the styles, UTM tagging and block tracking.
 - `src/main.ts` drives the motion and the films:
