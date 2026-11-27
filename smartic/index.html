@@ -1,0 +1,472 @@
+<!doctype html><html lang="hy"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smartic · Մեկ որոշում</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Լույս, ջերմություն, վարագույրներ, կառավարում և անվտանգություն․ բացահայտիր, թե ինչպես կարող է Smartic-ը փոխել առօրյադ տանը։">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700;800&display=swap">
+<!-- Google Tag Manager: paste the container snippet here. Events are already pushed to window.dataLayer. -->
+<style>
+/*
+  SMART LIVING — BEAUTIFULLY TOLD
+  A white long-form advertising article: one centred reading column (~700 px) that every
+  heading, paragraph, label, link and CTA shares, three original Smartic films centred on the
+  same axis, expressive headlines and quiet hairline rules. Motion lives in src/main.ts and only
+  runs when the visitor allows it; every element always comes to rest on the shared column.
+*/
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #555555;
+  --line: #eaeaea;
+  --violet: #7045d9;        /* Smartic violet (contrast on white 5.9:1) */
+  --font: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+  --col: 43.75rem;          /* ≈ 700 px: the one reading column of the article */
+  --fs-body: clamp(1rem, .93rem + .35vw, 1.15rem);
+  --fs-h1: clamp(2.125rem, 1.3rem + 3vw, 3.75rem);
+  --fs-h2: clamp(1.75rem, 1.25rem + 1.6vw, 2.875rem);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font); font-size: var(--fs-body); line-height: 1.72;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+img, video { max-width: 100%; display: block; }
+a { color: inherit; }
+/* body copy: text-wrap: pretty, measured at 1440, 1024, 768, 390 and 360 px, leaves the fewest
+   one-word last lines with long Armenian words; a 700 px column at 18.4 px keeps short sentences short */
+p { margin: 0; hyphens: manual; text-wrap: pretty; }
+h1, h2 { font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.022em; }
+h1 { font-size: var(--fs-h1); line-height: 1.06; font-weight: 750; }
+h2 { font-size: var(--fs-h2); line-height: 1.1; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+
+/* ---------- shared editorial pieces ---------- */
+.kicker { display: flex; align-items: center; gap: .9rem; font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+.kicker b { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.kicker i { font-style: normal; color: #b5b5b5; }
+.rule { display: block; height: 1px; background: var(--line); transform-origin: 0 50%; }
+.kicker .rule { flex: 1; min-width: 2rem; }
+
+.hl { color: var(--violet); font-weight: 500; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 1.5px; padding-bottom: 1px; }
+
+.more { display: inline-flex; align-items: center; gap: .5em; font-size: .95rem; font-weight: 600; text-decoration: none; color: var(--fg); padding-bottom: .2em; border-bottom: 1px solid var(--line); transition: border-color .3s ease; }
+.more span { transition: transform .3s var(--ease); }
+.more:hover { border-color: var(--fg); }
+.more:hover span { transform: translateX(4px); }
+
+/* ---------- films ---------- */
+.film { position: relative; margin: 0; background: #f3f3f3; overflow: hidden; border-radius: 2px; }
+.film video { width: 100%; height: 100%; object-fit: cover; }
+.film--wide { aspect-ratio: 16 / 9; }
+.film-ctl { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; }
+.film-ctl button {
+  width: 40px; height: 40px; border-radius: 50%; border: 0; padding: 0; display: grid; place-items: center; cursor: pointer;
+  background: rgb(255 255 255 / .86); color: #111; box-shadow: 0 1px 0 rgb(0 0 0 / .06); transition: background .2s ease, transform .2s ease;
+}
+.film-ctl button:hover { background: #fff; transform: scale(1.05); }
+.film-ctl svg { width: 16px; height: 16px; fill: currentColor; }
+.film-ctl [data-icon] { display: none; }
+.film[data-state='playing'] .film-ctl [data-icon='pause'],
+.film[data-state='paused'] .film-ctl [data-icon='play'],
+.film[data-state='ended'] .film-ctl [data-icon='replay'] { display: block; }
+.film .film-sound [data-icon='on'] { display: none; }
+.film .film-sound[aria-pressed='true'] [data-icon='on'] { display: block; }
+.film .film-sound[aria-pressed='true'] [data-icon='off'] { display: none; }
+.film .film-sound [data-icon='off'] { display: block; }
+
+/* ---------- one central reading column; films are centred on the same axis ---------- */
+.col { width: min(100% - 2 * max(20px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)), var(--col)); margin-inline: auto; }
+.film--wide { width: min(100% - 40px, 65rem); margin-inline: auto; }
+
+/* hero */
+.hero { padding-top: clamp(1rem, 2.5vw, 2rem); }
+.masthead { display: flex; align-items: center; gap: 1.25rem; padding-block: 1.75rem 0; }
+.masthead img { height: 24px; width: auto; flex: none; }
+.masthead .rule { flex: 1; }
+.masthead span { font-size: .8125rem; color: var(--muted); white-space: nowrap; }
+.hero-title { margin-top: clamp(2rem, 4vw, 3rem); }
+.hero-intro { margin-top: 2rem; }
+.hero-intro .lead { font-size: 1.2em; line-height: 1.55; font-weight: 500; }
+
+/* chapters: label, headline, story, product link, then the film where there is one */
+.ch { padding-top: clamp(5rem, 8vw, 7.5rem); }
+.kicker + h2 { margin-top: 1.25rem; }
+h2 + .copy { margin-top: 2rem; }
+.copy > p + p { margin-top: 1.4em; }
+.copy > p:has(> .more) { margin-top: 1.75rem; }
+.ch .film { margin-top: clamp(3rem, 5vw, 4rem); }
+
+/* closing */
+.closing { padding-block: clamp(4rem, 5vw, 4.5rem) clamp(4rem, 7vw, 6rem); }
+.closing .rule-top { margin-bottom: 3rem; }
+.closing .slogan { font-size: clamp(1.625rem, 1.2rem + 1.4vw, 2.5rem); font-weight: 750; letter-spacing: -.02em; line-height: 1.15; margin-top: 2.5rem; text-wrap: balance; }
+.closing .after { margin-top: 1.25rem; color: var(--muted); }
+.cta-row { display: flex; flex-wrap: wrap; gap: .9rem 1.75rem; align-items: center; margin-top: 2rem; }
+.cta { display: inline-flex; align-items: center; gap: .6em; background: var(--fg); color: #fff; text-decoration: none; font-weight: 600; font-size: 1rem; line-height: 1.3; padding: 1rem 1.6rem; border-radius: 999px; transition: background .25s ease, transform .2s ease; }
+.cta:hover { background: #2a2a2a; }
+.cta:active { transform: scale(.98); }
+
+/* footer */
+.foot { border-top: 1px solid var(--line); padding-block: 2rem 3rem; display: grid; gap: .8rem; }
+.foot img { height: 18px; width: auto; }
+.fine { font-size: .8125rem; line-height: 1.55; color: var(--muted); }
+
+@media (max-width: 639px) {
+  .masthead span { display: none; }
+  .film-ctl { left: 10px; bottom: 10px; }
+  .cta { width: 100%; justify-content: center; }
+}
+
+/* ---------- motion (classes set by the head script; src/main.ts drives the rest) ---------- */
+.motion [data-reveal='lines'] .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.motion [data-reveal='lines'] .ln-i { display: block; transform: translate3d(0, 108%, 0); transition: transform .85s var(--ease) calc(var(--i, 0) * 95ms); }
+.motion [data-reveal='lines'].is-in .ln-i { transform: none; }
+.motion [data-reveal='lines']:not(.is-split) { opacity: 0; }
+.motion [data-reveal='fade'] > * { opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity .9s ease calc(var(--d, 0) * 110ms + 120ms), transform .9s var(--ease) calc(var(--d, 0) * 110ms + 120ms); }
+.motion [data-reveal='fade'].is-in > * { opacity: 1; transform: none; }
+.motion [data-reveal='film'] { clip-path: inset(7% 7% 7% 7%); transition: clip-path 1.1s var(--ease); }
+.motion [data-reveal='film'] video { transform: scale(1.04); transition: transform 1.4s var(--ease); }
+.motion [data-reveal='film'].is-in { clip-path: inset(0 0 0 0); }
+.motion [data-reveal='film'].is-in video { transform: none; }
+.motion [data-reveal='rule'] .rule, .motion [data-reveal='rule'].rule { transform: scaleX(0); transition: transform 1.1s var(--ease) .1s; }
+.motion [data-reveal='rule'].is-in .rule, .motion [data-reveal='rule'].rule.is-in { transform: none; }
+.motion .hl { background-size: 0% 1.5px; transition: background-size .9s var(--ease) .2s; }
+.motion .hl.is-in { background-size: 100% 1.5px; }
+@media (prefers-reduced-motion: reduce) { .scroll-cue::after { animation: none; } }
+
+#trk-debug {
+  position: fixed; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: min(340px, calc(100vw - 24px)); max-height: 40vh; overflow: auto;
+  background: #15131f; color: #fff; font: 12px/1.45 ui-monospace, Menlo, monospace;
+  padding: 10px 12px; border-radius: 10px; z-index: 50; opacity: .92;
+}
+</style>
+<script>
+/* Motion only when the visitor allows it. If the module never starts, everything is shown as is. */
+(function () {
+  var d = document.documentElement;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  d.classList.add('motion');
+  setTimeout(function () { if (!window.__motionReady) d.classList.remove('motion'); }, 4000);
+})();
+</script>
+  <script type="module" crossorigin src="./assets/index-CJkfUixp.js"></script>
+</head><body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 16 16"><path d="M4 2.5v11l9.5-5.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 16 16"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 16 16"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2.2L4.6 3.2 8 .3z"/></symbol>
+  <symbol id="i-sound-off" viewBox="0 0 16 16"><path d="M2 6h2.5L8 3v10l-3.5-3H2zM10.3 5.6l1.2 1.2 1.2-1.2.9.9-1.2 1.2 1.2 1.2-.9.9-1.2-1.2-1.2 1.2-.9-.9 1.2-1.2-1.2-1.2z"/></symbol>
+  <symbol id="i-sound-on" viewBox="0 0 16 16"><path d="M2 6h2.5L8 3v10l-3.5-3H2zM10 5.2a3.6 3.6 0 0 1 0 5.6l-.9-1a2.3 2.3 0 0 0 0-3.6zM11.8 3.4a6 6 0 0 1 0 9.2l-.9-1a4.7 4.7 0 0 0 0-7.2z"/></symbol>
+</svg>
+
+<header class="hero" id="top" data-block="hero" data-block-index="0">
+  <figure class="film film--wide hero-film" data-reveal="film" data-video="intro">
+    <video muted playsinline preload="auto" poster="./video/intro-wide-poster.webp" src="./video/intro-wide.mp4" aria-label="Smartic-ի խելացի տան սարքերը և կառավարման վահանակները"></video>
+    <div class="film-ctl">
+      <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+        <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+      </button>
+    </div>
+  </figure>
+
+  <div class="masthead col">
+    <img src="./smartic-logo.svg" alt="Smartic" width="168" height="26">
+    <span class="rule" aria-hidden="true"></span>
+    <span>4 րոպե ընթերցում</span>
+  </div>
+
+  <div class="col">
+  <h1 class="hero-title" data-reveal="lines">Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
+
+  <div class="hero-intro copy" data-block="intro" data-block-index="1" data-reveal="fade">
+      <p class="lead">Տան գեղեցկությունը տեսանելի է, իսկ իրական հարմարավետությունը՝ զգալի։</p>
+      <p style="--d:1">Այն զգում ես ամեն օր՝ քեզ հաճելի լուսավորության, հարմարավետ ջերմաստիճանի, հանգիստ առավոտների ու սիրելի երեկոների ընթացքում։</p>
+      <p style="--d:2">Երբեմն բավական է ընդամենը մեկ ճիշտ որոշում, որպեսզի տանը անցկացրած ժամանակը բոլորովին այլ զգացողություններ պարգևի։</p>
+  </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="ch ch-light" id="lighting" data-block="lighting" data-block-index="2">
+    <div class="col">
+        <p class="kicker" data-reveal="rule"><b>01</b><i>/</i>Լուսավորություն<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Նույն սենյակը։ Բոլորովին այլ մթնոլորտ։</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Պատկերացրու՝ հյուրեր ես ընդունում, և հյուրասենյակը ողողված է պայծառ լույսով։ Իսկ երբ երեկոն ավարտվում է, մեկ հպումով լուսավորությունը դառնում է մեղմ ու ջերմ՝ ստեղծելով հանգստի տրամադրություն։</p>
+        <p style="--d:1">Սենյակը նույնն է, կահույքը՝ նույնպես։ Փոխվել է միայն լուսավորությունը, բայց փոխվել է նաև ամբողջ մթնոլորտը։</p>
+        <p style="--d:2">Smartic-ի լուսավորության կառավարման լուծումներով կարող ես ստեղծել տարբեր լուսային սցենարներ։ <span class="hl">Լուսավորությունը կարող ես հարմարեցնել օրվա ժամին, զբաղմունքիդ կամ տրամադրությանդ։</span></p>
+        <p style="--d:3">Ավելին՝ համապատասխան սարքերի և սենսորների օգնությամբ լույսը կարող է ինքնաբերաբար միանալ, երբ մտնում ես սենյակ, կամ արձագանքել բնական լուսավորության փոփոխությանը։ Այդպես նույնիսկ ամենասովորական գործողությունները դառնում են ավելի հարմարավետ։</p>
+        <p style="--d:4"><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+    <figure class="film film--wide" data-reveal="film" data-video="lighting">
+      <video muted playsinline preload="none" poster="./video/lighting-wide-poster.webp" src="./video/lighting-wide.mp4" aria-label="Նույն ինտերիերը՝ լուսավորության տարբեր սցենարներով"></video>
+      <div class="film-ctl">
+        <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+          <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+        </button>
+      </div>
+    </figure>
+  </section>
+
+  <section class="ch ch-heat" id="heating" data-block="heating" data-block-index="3">
+    <div class="col">
+        <p class="kicker" data-reveal="rule"><b>02</b><i>/</i>Ջեռուցում և էներգիայի կառավարում<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Երբ տունը պատրաստ է քո վերադարձին</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Ձմեռային ցուրտ երեկո է։ Աշխատանքային երկար օրվանից հետո տուն ես վերադառնում և ուզում ես պարզապես հանգստանալ, ոչ թե սպասել, մինչև սենյակը տաքանա։</p>
+        <p style="--d:1">Իսկ եթե տունը հնարավոր լինի նախապես պատրաստել քո վերադարձին։</p>
+        <p style="--d:2">Smartic-ի ջեռուցման կառավարման լուծումները հնարավորություն են տալիս <span class="hl">նախապես կարգավորել ջերմաստիճանը՝ առանց տուն հասնելուն սպասելու։</span></p>
+        <p style="--d:3">Կարող ես ջերմաստիճանի կառավարումը հարմարեցնել քո առօրյային՝ ընտրելով, թե երբ է տանը անհրաժեշտ ավելի շատ ջերմություն, և երբ կարելի է նվազեցնել ջեռուցման ինտենսիվությունը։ Համապատասխան համակարգի դեպքում սա նաև օգնում է ավելի արդյունավետ օգտագործել էներգիան։</p>
+        <p style="--d:4">Այդպես տուն վերադառնալու պահը դառնում է օրվա ամենահաճելի պահերից մեկը։</p>
+        <p style="--d:5"><a class="more" data-track="category_heating" data-out="heating" href="https://smartic.am/product/?product_category=%D5%BB%D5%A5%D5%BC%D5%B8%D6%82%D6%81%D5%B8%D6%82%D5%B4-%D6%87-%D5%A7%D5%B6%D5%A5%D6%80%D5%A3%D5%AB%D5%A1%D5%B5%D5%AB-%D5%AF%D5%A1%D5%BC%D5%A1%D5%BE%D5%A1%D6%80%D5%B8%D6%82%D5%B4" target="_blank" rel="noopener">Տեսնել ջեռուցման լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-win" id="windows" data-block="windows" data-block-index="4">
+    <div class="col">
+      <p class="kicker" data-reveal="rule"><b>03</b><i>/</i>Պատուհաններ և մուտք<span class="rule" aria-hidden="true"></span></p>
+      <h2 data-reveal="lines">Առավոտ, որը սկսվում է քո ուզած ձևով</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Պատկերացրու առավոտ, երբ քեզ արթնացնում է ոչ թե զարթուցիչի ձայնը, այլ վարագույրների արանքից ներս թափանցող արևի մեղմ լույսը։</p>
+        <p style="--d:1"><span class="hl">Վարագույրները կարող են բացվել ու փակվել քո նախընտրած ժամերին։</span> Իսկ երեկոյան դրանք կարող են փակվել՝ ստեղծելով հանգստի ու առանձնության մթնոլորտ։</p>
+        <p style="--d:2">Smartic-ի ավտոմատացման լուծումներով կարող ես նաև հեռակառավարել վարագույրները՝ անգամ տնից դուրս գտնվելիս։ Իսկ արևոտ օրերին դրանց դիրքը կարգավորելը կարող է օգնել նվազեցնել սենյակի գերտաքացումը և պահպանել հաճելի միջավայր։</p>
+        <p style="--d:3">Իսկ մուտքի կառավարման խելացի լուծումներն օգնում են տուն մուտք գործել ավելի հարմար եղանակով՝ առանց ամեն անգամ ավանդական բանալին օգտագործելու։ Համապատասխան խելացի կողպեքները կարող են ապահովել մուտք PIN կոդով, քարտով կամ մատնահետքով։</p>
+        <p style="--d:4"><a class="more" data-track="category_windows" data-out="windows" href="https://smartic.am/product/?product_category=%D5%BA%D5%A1%D5%BF%D5%B8%D6%82%D5%B0%D5%A1%D5%B6%D5%B6%D5%A5%D6%80-%D6%87-%D5%B4%D5%B8%D6%82%D5%BF%D6%84" target="_blank" rel="noopener">Տեսնել պատուհանների և մուտքի լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch ch-central" id="central" data-block="central" data-block-index="5">
+    <div class="col">
+        <p class="kicker" data-reveal="rule"><b>04</b><i>/</i>Կենտրոնական կառավարում<span class="rule" aria-hidden="true"></span></p>
+        <h2 data-reveal="lines">Երբ տունը հարմարվում է քո սովորություններին</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Երկար օրվանից հետո ուզում ես միացնել սիրելի ֆիլմդ ու հանգստանալ։ Բայց մինչ այդ պետք է կարգավորել լույսերը, փակել վարագույրներն ու ստեղծել հարմարավետ միջավայր։</p>
+        <p style="--d:1">Իսկ եթե այս ամենը հնարավոր լինի անել մեկ հպումով։</p>
+        <p style="--d:2">Smartic-ի կենտրոնական կառավարման համակարգով համատեղելի սարքերը կարելի է միավորել ընդհանուր սցենարների մեջ։</p>
+        <p style="--d:3"><span class="hl">Մի քանի առանձին գործողություն կարող ես միավորել մեկ կառավարման սցենարում։</span> Դու ընտրում ես «Հանգիստ» ռեժիմը, իսկ տունը պատրաստվում է քո երեկոյին՝ ըստ նախապես սահմանված կարգավորումների։</p>
+        <p style="--d:4">Նմանապես կարելի է նախապես մտածել առավոտյան կամ քնելուց առաջ կատարվող գործողությունների մասին՝ որոշելով, թե երբ պետք է բացվեն վարագույրները, ինչպես փոխվի լուսավորությունը և որ սարքերն աշխատեն։ Ամեն ինչ՝ քո սովորություններին համապատասխան։</p>
+        <p style="--d:5"><a class="more" data-track="category_central" data-out="central" href="https://smartic.am/product/?product_category=central-control" target="_blank" rel="noopener">Տեսնել կենտրոնական կառավարման լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+    <figure class="film film--wide" data-reveal="film" data-video="central">
+      <video muted playsinline preload="none" poster="./video/bedroom-poster.webp" src="./video/bedroom.mp4" aria-label="Խելացի ննջասենյակ․ գիշերային և արթնանալու ռեժիմներ"></video>
+      <div class="film-ctl">
+        <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
+          <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
+        </button>
+        <button type="button" class="film-sound" aria-pressed="false" aria-label="Միացնել ձայնը">
+          <svg data-icon="off"><use href="#i-sound-off"/></svg><svg data-icon="on"><use href="#i-sound-on"/></svg>
+        </button>
+      </div>
+    </figure>
+  </section>
+
+  <section class="ch ch-safe" id="security" data-block="security" data-block-index="6">
+    <div class="col">
+      <p class="kicker" data-reveal="rule"><b>05</b><i>/</i>Անվտանգություն և պաշտպանություն<span class="rule" aria-hidden="true"></span></p>
+      <h2 data-reveal="lines">Ավելի հանգիստ, նույնիսկ երբ տնից հեռու ես</h2>
+      <div class="copy" data-reveal="fade">
+        <p>Արձակուրդ ես մեկնել։ Տանը ոչ ոք չկա, բայց ժամանակ առ ժամանակ մտածում ես՝ արդյոք ամեն ինչ կարգի՞ն է։</p>
+        <p style="--d:1">Պատկերացրու, որ <span class="hl">համապատասխան սենսորները կարող են տեղեկացնել դռան բացման, ծխի կամ ջրի արտահոսքի մասին։</span></p>
+        <p style="--d:2">Smartic-ի անվտանգության և պաշտպանության լուծումներն օգնում են ժամանակին ստանալ համապատասխան ազդանշաններ և ավելի տեղեկացված լինել տանը կատարվողի մասին։</p>
+        <p style="--d:3">Կախված ընտրված սարքերից՝ հնարավոր է վերահսկել մուտքի հետ կապված իրադարձությունները կամ ծանուցումներ ստանալ որոշ անսպասելի իրավիճակներում։ Սա հատկապես կարևոր է, երբ տանը երկար ժամանակ ոչ ոք չկա։</p>
+        <p style="--d:4">Որովհետև հարմարավետ տունը նաև այն տունն է, որի մասին կարող ես ավելի հանգիստ լինել հեռվից։</p>
+        <p style="--d:5"><a class="more" data-track="category_security" data-out="security" href="https://smartic.am/product/?product_category=%D5%A1%D5%B6%D5%BE%D5%BF%D5%A1%D5%B6%D5%A3%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6-%D6%87-%D5%BA%D5%A1%D5%B7%D5%BF%D5%BA%D5%A1%D5%B6%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել անվտանգության լուծումները <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing col" id="closing" data-block="conclusion" data-block-index="7">
+    <span class="rule rule-top" data-reveal="rule" aria-hidden="true"></span>
+    <h2 data-reveal="lines">Մեծ փոփոխությունները միշտ չէ, որ մեծ քայլերից են սկսվում</h2>
+    <div class="copy" data-reveal="fade">
+      <p>Երբեմն բավական է փոխել միայն լուսավորությունը, որպեսզի երեկոն այլ տրամադրություն ստանա։ Կամ ընտրել ջեռուցման կառավարման լուծում, որպեսզի տուն վերադառնալն ավելի հաճելի դառնա։</p>
+      <p style="--d:1">Մեկի համար առաջնայինը հարմարավետությունն է, մյուսի համար՝ անվտանգությունը, իսկ երրորդը ցանկանում է տան տարբեր համակարգերը կառավարել մեկ հարթակից։</p>
+      <p style="--d:2">Քո տունն էլ կարող է հարմարվել հենց քո սովորություններին ու ցանկություններին։</p>
+    </div>
+    <p class="slogan" data-reveal="lines">Մեկ որոշում, և տունդ խելացի է։</p>
+    <div data-reveal="fade">
+      <p class="after">Բացահայտիր Smartic-ի լուծումները և գտիր այն տարբերակը, որը համապատասխանում է քո տանը։</p>
+      <div class="cta-row" style="--d:1">
+        <a class="cta" data-track="cta_smartic" data-out="closing" href="https://smartic.am/" target="_blank" rel="noopener">Բացահայտել Smartic-ի լուծումները <span aria-hidden="true">→</span></a>
+        <a class="more" data-track="cta_consult" data-out="contact" href="https://smartic.am/contact-us/" target="_blank" rel="noopener">Ստանալ խորհրդատվություն <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="col">
+  <div class="foot">
+    <img src="./smartic-logo.svg" alt="Smartic" width="116" height="18">
+    <p class="fine">Լուծումների ընտրությունն ու համատեղելիությունը որոշվում են Smartic-ի մասնագետների հետ՝ կախված տան համակարգերից և ընտրված սարքերից։ <a href="https://smartic.am/" data-out="footer" data-track="footer_smartic" target="_blank" rel="noopener">smartic.am</a></p>
+  </div>
+</footer>
+
+<script>
+/*
+  Outbound links to smartic.am carry UTM tags. Tags the visitor arrived with (utm_*, gclid, …)
+  are passed on; otherwise the defaults below are used. Existing parameters are never overwritten.
+*/
+(function () {
+  var DEFAULTS = { utm_source: 'google', utm_medium: 'promo_page', utm_campaign: 'smartic_one_decision' };
+  var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'wbraid', 'gbraid'];
+  var incoming = {};
+  try {
+    var q = new URLSearchParams(location.search);
+    KEYS.forEach(function (k) { if (q.get(k)) incoming[k] = q.get(k); });
+    if (Object.keys(incoming).length) sessionStorage.setItem('smartic.utm', JSON.stringify(incoming));
+    else incoming = JSON.parse(sessionStorage.getItem('smartic.utm') || '{}');
+  } catch (e) {}
+  var hasCampaign = !!incoming.utm_source;
+  document.querySelectorAll('a[data-out]').forEach(function (a) {
+    try {
+      var u = new URL(a.href);
+      var add = Object.assign({}, hasCampaign ? incoming : DEFAULTS);
+      if (!add.utm_content) add.utm_content = 'landing_' + a.dataset.out;
+      Object.keys(add).forEach(function (k) { if (!u.searchParams.has(k)) u.searchParams.set(k, add[k]); });
+      a.href = u.toString();
+    } catch (e) {}
+  });
+})();
+</script>
+
+<script>
+/*
+  Block tracking (same events as the Freedx page).
+  Every <section data-block="..."> is a block. Events:
+    block_view   — block reached (its top entered the upper 60% of the screen), once per block
+    landing_exit — visitor left the page: last_block = deepest block reached, current_block = block on screen
+    cta_click    — click on an element with data-track
+    product_link_click / smartic_cta_click — product category links / main CTA
+    product_section_view — a product chapter reaches the middle of the screen
+    video_view / video_play / video_complete — sent from src/main.ts (video_id: intro, lighting, central)
+  Sent to GA4 (gtag), GTM (dataLayer) and Yandex Metrica (ym + YM_COUNTER_ID), whichever is installed.
+  No personal data is collected.
+*/
+(function () {
+  var YM_COUNTER_ID = null;
+
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+  var total = blocks.length;
+  var seen = {};
+  var deepest = null;
+  var current = null;
+  var exitSent = false;
+  var t0 = Date.now();
+  var debug = location.hash === '#debug';
+  var panel = null;
+
+  function info(el) {
+    return { block_id: el.dataset.block, block_index: Number(el.dataset.blockIndex), blocks_total: total };
+  }
+
+  function send(name, params, beacon) {
+    params = Object.assign({ page_lang: 'hy', page_id: 'smartic_landing' }, params || {});
+    try {
+      if (typeof window.gtag === 'function') {
+        var p = Object.assign({}, params);
+        if (beacon) p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign({ event: name }, params));
+      }
+      if (YM_COUNTER_ID && typeof window.ym === 'function') {
+        window.ym(YM_COUNTER_ID, 'reachGoal', name === 'block_view' ? 'block_' + params.block_id : name, params);
+      }
+    } catch (e) {}
+    if (debug) log(name, params);
+  }
+
+  window.__trackEvent = function (n, p) { send(n, p); };
+
+  function log(name, params) {
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'trk-debug';
+      document.body.appendChild(panel);
+    }
+    var line = document.createElement('div');
+    line.textContent = name + ' ' + JSON.stringify(params);
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  var reachObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var d = info(en.target);
+      if (seen[d.block_id]) return;
+      seen[d.block_id] = true;
+      if (!deepest || d.block_index > deepest.block_index) deepest = d;
+      send('block_view', Object.assign({ seconds_on_page: Math.round((Date.now() - t0) / 1000) }, d));
+    });
+  }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
+
+  var currentObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) current = info(en.target); });
+  }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+
+  blocks.forEach(function (el) { reachObs.observe(el); currentObs.observe(el); });
+
+  function sendExit() {
+    if (exitSent || !deepest) return;
+    exitSent = true;
+    send('landing_exit', {
+      last_block: deepest.block_id,
+      last_block_index: deepest.block_index,
+      current_block: current ? current.block_id : deepest.block_id,
+      blocks_total: total,
+      read_to_end: deepest.block_index === total - 1,
+      seconds_on_page: Math.round((Date.now() - t0) / 1000)
+    }, true);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') sendExit();
+    else exitSent = false;
+  });
+  window.addEventListener('pagehide', sendExit);
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-track]');
+    if (!a) return;
+    var block = a.closest('[data-block]');
+    send('cta_click', {
+      cta_id: a.dataset.track,
+      block_id: block ? block.dataset.block : null,
+      link_url: a.href || null
+    }, true);
+    if (a.dataset.track.indexOf('category_') === 0) {
+      send('product_link_click', { product_category: a.dataset.track.slice(9), block_id: block ? block.dataset.block : null }, true);
+    } else if (a.dataset.track === 'cta_smartic' || a.dataset.track === 'cta_consult') {
+      send('smartic_cta_click', { cta_id: a.dataset.track, block_id: block ? block.dataset.block : null }, true);
+    }
+  });
+
+  // product_section_view: a product chapter (01–05) is half on screen, once each
+  var prodObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      prodObs.unobserve(en.target);
+      send('product_section_view', { block_id: en.target.dataset.block, block_index: Number(en.target.dataset.blockIndex) });
+    });
+  }, { rootMargin: '0px 0px -50% 0px', threshold: 0 });
+  document.querySelectorAll('section.ch[data-block]').forEach(function (el) { prodObs.observe(el); });
+})();
+</script>
+</body></html>
