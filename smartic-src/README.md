@@ -11,8 +11,10 @@ three original Smartic films centred on the same axis.
   - films open through a clean mask.
   - Everything comes to rest on the shared column and runs once. With reduced motion nothing moves and the films wait for a tap.
 - Films live in `public/video/`. They are web encodes of the original files; the content is unchanged:
-  - `intro.mp4` comes from "Smartic (4)(1).mp4" and plays in the hero;
-  - `lighting.mp4` comes from "Smartic v2.0(1).mp4" and plays in chapter 01;
+  - `intro-wide.mp4` comes from "Smartic (4)(1).mp4" and plays in the hero, above the logo;
+  - `lighting-wide.mp4` comes from "Smartic v2.0(1).mp4" and plays in chapter 01.
+    Both are 16:9 versions of the vertical originals: the full 9:16 frame stays uncropped in the
+    centre, and the sides are filled with the same footage, blurred.
   - `bedroom.mp4` comes from "vidssave.com … Smartic 720P.mp4" and plays in chapter 04.
   - Each film is muted, plays inline once when half visible and pauses out of view. Only one plays at a time. Each has a play/replay button; chapter 04 also has a sound toggle.
 - Events, with no personal data:

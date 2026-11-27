@@ -25,7 +25,7 @@
   --font: "Noto Sans Armenian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --ease: cubic-bezier(.2, .7, .1, 1);
   --col: 43.75rem;          /* ≈ 700 px: the one reading column of the article */
-  --fs-body: clamp(1rem, .93rem + .35vw, 1.1875rem);
+  --fs-body: clamp(1rem, .93rem + .35vw, 1.15rem);
   --fs-h1: clamp(2.125rem, 1.3rem + 3vw, 3.75rem);
   --fs-h2: clamp(1.75rem, 1.25rem + 1.6vw, 2.875rem);
   color-scheme: light;
@@ -39,9 +39,9 @@ body {
 }
 img, video { max-width: 100%; display: block; }
 a { color: inherit; }
-/* body copy: plain greedy wrapping measured the most even right edge here at 1440, 1024, 768, 390 and 360 px
-   (text-wrap: pretty was equal or slightly worse with long Armenian words), so it stays the default */
-p { margin: 0; hyphens: manual; }
+/* body copy: text-wrap: pretty, measured at 1440, 1024, 768, 390 and 360 px, leaves the fewest
+   one-word last lines with long Armenian words; a 700 px column at 18.4 px keeps short sentences short */
+p { margin: 0; hyphens: manual; text-wrap: pretty; }
 h1, h2 { font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.022em; }
 h1 { font-size: var(--fs-h1); line-height: 1.06; font-weight: 750; }
 h2 { font-size: var(--fs-h2); line-height: 1.1; }
@@ -65,7 +65,6 @@ h2 { font-size: var(--fs-h2); line-height: 1.1; }
 /* ---------- films ---------- */
 .film { position: relative; margin: 0; background: #f3f3f3; overflow: hidden; border-radius: 2px; }
 .film video { width: 100%; height: 100%; object-fit: cover; }
-.film--tall { aspect-ratio: 9 / 16; }
 .film--wide { aspect-ratio: 16 / 9; }
 .film-ctl { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; }
 .film-ctl button {
@@ -85,15 +84,14 @@ h2 { font-size: var(--fs-h2); line-height: 1.1; }
 
 /* ---------- one central reading column; films are centred on the same axis ---------- */
 .col { width: min(100% - 2 * max(20px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)), var(--col)); margin-inline: auto; }
-.film--tall { width: min(100% - 40px, 26rem); margin-inline: auto; }
 .film--wide { width: min(100% - 40px, 65rem); margin-inline: auto; }
 
 /* hero */
-.masthead { display: flex; align-items: center; gap: 1.25rem; padding-block: 1.5rem 1.75rem; }
+.hero { padding-top: clamp(1rem, 2.5vw, 2rem); }
+.masthead { display: flex; align-items: center; gap: 1.25rem; padding-block: 1.75rem 0; }
 .masthead img { height: 24px; width: auto; flex: none; }
 .masthead .rule { flex: 1; }
 .masthead span { font-size: .8125rem; color: var(--muted); white-space: nowrap; }
-.hero-film.film--tall { width: auto; height: min(62svh, 36rem); max-width: calc(100% - 40px); }
 .hero-title { margin-top: clamp(2rem, 4vw, 3rem); }
 .hero-intro { margin-top: 2rem; }
 .hero-intro .lead { font-size: 1.2em; line-height: 1.55; font-weight: 500; }
@@ -123,8 +121,6 @@ h2 + .copy { margin-top: 2rem; }
 
 @media (max-width: 639px) {
   .masthead span { display: none; }
-  .hero-film.film--tall { height: auto; width: min(64vw, 18rem); }
-  .film--tall { width: min(100% - 40px, 20rem); }
   .film-ctl { left: 10px; bottom: 10px; }
   .cta { width: 100%; justify-content: center; }
 }
@@ -173,20 +169,20 @@ h2 + .copy { margin-top: 2rem; }
 </svg>
 
 <header class="hero" id="top" data-block="hero" data-block-index="0">
-  <div class="masthead col">
-    <img src="/smartic-logo.svg" alt="Smartic" width="168" height="26">
-    <span class="rule" aria-hidden="true"></span>
-    <span>4 րոպե ընթերցում</span>
-  </div>
-
-  <figure class="film film--tall hero-film" data-reveal="film" data-video="intro">
-    <video muted playsinline preload="auto" poster="/video/intro-poster.webp" src="/video/intro.mp4" aria-label="Smartic-ի խելացի տան սարքերը և կառավարման վահանակները"></video>
+  <figure class="film film--wide hero-film" data-reveal="film" data-video="intro">
+    <video muted playsinline preload="auto" poster="/video/intro-wide-poster.webp" src="/video/intro-wide.mp4" aria-label="Smartic-ի խելացի տան սարքերը և կառավարման վահանակները"></video>
     <div class="film-ctl">
       <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
         <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
       </button>
     </div>
   </figure>
+
+  <div class="masthead col">
+    <img src="/smartic-logo.svg" alt="Smartic" width="168" height="26">
+    <span class="rule" aria-hidden="true"></span>
+    <span>4 րոպե ընթերցում</span>
+  </div>
 
   <div class="col">
   <h1 class="hero-title" data-reveal="lines">Մեկ որոշումը փոխում է ոչ միայն տունդ, այլև առօրյադ</h1>
@@ -213,8 +209,8 @@ h2 + .copy { margin-top: 2rem; }
         <p style="--d:4"><a class="more" data-track="category_lighting" data-out="lighting" href="https://smartic.am/product/?product_category=%D5%AC%D5%B8%D6%82%D5%BD%D5%A1%D5%BE%D5%B8%D6%80%D5%B8%D6%82%D5%A9%D5%B5%D5%B8%D6%82%D5%B6" target="_blank" rel="noopener">Տեսնել լուսավորության լուծումները <span aria-hidden="true">→</span></a></p>
       </div>
     </div>
-    <figure class="film film--tall" data-reveal="film" data-video="lighting">
-      <video muted playsinline preload="none" poster="/video/lighting-poster.webp" src="/video/lighting.mp4" aria-label="Նույն ինտերիերը՝ լուսավորության տարբեր սցենարներով"></video>
+    <figure class="film film--wide" data-reveal="film" data-video="lighting">
+      <video muted playsinline preload="none" poster="/video/lighting-wide-poster.webp" src="/video/lighting-wide.mp4" aria-label="Նույն ինտերիերը՝ լուսավորության տարբեր սցենարներով"></video>
       <div class="film-ctl">
         <button type="button" class="film-toggle" aria-label="Նվագարկել կամ կանգնեցնել տեսանյութը">
           <svg data-icon="play"><use href="#i-play"/></svg><svg data-icon="pause"><use href="#i-pause"/></svg><svg data-icon="replay"><use href="#i-replay"/></svg>
